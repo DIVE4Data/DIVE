@@ -1,0 +1,18 @@
+{
+    "Etherscan_Account": 
+    {
+        "API_Key": "Your API Key"
+    },
+    "Features":
+    {
+        "AccountInfo": "Features/AccountInfo",
+        "CodeMetrics": "Features/CodeMetrics",
+        "ContractsInfo": "Features/ContractsInfo",
+        "Opcodes": "Features/Opcodes"
+    },
+    "RawData":
+    {
+        "Samples": "RawData/Samples",
+        "SC_Addresses": "RawData/SC_Addresses"
+    }
+}
