@@ -10,9 +10,17 @@
         "ContractsInfo": "Features/ContractsInfo",
         "Opcodes": "Features/Opcodes"
     },
+    "DataLabels":
+    {
+        "Labels": "Labels"
+    },
     "RawData":
     {
         "Samples": "RawData/Samples",
         "SC_Addresses": "RawData/SC_Addresses"
+    },
+    "DigVulSCDS":
+    {
+        "OutDir": "DigVulSCDS"
     }
 }
