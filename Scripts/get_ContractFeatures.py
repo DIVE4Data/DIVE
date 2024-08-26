@@ -4,6 +4,7 @@ import time
 import datetime
 import pandas as pd
 from pathlib import Path
+from Scripts.extract_SourceCodes import extract_SourceCodes
 
 #-------------------------------------------
 #Get the correct path to the configuration file
@@ -109,6 +110,8 @@ def get_ContractInfo(api_key,addresses,outDir):
     
     ContractsInfo = pd.DataFrame(data=info)
     UniqueFilename = generate_UniqueFilename('ContractsInfo')
+    #Extract Source Codes then remove it from the dataframe
+    ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename)
     ContractsInfo.to_csv(outDir + UniqueFilename + ".csv",index=False)
     print('Done! Contracts Info Data is available in ' + outDir + UniqueFilename + ".csv")
     #return ContractsInfo

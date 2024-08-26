@@ -26,6 +26,7 @@
     "RawData":
     {
         "Samples": "RawData/Samples",
+        "SamplesSummary": "RawData/SamplesSummary",
         "SC_Addresses": "RawData/SC_Addresses"
     },
     "DigVulSCDS":
