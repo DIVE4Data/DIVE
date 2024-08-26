@@ -3,14 +3,16 @@ import pandas as pd
 import numpy as np
 from mrkdwn_analysis import MarkdownAnalyzer
 from pathlib import Path
+from IPython.display import display
+
 
 def get_CodeMetrics(SamplesDir):
     if SamplesDir == '' or SamplesDir.lower == 'all':
-        SamplesDir = get_Path('Samples')
+        SamplesDir = str(get_Path('Samples')) + '/'
     else:
         self_main_dir = Path(__file__).resolve().parents[1]
-        SamplesDir = self_main_dir/SamplesDir
-
+        SamplesDir = str(self_main_dir/SamplesDir)
+    
     OriginalDestinationPath = get_Path('OriginalReports')
     EditedDestinationPath = get_Path('EditedReports')
     Raw_CodeMetrics_OutDir = get_Path('Raw_CodeMetrics')
@@ -19,12 +21,13 @@ def get_CodeMetrics(SamplesDir):
     generate_MetricsReports(SamplesDir,OriginalDestinationPath)
     prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath)
     metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
+    display(metricsDF)
     preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
 
     UniqueFilename = generate_UniqueFilename('Raw_CodeMetrics')
-    metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
+    metricsDF.to_csv(str(Raw_CodeMetrics_OutDir) + '/' + UniqueFilename + '.csv',index=False)
     UniqueFilename = generate_UniqueFilename('CodeMetrics')
-    preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
+    preProcessed_metricsDF.to_csv(str(CodeMetrics_OutDir) + '/' + UniqueFilename + '.csv' ,index=False)
 
     return preProcessed_metricsDF
 
@@ -44,7 +47,7 @@ def get_Path(dataType):
     configFile.close()
     
     if 'Reports' in dataType or 'Raw' in dataType:
-        path = self_main_dir/config_File['Reports'][dataType]
+        path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
     elif dataType == 'Samples':
         path = self_main_dir/config_File['RawData'][dataType]
     else:
@@ -60,9 +63,8 @@ def generate_MetricsReports(SamplesDir,OriginalDestinationPath):
         if file.is_file() and '.sol' in file.name:
             try:
                 filePath = SamplesDir + file.name
-                
                 #Save the output to a Markdown file
-                OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.md'
+                OutPath = str(OriginalDestinationPath) + '/' + file.name.split('.')[0] + '.md'
                 os.system('solidity-code-metrics ' + filePath + '>' + OutPath)
 
                 #Save the output to a HTML file
@@ -78,14 +80,14 @@ def prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPat
         filePath = ''
         filePath1 = ''
         if '.md' in filename:
-            filePath = OriginalDestinationPath + filename
+            filePath = str(OriginalDestinationPath) + '/' + filename
 
             file =open(filePath,'r')
             markdown = file.readlines()
             stripped_markdown = list(map(str.strip, markdown))
             file.close()
 
-            filePath1 = EditedDestinationPath + filename
+            filePath1 = str(EditedDestinationPath) + '/' + filename
             
             updatedFile = open(filePath1,'w')
             updatedFile.write('\n'.join(stripped_markdown))
@@ -99,7 +101,11 @@ def parse_MetricsReports(ReportsFolder):
     for file in os.scandir(ReportsFolder):
         filePath = ''
         codeMetrics = []
-        GeneralMetrics = [], Components = [], ExposedFunctions = [], StateVariables = [], Capabilities = []
+        GeneralMetrics = []
+        Components = []
+        ExposedFunctions = []
+        StateVariables = []
+        Capabilities = []
         
         if file.is_file() and '.md' in file.name:
             contractAddress = file.name.split('.')[0]

@@ -17,9 +17,9 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename):
     configFile.close()
 
     outDir = self_main_dir/config_File['RawData']['Samples']
-    write_SourceCodesToSolfiles(ContractsInfo,outDir)
+    write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
     outDir = self_main_dir/config_File['RawData']['SamplesSummary']
-    get_SamplesSummary(ContractsInfo,outDir,UniqueFilename)
+    get_SamplesSummary(ContractsInfo,str(outDir),UniqueFilename)
 
     ContractsInfo.drop(columns=['SourceCode'],axis=1,inplace=True)
 
@@ -27,12 +27,12 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename):
 
 def write_SourceCodesToSolfiles(ContractsInfo,outDir):
     for index, row in ContractsInfo.iterrows():
-        file = open(outDir+ ContractsInfo.at[index,'contractAddress']+'.sol','w')
+        file = open(outDir + '/' + ContractsInfo.at[index,'contractAddress']+'.sol','w')
         file.write(ContractsInfo.at[index,'SourceCode'])
         file.close()
 
 def get_SamplesSummary(ContractsInfo,outDir,UniqueFilename):
-    file = open(outDir + UniqueFilename +'_Summary.txt','w')
+    file = open(outDir + '/' + UniqueFilename +'_Summary.txt','w')
     
     for index, row in ContractsInfo.iterrows():
         version = ContractsInfo.at[index,'CompilerVersion'].rsplit('+')[0][1:]
