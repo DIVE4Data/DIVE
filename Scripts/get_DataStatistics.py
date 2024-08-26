@@ -7,8 +7,15 @@ import json, os
 
 from IPython.display import display
 
-def get_DataStatistics(dataset):
-    outDir = git_OutDir()
+def get_DataStatistics(dataset,defaultDir):
+    
+    outDir = git_Dir(dataType ='Statistics')
+    if defaultDir:
+        datasetPath = git_Dir(dataType ='Dataset')
+    else:
+        datasetPath = git_Dir(dataType ='otherDSPath')
+    dataset = pd.read_csv(datasetPath + dataset)
+
     print('**Data Info**')
     print('________________________________')
     display(dataset.info())
@@ -29,7 +36,7 @@ def get_DataStatistics(dataset):
     get_CompilerVersionsFrequency(dataset,outDir)
     return
 
-def git_OutDir():
+def git_Dir(dataType):
     config_file_name = 'config.json'
     
     self_dir = Path(__file__).resolve().parent
@@ -40,10 +47,14 @@ def git_OutDir():
     config_File = json.load(configFile)
     configFile.close()
 
-    StatisticsDir = self_main_dir/config_File['outDir']['Statistics']+'/'
-
-    outDir = create_outDir(StatisticsDir)
-    return outDir
+    if dataType == 'Statistics':
+        StatisticsDir = self_main_dir/config_File['outDir']['Statistics']+'/'
+        Dir = create_outDir(StatisticsDir)
+    elif dataType == 'Dataset' :
+        Dir = self_main_dir/config_File['DigVulSCDS']['OutDir']+'/'
+    else:
+        Dir = self_main_dir+'/'
+    return Dir
 
 def create_outDir(StatisticsDir):
     #Create new out dir inside StatisticsDir
