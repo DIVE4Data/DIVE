@@ -18,7 +18,7 @@ def get_Addresses(addressesFile):
     configFile = open(config_file_path)
     config_File = json.load(configFile)
     configFile.close()
-    path = self_main_dir/config_File['RawData']['SC_Addresses'] + '/'
+    path = self_main_dir/config_File['RawData']['SC_Addresses']
     #-------------------------------------------
 
     if addressesFile.lower == 'all' or '.csv' in addressesFile.lower:

@@ -5,36 +5,36 @@
     },
     "Features":
     {
-        "AccountInfo": "Features/AccountInfo",
-        "CodeMetrics": "Features/CodeMetrics/CodeMetrics",
-        "ContractsInfo": "Features/ContractsInfo",
-        "Opcodes": "Features/Opcodes"
+        "AccountInfo": "Features/AccountInfo/",
+        "CodeMetrics": "Features/CodeMetrics/CodeMetrics/",
+        "ContractsInfo": "Features/ContractsInfo/",
+        "Opcodes": "Features/Opcodes/"
     },
     "solidity-code-metrics":
     {
         "Reports":
         {
-            "OriginalReports": "Features/CodeMetrics/Reports/OriginalReports",
-            "EditedReports": "Features/CodeMetrics/Reports/EditedReports",
-            "Raw_CodeMetrics" : "Features/CodeMetrics/Reports/Raw_CodeMetrics"
+            "OriginalReports": "Features/CodeMetrics/Reports/OriginalReports/",
+            "EditedReports": "Features/CodeMetrics/Reports/EditedReports/",
+            "Raw_CodeMetrics" : "Features/CodeMetrics/Reports/Raw_CodeMetrics/"
         }
     },
     "DataLabels":
     {
-        "Labels": "Labels"
+        "Labels": "Labels/"
     },
     "RawData":
     {
-        "Samples": "RawData/Samples",
-        "SamplesSummary": "RawData/SamplesSummary",
-        "SC_Addresses": "RawData/SC_Addresses"
+        "Samples": "RawData/Samples/",
+        "SamplesSummary": "RawData/SamplesSummary/",
+        "SC_Addresses": "RawData/SC_Addresses/"
     },
     "DigVulSCDS":
     {
-        "OutDir": "DigVulSCDS"
+        "OutDir": "DigVulSCDS/"
     },
     "outDir":
     {
-        "Statistics": "Statistics"
+        "Statistics": "Statistics/"
     }
 }

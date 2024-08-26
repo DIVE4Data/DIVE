@@ -9,7 +9,7 @@ def get_CodeMetrics(SamplesDir):
         SamplesDir = get_Path('Samples')
     else:
         self_main_dir = Path(__file__).resolve().parents[1]
-        SamplesDir = self_main_dir/SamplesDir + '/'
+        SamplesDir = self_main_dir/SamplesDir
 
     OriginalDestinationPath = get_Path('OriginalReports')
     EditedDestinationPath = get_Path('EditedReports')
@@ -44,11 +44,11 @@ def get_Path(dataType):
     configFile.close()
     
     if 'Reports' in dataType or 'Raw' in dataType:
-        path = self_main_dir/config_File['Reports'][dataType] + '/'
+        path = self_main_dir/config_File['Reports'][dataType]
     elif dataType == 'Samples':
-        path = self_main_dir/config_File['RawData'][dataType] + '/'
+        path = self_main_dir/config_File['RawData'][dataType]
     else:
-        path = self_main_dir/config_File['Features'][dataType] + '/'
+        path = self_main_dir/config_File['Features'][dataType]
     
     return path
 

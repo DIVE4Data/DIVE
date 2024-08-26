@@ -62,11 +62,11 @@ def get_Path(dataType):
     configFile.close()
     
     if dataType == 'Labels':
-        path = self_main_dir/config_File['DataLabels'][dataType] + '/'
+        path = self_main_dir/config_File['DataLabels'][dataType]
     elif dataType == 'FinalLabeledData':
-        path = self_main_dir/config_File['DataLabels'][dataType] + '/'
+        path = self_main_dir/config_File['DataLabels'][dataType]
     else:
-        path = self_main_dir/config_File['Features'][dataType] + '/'
+        path = self_main_dir/config_File['Features'][dataType]
     
     return path
 

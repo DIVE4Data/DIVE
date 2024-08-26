@@ -28,15 +28,15 @@ def get_ContractFeatures(FeatureType,addresses):
 
     match FeatureType.lower():
         case 'all':
-            get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo']+'/')
-            get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo']+'/')
-            get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes']+'/')
+            get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+            get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+            get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
         case 'accountinfo' | '1':
-            get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo']+'/')
+            get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
         case 'contractinfo' | '2':
-            get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo']+'/')
+            get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
         case 'opcodes' | '3':
-            get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes']+'/')
+            get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
 
     return True
 

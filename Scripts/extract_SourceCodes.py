@@ -16,9 +16,9 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename):
     config_File = json.load(configFile)
     configFile.close()
 
-    outDir = self_main_dir/config_File['RawData']['Samples']+'/'
+    outDir = self_main_dir/config_File['RawData']['Samples']
     write_SourceCodesToSolfiles(ContractsInfo,outDir)
-    outDir = self_main_dir/config_File['RawData']['SamplesSummary']+'/'
+    outDir = self_main_dir/config_File['RawData']['SamplesSummary']
     get_SamplesSummary(ContractsInfo,outDir,UniqueFilename)
 
     ContractsInfo.drop(columns=['SourceCode'],axis=1,inplace=True)

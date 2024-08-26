@@ -48,12 +48,12 @@ def git_Dir(dataType):
     configFile.close()
 
     if dataType == 'Statistics':
-        StatisticsDir = self_main_dir/config_File['outDir']['Statistics']+'/'
+        StatisticsDir = self_main_dir/config_File['outDir']['Statistics']
         Dir = create_outDir(StatisticsDir)
     elif dataType == 'Dataset' :
-        Dir = self_main_dir/config_File['DigVulSCDS']['OutDir']+'/'
+        Dir = self_main_dir/config_File['DigVulSCDS']['OutDir']
     else:
-        Dir = self_main_dir+'/'
+        Dir = self_main_dir
     return Dir
 
 def create_outDir(StatisticsDir):
