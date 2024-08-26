@@ -11,25 +11,26 @@ def get_CodeMetrics(SamplesDir):
         SamplesDir = str(get_Path('Samples')) + '/'
     else:
         self_main_dir = Path(__file__).resolve().parents[1]
-        SamplesDir = str(self_main_dir/SamplesDir)
+        SamplesDir = str(self_main_dir/SamplesDir) + '/'
     
-    OriginalDestinationPath = get_Path('OriginalReports')
-    EditedDestinationPath = get_Path('EditedReports')
-    Raw_CodeMetrics_OutDir = get_Path('Raw_CodeMetrics')
-    CodeMetrics_OutDir  = get_Path('CodeMetrics')
+    OriginalDestinationPath = str(get_Path('OriginalReports')) + '/'
+    EditedDestinationPath = str(get_Path('EditedReports')) + '/'
+    Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics')) + '/'
+    CodeMetrics_OutDir  = str(get_Path('CodeMetrics')) + '/'
 
     generate_MetricsReports(SamplesDir,OriginalDestinationPath)
     prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath)
+    
     metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
-    display(metricsDF)
-    preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
-
     UniqueFilename = generate_UniqueFilename('Raw_CodeMetrics')
-    metricsDF.to_csv(str(Raw_CodeMetrics_OutDir) + '/' + UniqueFilename + '.csv',index=False)
-    UniqueFilename = generate_UniqueFilename('CodeMetrics')
-    preProcessed_metricsDF.to_csv(str(CodeMetrics_OutDir) + '/' + UniqueFilename + '.csv' ,index=False)
+    metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
 
-    return preProcessed_metricsDF
+    preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
+    UniqueFilename = generate_UniqueFilename('CodeMetrics')
+    preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
+    
+    display(preProcessed_metricsDF)
+    return 
 
 #Get dataComponent dir path
 #--------------------------
@@ -47,7 +48,8 @@ def get_Path(dataType):
     configFile.close()
     
     if 'Reports' in dataType or 'Raw' in dataType:
-        path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
+        #path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
+        path = './Features/CodeMetrics/Reports/' + dataType
     elif dataType == 'Samples':
         path = self_main_dir/config_File['RawData'][dataType]
     else:
@@ -62,9 +64,9 @@ def generate_MetricsReports(SamplesDir,OriginalDestinationPath):
         filePath = ''
         if file.is_file() and '.sol' in file.name:
             try:
-                filePath = SamplesDir + file.name
+                filePath = str(SamplesDir + file.name)
                 #Save the output to a Markdown file
-                OutPath = str(OriginalDestinationPath) + '/' + file.name.split('.')[0] + '.md'
+                OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.md'
                 os.system('solidity-code-metrics ' + filePath + '>' + OutPath)
 
                 #Save the output to a HTML file
@@ -80,14 +82,14 @@ def prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPat
         filePath = ''
         filePath1 = ''
         if '.md' in filename:
-            filePath = str(OriginalDestinationPath) + '/' + filename
+            filePath = OriginalDestinationPath + filename
 
             file =open(filePath,'r')
             markdown = file.readlines()
             stripped_markdown = list(map(str.strip, markdown))
             file.close()
 
-            filePath1 = str(EditedDestinationPath) + '/' + filename
+            filePath1 = EditedDestinationPath + filename
             
             updatedFile = open(filePath1,'w')
             updatedFile.write('\n'.join(stripped_markdown))
@@ -175,27 +177,26 @@ def createMetricsDF():
 #Preprocess Metrics Data
 #------------------------
 def preprocesse_MetricsData(metricsDF):
-    preProcessed_metricsDF = metricsDF
     booleenColumns = ['Can Receive Funds','Uses Assembly','Has Destroyable Contracts','Transfers ETH', 
                         'Low-Level Calls', 'DelegateCall', 'Uses Hash Functions', 'ECRecover', 
                         'New/Create/Create2','TryCatch','Unchecked']
     numericalColumns = list(set(metricsDF.columns) - set(booleenColumns) - set(['contractAddress','Experimental Features']))
-    
-    preProcessed_metricsDF[booleenColumns] = preProcessed_metricsDF[booleenColumns].astype(str).replace({'****':'No','`yes`':'Yes',})
-    
-    for column in booleenColumns:
-        preProcessed_metricsDF[column] = np.where(preProcessed_metricsDF[column].str.contains('`yes`'),'Yes',preProcessed_metricsDF[column])
-    
-    preProcessed_metricsDF[numericalColumns] = preProcessed_metricsDF[numericalColumns].astype(str).replace('****', 0)
-    preProcessed_metricsDF['Experimental Features'] = preProcessed_metricsDF['Experimental Features'].astype(str).replace('`ABIEncoderV2`','ABIEncoderV2')
-    preProcessed_metricsDF = preProcessed_metricsDF.replace(np.nan, None)
-    #Drop empty rows
-    preProcessed_metricsDF.drop(preProcessed_metricsDF[preProcessed_metricsDF['Lines'] == '**undefined**'].index,inplace=True)
-    #Drop duplicate columns
-    preProcessed_metricsDF.drop(columns=['Interfaces.1'], inplace=True)
 
-    return preProcessed_metricsDF
+    metricsDF[booleenColumns].astype(str).replace({'****':'No','`yes`':'Yes',},inplace = True)
+    for column in booleenColumns:
+        metricsDF[column] = np.where(metricsDF[column].str.contains('`yes`'),'Yes',metricsDF[column])
+
+    metricsDF[numericalColumns].astype(str).replace('****', 0,inplace = True)
+    metricsDF['Experimental Features'].astype(str).replace('`ABIEncoderV2`','ABIEncoderV2',inplace = True)
+    metricsDF.replace(np.nan, None,inplace = True)
+    
+    #Drop empty rows
+    metricsDF.drop(metricsDF[metricsDF['Lines'] == '**undefined**'].index,inplace=True)
+    #Drop duplicate columns
+    metricsDF = metricsDF.loc[:,~metricsDF.columns.duplicated()].copy()
+    
+    return metricsDF
 
 def generate_UniqueFilename(FeatureType):
-    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + FeatureType
+    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + FeatureType
     return UniqueFilename

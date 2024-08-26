@@ -65,7 +65,7 @@ def get_Path(dataType):
     if dataType == 'Labels':
         path = self_main_dir/config_File['DataLabels'][dataType]
     elif dataType == 'FinalLabeledData':
-        path = self_main_dir/config_File['DataLabels'][dataType]
+        path = self_main_dir/config_File['DigVulSCDS']['OutDir']
     else:
         path = self_main_dir/config_File['Features'][dataType]
     
