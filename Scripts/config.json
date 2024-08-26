@@ -32,5 +32,9 @@
     "DigVulSCDS":
     {
         "OutDir": "DigVulSCDS"
+    },
+    "outDir":
+    {
+        "Statistics": "Statistics"
     }
 }
