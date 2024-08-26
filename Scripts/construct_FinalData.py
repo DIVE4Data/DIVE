@@ -23,18 +23,19 @@ def construct_FinalData(AccountInfo,ContractsInfo,Opcodes,CodeMetrics,Labels):
     DigVulSCDS.reset_index(inplace=True,drop=True)
 
     finalDataName = generate_UniqueFilename('DigVulSCDS')
-    finalDataPath = get_Path('FinalLabeledData')
-    DigVulSCDS.to_csv(finalDataPath+finalDataName+'.csv',index=False)
+    finalDataPath = str(get_Path('FinalLabeledData'))
+    DigVulSCDS.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
 
     return DigVulSCDS
 
 #Read Features/Labels data to a dataframe
 #----------------------------------------
 def ReadFeaturesData(dataComponent,dataType):
-    path = get_Path(dataType)
-    if dataComponent[0].lower == 'all' or len(dataComponent) > 1:
+    path = str(get_Path(dataType)) + '/'
+    if dataComponent[0].lower() == 'all' or len(dataComponent) > 1:
+        dataComponentDF = pd.DataFrame()
         for filename in os.listdir(path):
-            if 'csv' in filename and (dataComponent[0].lower == 'all' or filename in dataComponent):
+            if 'csv' in filename and (dataComponent[0].lower() == 'all' or filename in dataComponent):
                 df = pd.read_csv(path + filename)
                 if len(dataComponentDF) == 0:
                     dataComponentDF = df
@@ -43,7 +44,7 @@ def ReadFeaturesData(dataComponent,dataType):
         dataComponentDF.drop_duplicates(keep='first',inplace=True)
         dataComponentDF.reset_index(inplace=True, drop=True)
     else:
-        dataComponentDF = pd.read_csv(path + dataComponent[0]) 
+        dataComponentDF = pd.read_csv(path + '/' + dataComponent[0]) 
     return dataComponentDF
 
 #Get dataComponent dir path
