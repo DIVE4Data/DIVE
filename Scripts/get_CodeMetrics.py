@@ -7,11 +7,10 @@ from IPython.display import display
 
 
 def get_CodeMetrics(SamplesDir):
-    if SamplesDir == '' or SamplesDir.lower == 'all':
-        SamplesDir = str(get_Path('Samples')) + '/'
+    if SamplesDir == '' or SamplesDir.lower() == 'all':
+        SamplesDir = './' + str(get_Path('Samples')) + '/'
     else:
-        self_main_dir = Path(__file__).resolve().parents[1]
-        SamplesDir = str(self_main_dir/SamplesDir) + '/'
+        SamplesDir = './' + str(SamplesDir) + '/'
     
     OriginalDestinationPath = str(get_Path('OriginalReports')) + '/'
     EditedDestinationPath = str(get_Path('EditedReports')) + '/'
@@ -51,7 +50,7 @@ def get_Path(dataType):
         #path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
         path = './Features/CodeMetrics/Reports/' + dataType
     elif dataType == 'Samples':
-        path = self_main_dir/config_File['RawData'][dataType]
+        path = config_File['RawData'][dataType]
     else:
         path = self_main_dir/config_File['Features'][dataType]
     
@@ -64,7 +63,7 @@ def generate_MetricsReports(SamplesDir,OriginalDestinationPath):
         filePath = ''
         if file.is_file() and '.sol' in file.name:
             try:
-                filePath = str(SamplesDir + file.name)
+                filePath = SamplesDir + file.name
                 #Save the output to a Markdown file
                 OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.md'
                 os.system('solidity-code-metrics ' + filePath + '>' + OutPath)
