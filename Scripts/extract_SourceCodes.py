@@ -1,7 +1,7 @@
 from pathlib import Path
-import json
+import json, os, datetime
 
-def extract_SourceCodes(ContractsInfo, UniqueFilename):
+def extract_SourceCodes(DatasetName,ContractsInfo, UniqueFilename):
     #Get the correct path to the configuration file
     #-------------------------------------------
     config_file_name = 'config.json'
@@ -17,6 +17,9 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename):
     configFile.close()
 
     outDir = self_main_dir/config_File['RawData']['Samples']
+    path = os.path.join(outDir, DatasetName)
+    os.mkdir(path)
+    outDir = str(outDir) + '/' + DatasetName
     write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
     outDir = self_main_dir/config_File['RawData']['SamplesSummary']
     get_SamplesSummary(ContractsInfo,str(outDir),UniqueFilename)

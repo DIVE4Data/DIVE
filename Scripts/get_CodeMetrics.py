@@ -6,34 +6,34 @@ from pathlib import Path
 from IPython.display import display
 
 
-def get_CodeMetrics(SamplesDir):
-    if SamplesDir == '' or SamplesDir.lower() == 'all':
-        SamplesDir = './' + str(get_Path('Samples')) + '/'
+def get_CodeMetrics(DatasetName,SamplesDir):
+    if SamplesDir == '' or SamplesDir.lower() == 'default':
+        SamplesDir = './' + str(get_Path('Samples',DatasetName)) + '/' + DatasetName + '/'
     else:
-        SamplesDir = './' + str(SamplesDir) + '/'
+        SamplesDir = './' + str(SamplesDir) + '/' 
     
-    OriginalDestinationPath = str(get_Path('OriginalReports')) + '/'
-    EditedDestinationPath = str(get_Path('EditedReports')) + '/'
-    Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics')) + '/'
-    CodeMetrics_OutDir  = str(get_Path('CodeMetrics')) + '/'
+    OriginalDestinationPath = str(get_Path('OriginalReports',DatasetName)) + '/'
+    EditedDestinationPath = str(get_Path('EditedReports',DatasetName)) + '/'
+    Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics',DatasetName)) + '/'
+    CodeMetrics_OutDir  = str(get_Path('CodeMetrics',DatasetName)) + '/'
 
     generate_MetricsReports(SamplesDir,OriginalDestinationPath)
     prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath)
     
     metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
-    UniqueFilename = generate_UniqueFilename('Raw_CodeMetrics')
+    UniqueFilename = generate_UniqueFilename(DatasetName,'Raw_CodeMetrics')
     metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
 
     preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
-    UniqueFilename = generate_UniqueFilename('CodeMetrics')
+    UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
     preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
     
-    display(preProcessed_metricsDF)
+    #display(preProcessed_metricsDF)
     return 
 
 #Get dataComponent dir path
 #--------------------------
-def get_Path(dataType):
+def get_Path(dataType,DatasetName):
     #Get the correct path to the configuration file
     config_file_name = 'config.json'
     self_dir = Path(__file__).resolve().parent
@@ -49,6 +49,10 @@ def get_Path(dataType):
     if 'Reports' in dataType or 'Raw' in dataType:
         #path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
         path = './Features/CodeMetrics/Reports/' + dataType
+        if 'Reports' in dataType:
+            outDir = os.path.join(path, DatasetName)
+            os.mkdir(outDir)
+            path = str(path) + '/' + DatasetName
     elif dataType == 'Samples':
         path = config_File['RawData'][dataType]
     else:
@@ -197,6 +201,6 @@ def preprocesse_MetricsData(metricsDF):
     
     return metricsDF
 
-def generate_UniqueFilename(FeatureType):
-    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + FeatureType
+def generate_UniqueFilename(DatasetName,dataType):
+    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + dataType + '_' + DatasetName
     return UniqueFilename

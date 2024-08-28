@@ -2,13 +2,13 @@ import pandas as pd
 from pathlib import Path
 import os, json, datetime
 
-def construct_FinalData(AccountInfo,ContractsInfo,Opcodes,CodeMetrics,Labels):
+def construct_FinalData(Dataset, AccountInfo,ContractsInfo,Opcodes,CodeMetrics,Labels):
 
-    AccountInfoDF = ReadFeaturesData(AccountInfo,dataType = 'AccountInfo')
-    ContractsInfoDF = ReadFeaturesData(ContractsInfo, dataType = 'ContractsInfo')
-    OpcodesDF = ReadFeaturesData(Opcodes, dataType = 'Opcodes')
-    CodeMetricsDF = ReadFeaturesData(CodeMetrics, dataType = 'CodeMetrics')
-    LabelsDF = ReadFeaturesData(Labels, dataType = 'Labels')
+    AccountInfoDF = ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo')
+    ContractsInfoDF = ReadFeaturesData(Dataset,ContractsInfo, dataType = 'ContractsInfo')
+    OpcodesDF = ReadFeaturesData(Dataset,Opcodes, dataType = 'Opcodes')
+    CodeMetricsDF = ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics')
+    LabelsDF = ReadFeaturesData(Dataset,Labels, dataType = 'Labels')
 
     DigVulSCDS =pd.DataFrame()
     DigVulSCDS = AccountInfoDF
@@ -35,12 +35,12 @@ def construct_FinalData(AccountInfo,ContractsInfo,Opcodes,CodeMetrics,Labels):
 
 #Read Features/Labels data to a dataframe
 #----------------------------------------
-def ReadFeaturesData(dataComponent,dataType):
+def ReadFeaturesData(Dataset,dataComponent,dataType):
     path = str(get_Path(dataType)) + '/'
     if dataComponent[0].lower() == 'all' or len(dataComponent) > 1:
         dataComponentDF = pd.DataFrame()
         for filename in os.listdir(path):
-            if 'csv' in filename and (dataComponent[0].lower() == 'all' or filename in dataComponent):
+            if 'csv' in filename and (dataComponent[0].lower() == 'all' or filename in dataComponent) and (filename.split('_')[-1].split('.')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')):
                 df = pd.read_csv(path + filename)
                 if len(dataComponentDF) == 0:
                     dataComponentDF = df
@@ -49,7 +49,7 @@ def ReadFeaturesData(dataComponent,dataType):
         dataComponentDF.drop_duplicates(keep='first',inplace=True)
         dataComponentDF.reset_index(inplace=True, drop=True)
     else:
-        dataComponentDF = pd.read_csv(path + '/' + dataComponent[0]) 
+        dataComponentDF = pd.read_csv(path + dataComponent[0]) 
     return dataComponentDF
 
 #Get dataComponent dir path

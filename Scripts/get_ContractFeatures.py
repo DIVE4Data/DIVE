@@ -17,7 +17,7 @@ config_file_path = self_dir / config_file_name
 self_main_dir = Path(__file__).resolve().parents[1]
 #-------------------------------------------
 
-def get_ContractFeatures(FeatureType,addresses):
+def get_ContractFeatures(DatasetName,FeatureType,addresses):
 
     configFile = open(config_file_path)
     config_File = json.load(configFile)
@@ -27,27 +27,27 @@ def get_ContractFeatures(FeatureType,addresses):
 
     match FeatureType[0].lower():
         case 'all':
-            AccountInfo = get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+            AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
             display(AccountInfo)
-            ContractInfo = get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+            ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
             display(ContractInfo)
-            Opcodes = get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+            Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
             display(Opcodes)
         case 'accountinfo' | '1':
-            AccountInfo = get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+            AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
             display(AccountInfo)
         case 'contractsinfo' | '2':
-            ContractInfo = get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+            ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
             display(ContractInfo)
         case 'opcodes' | '3':
-            Opcodes = get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+            Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
             display(Opcodes)
 
     return True
 
 #Fetched SCs Account Info from Etherscan.io
 #------------------------------------------
-def get_AccountInfo(api_key,addresses,outDir):
+def get_AccountInfo(DatasetName,api_key,addresses,outDir):
     counter =1
     info =[]
     NotFound = []
@@ -79,10 +79,10 @@ def get_AccountInfo(api_key,addresses,outDir):
             else:
                 print(address,response.text)
     
-    UniqueFilename = generate_UniqueFilename('AccountInfo')
+    UniqueFilename = generate_UniqueFilename(DatasetName,'AccountInfo')
     if len(NotFound) > 0:
         AccountInfo_NotFound = pd.DataFrame(data=NotFound)
-        AccountInfo_NotFound.to_csv(str(outDir) + '/' + UniqueFilename + "_NotFound.csv",index=False)
+        AccountInfo_NotFound.to_csv(str(outDir) + '/NotFound/' + UniqueFilename + "_NotFound.csv",index=False)
     
     AccountInfo = pd.DataFrame(data=info)
     AccountInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
@@ -91,7 +91,7 @@ def get_AccountInfo(api_key,addresses,outDir):
 
 #Fetched contracts Info from Etherscan.io
 #------------------------------------------
-def get_ContractInfo(api_key,addresses,outDir):
+def get_ContractInfo(DatasetName,api_key,addresses,outDir):
     counter =1
     info =[]
     for i in range(0,len(addresses)): 
@@ -114,16 +114,16 @@ def get_ContractInfo(api_key,addresses,outDir):
                 time.sleep(1)
     
     ContractsInfo = pd.DataFrame(data=info)
-    UniqueFilename = generate_UniqueFilename('ContractsInfo')
+    UniqueFilename = generate_UniqueFilename(DatasetName,'ContractsInfo')
     #Extract Source Codes then remove it from the dataframe
-    ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename)
+    ContractsInfo = extract_SourceCodes(DatasetName,ContractsInfo,UniqueFilename)
     ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
     print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
     #return ContractsInfo
 
 #Fetched SCs Opcodes from Etherscan.io
 #------------------------------------------
-def get_Opcodes(api_key,addresses,outDir):
+def get_Opcodes(DatasetName,api_key,addresses,outDir):
     counter =1
     info =[]
     NotFound = []
@@ -151,10 +151,10 @@ def get_Opcodes(api_key,addresses,outDir):
         else:
             NotFound.append(i)
     
-    UniqueFilename = generate_UniqueFilename('Opcodes')
+    UniqueFilename = generate_UniqueFilename(DatasetName,'Opcodes')
     if len(NotFound)>0:
         Opcodes_NotFound = pd.DataFrame(data=NotFound)
-        Opcodes_NotFound.to_csv(str(outDir) + '/' + UniqueFilename + "_NotFound.csv",index=False)
+        Opcodes_NotFound.to_csv(str(outDir) + '/NotFound/' + UniqueFilename + "_NotFound.csv",index=False)
     
     Opcodes=pd.DataFrame(data=info)
     Opcodes.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
@@ -162,6 +162,6 @@ def get_Opcodes(api_key,addresses,outDir):
     #return Opcodes
 
 #------------------------------------------
-def generate_UniqueFilename(FeatureType):
-    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' +FeatureType
+def generate_UniqueFilename(DatasetName,datatype):
+    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + datatype + '_' + DatasetName
     return UniqueFilename

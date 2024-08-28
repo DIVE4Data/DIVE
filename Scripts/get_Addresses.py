@@ -36,7 +36,8 @@ def get_Addresses(addressesFile):
                     else:
                         addresses = pd.concat([addresses, df['contractAddress']])
         else:
-            df = pd.read_csv(path + addressesFile)
+            df = pd.read_csv(str(path) + '/' + addressesFile[0])
+            df = get_RowIDCol(df,RowIDColNames)
             addresses['contractAddress'] = df['contractAddress']
         
         addresses.dropna(inplace=True)
