@@ -18,7 +18,12 @@ def construct_FinalData(AccountInfo,ContractsInfo,Opcodes,CodeMetrics,Labels):
 
     DigVulSCDS_withoutLebels = DigVulSCDS
     DigVulSCDS_withoutLebels.reset_index(inplace=True,drop=True)
-
+    
+    #Extract label columns from LabelsDF
+    LabelCols = get_Path('LabelsCols')
+    commonCols = ['contractAddress'] + list(set(LabelsDF.columns) & set(LabelCols))
+    LabelsDF = LabelsDF[commonCols]
+    
     DigVulSCDS = DigVulSCDS.merge(LabelsDF, on = 'contractAddress', how = 'inner')
     DigVulSCDS.reset_index(inplace=True,drop=True)
 
@@ -66,6 +71,8 @@ def get_Path(dataType):
         path = self_main_dir/config_File['DataLabels'][dataType]
     elif dataType == 'FinalLabeledData':
         path = self_main_dir/config_File['DigVulSCDS']['OutDir']
+    elif dataType == 'LabelsCols':
+        path = config_File['DataLabels'][dataType]
     else:
         path = self_main_dir/config_File['Features'][dataType]
     

@@ -20,6 +20,9 @@ def get_Addresses(addressesFile):
     configFile.close()
     path = self_main_dir/config_File['RawData']['SC_Addresses']
     #-------------------------------------------
+    #Get the RowID column possible names
+    #-----------------------------------
+    RowIDColNames = config_File['DataLabels']['RowID']
 
     if addressesFile[0].lower() == 'all' or '.csv' in addressesFile[0].lower():
         addresses = pd.DataFrame(columns=['contractAddress'])
@@ -27,6 +30,7 @@ def get_Addresses(addressesFile):
             for filename in os.listdir(path):
                 if 'csv' in filename and (addressesFile[0].lower() == 'all' or filename in addressesFile):
                     df = pd.read_csv(os.path.join(path,filename))
+                    df = get_RowIDCol(df,RowIDColNames)
                     if len(addresses) == 0:
                         addresses['contractAddress'] = df['contractAddress']
                     else:
@@ -42,3 +46,8 @@ def get_Addresses(addressesFile):
     else:
         print('Invalid file name. \n To read all files, use "All" as the file name. \n To get addresses from a specific file, type the file name with ".csv"')
     return False
+def get_RowIDCol(df,RowIDColNames):
+    for column in df.columns:
+        if column.lower() in RowIDColNames:
+            df.rename(columns = {column:'contractAddress'}, inplace = True)
+            return df

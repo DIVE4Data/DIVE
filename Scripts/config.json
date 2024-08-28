@@ -14,14 +14,16 @@
     {
         "Reports":
         {
-            "OriginalReports": "Features/CodeMetrics/Reports/OriginalReports/",
-            "EditedReports": "Features/CodeMetrics/Reports/EditedReports/",
-            "Raw_CodeMetrics" : "Features/CodeMetrics/Reports/Raw_CodeMetrics/"
+            "OriginalReports": "Features/CodeMetrics/Reports/OriginalReports",
+            "EditedReports": "Features/CodeMetrics/Reports/EditedReports",
+            "Raw_CodeMetrics" : "Features/CodeMetrics/Reports/Raw_CodeMetrics"
         }
     },
     "DataLabels":
     {
-        "Labels": "Labels/"
+        "Labels": "Labels/",
+        "RowID": ["contractaddress","address"],
+        "LabelsCols": ["Label","SWC","DASP","Tag","Class"]
     },
     "RawData":
     {
