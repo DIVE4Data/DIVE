@@ -2,6 +2,7 @@ import requests, json
 import datetime, time
 import pandas as pd
 from pathlib import Path
+from IPython.display import display
 from Scripts.extract_SourceCodes import extract_SourceCodes
 
 #-------------------------------------------
@@ -26,15 +27,21 @@ def get_ContractFeatures(FeatureType,addresses):
 
     match FeatureType[0].lower():
         case 'all':
-            get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
-            get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
-            get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+            AccountInfo = get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+            display(AccountInfo)
+            ContractInfo = get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+            display(ContractInfo)
+            Opcodes = get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+            display(Opcodes)
         case 'accountinfo' | '1':
-            get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+            AccountInfo = get_AccountInfo(api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+            display(AccountInfo)
         case 'contractsinfo' | '2':
-            get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+            ContractInfo = get_ContractInfo(api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+            display(ContractInfo)
         case 'opcodes' | '3':
-            get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+            Opcodes = get_Opcodes(api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+            display(Opcodes)
 
     return True
 

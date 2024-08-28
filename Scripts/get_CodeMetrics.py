@@ -67,7 +67,7 @@ def generate_MetricsReports(SamplesDir,OriginalDestinationPath):
                 #Save the output to a Markdown file
                 OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.md'
                 os.system('solidity-code-metrics ' + filePath + '>' + OutPath)
-
+                
                 #Save the output to a HTML file
                 '''OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.html'
                 os.system('solidity-code-metrics ' + filePath + ' --html > ' + OutPath)'''
@@ -176,23 +176,24 @@ def createMetricsDF():
 #Preprocess Metrics Data
 #------------------------
 def preprocesse_MetricsData(metricsDF):
+    
+    #Drop duplicate columns
+    metricsDF = metricsDF.loc[:,~metricsDF.columns.duplicated()].copy()
+    #Drop empty rows
+    metricsDF.drop(metricsDF[metricsDF['Lines'] == '**undefined**'].index,inplace=True)
+
     booleenColumns = ['Can Receive Funds','Uses Assembly','Has Destroyable Contracts','Transfers ETH', 
                         'Low-Level Calls', 'DelegateCall', 'Uses Hash Functions', 'ECRecover', 
                         'New/Create/Create2','TryCatch','Unchecked']
     numericalColumns = list(set(metricsDF.columns) - set(booleenColumns) - set(['contractAddress','Experimental Features']))
 
-    metricsDF[booleenColumns].astype(str).replace({'****':'No','`yes`':'Yes',},inplace = True)
+    metricsDF[booleenColumns] = metricsDF[booleenColumns].astype(str).replace({'****':'No','`yes`':'Yes'})
     for column in booleenColumns:
         metricsDF[column] = np.where(metricsDF[column].str.contains('`yes`'),'Yes',metricsDF[column])
 
-    metricsDF[numericalColumns].astype(str).replace('****', 0,inplace = True)
-    metricsDF['Experimental Features'].astype(str).replace('`ABIEncoderV2`','ABIEncoderV2',inplace = True)
-    metricsDF.replace(np.nan, None,inplace = True)
-    
-    #Drop empty rows
-    metricsDF.drop(metricsDF[metricsDF['Lines'] == '**undefined**'].index,inplace=True)
-    #Drop duplicate columns
-    metricsDF = metricsDF.loc[:,~metricsDF.columns.duplicated()].copy()
+    metricsDF[numericalColumns] = metricsDF[numericalColumns].astype(str).replace('****', 0)
+    metricsDF['Experimental Features'] = metricsDF['Experimental Features'].astype(str).replace('`ABIEncoderV2`','ABIEncoderV2')
+    metricsDF = metricsDF.replace(np.nan, None)
     
     return metricsDF
 
