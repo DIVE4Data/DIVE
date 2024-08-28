@@ -22,7 +22,7 @@ def construct_FinalData(AccountInfo,ContractsInfo,Opcodes,CodeMetrics,Labels):
     DigVulSCDS = DigVulSCDS.merge(LabelsDF, on = 'contractAddress', how = 'inner')
     DigVulSCDS.reset_index(inplace=True,drop=True)
 
-    finalDataName = generate_UniqueFilename('DigVulSCDS')
+    finalDataName = generate_UniqueFilename(Labels)
     finalDataPath = str(get_Path('FinalLabeledData'))
     DigVulSCDS.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
 
@@ -71,6 +71,12 @@ def get_Path(dataType):
     
     return path
 
-def generate_UniqueFilename(DataType):
-    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + DataType
+def generate_UniqueFilename(Labels):
+    if Labels[0].lower() == 'all' or len(Labels) > 1:
+        DataType = 'DigVulSCDS'
+    else:
+        DataType = Labels[0].split('.')[0]
+    
+    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + DataType
+
     return UniqueFilename
