@@ -37,19 +37,50 @@ from Scripts.get_DataStatistics import get_DataStatistics
 ```
 ### Using Framework Functions
 #### **1. Feature Collecting**
+* **First, Read Contract Addresses to a dataframe**
 ```
+addresses = get_Addresses(Filenames as list)
 ```
+* **Note:**
+    * **To read all files:** Pass ["All"] for the file name. 
+    * **To get addresses from a specific file:** Type the file name with ".csv"
+    * **To get addresses from multiple files:** type ['file1.csv','file2.csv',...'fileN.csv']
+    *  The function reads files from the directory <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> (Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to read files from a different directory)
+* **Get contract features:**
+```
+get_ContractFeatures(DatasetName as a string, FeatureType as list,addresses as dataframe)
+```
+* **Note:**
+   * **To get all feature types:** Pass ["All"] for FeatureType. 
+   * **To get specific feature type:** Pass the feature type/s as follows:
+      *   **Account Info:** ['AccountInfo] or ['1']
+      *   **Contract Info:** ['ContractInfo] or ['2']
+      *   **Opcodes:** ['Opcodes] or ['3']
+      *   **Multiple Types:** ['FeatureType 1','FeatureType 2',...]
+  * The function's output is saved in the directory <A Href= "https://github.com/DigVulSC/DigVulSC/tree/main/Features">Features/FEATURETYPE/</A> (Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
 #### **2. Solidity Codes Extraction**
-```
-```
+
 #### **3. Code Metrics Generation**
 ```
+get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
 ```
+* **Note:** 
+  * To process samples that are stored in the default directory: SamplesDir = '' or SamplesDir = 'All'
+  * To process samples stored in a different directory: SamplesDir = 'Type the path to the samples directory.'
+  * The default samples path is <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/RawData/Samples">RawData/Samples</A>
+  * The function's output is saved in the directory <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/Features/CodeMetrics">Features/CodeMetrics/</A> 
+  * Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to read from or store in a different directory.
 #### **4. Labeled Data Construction**
 ```
 ```
 #### **5. Statistical Data Generation**
+* If the dataset is available in the default directory, pass its name as follows:
 ```
+get_DataStatistics(dataset='DatasetFileName.csv',defaultDir = True)
+```
+* If the dataset is available in a different directory, Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file or pass its path as follows:
+```
+get_DataStatistics(dataset='DatasetFilePath',defaultDir = False)
 ```
 ## Demo
 * 
