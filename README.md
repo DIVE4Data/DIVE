@@ -6,7 +6,7 @@ The DigVulSC framework provides several functions through the following componen
 * **Solidity Codes Extraction:** This component assists in extracting the contract's source code and creating the <A Href="https://soliditylang.org/">Solidity</A> code file.
 * **Code Metrics Generation:** This component gathers useful code metrics by analyzing the contract's source code. It leverages <A Href="https://classic.yarnpkg.com/en/package/solidity-code-metrics">Solidity Code Metrics</A>, an open-source package that generates an analysis markdown report containing a variety of valuable data besides Solidity code metrics. It employs <A Href="https://pypi.org/project/markdown-analysis/"> Mrkdwn_analysis</A> Python library to parse markdown reports and extract useful features.
 * **Labeled Data Construction:** This component creates the final dataset by merging valuable attributes obtained by the previous components.
-* **Statistical Data Generation:**
+* **Statistical Data Generation:** This component helps in drawing insights on the dataset by presenting some statistical data and charts.
 ## Requirements
 *  <A Href="https://www.python.org/">Python</A> >=3.12.2
 *  <A Href="https://classic.yarnpkg.com/en/package/solidity-code-metrics">Solidity Code Metrics</A> >= 0.0.26
