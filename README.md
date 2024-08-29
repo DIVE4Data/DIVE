@@ -35,5 +35,21 @@ from Scripts.get_CodeMetrics import get_CodeMetrics
 from Scripts.construct_FinalData import construct_FinalData
 from Scripts.get_DataStatistics import get_DataStatistics
 ```
+### Using Framework Functions
+#### **1. Feature Collecting**
+```
+```
+#### **2. Solidity Codes Extraction**
+```
+```
+#### **3. Code Metrics Generation**
+```
+```
+#### **4. Labeled Data Construction**
+```
+```
+#### **5. Statistical Data Generation**
+```
+```
 ## Demo
 * 
