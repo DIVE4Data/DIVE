@@ -39,7 +39,7 @@ from Scripts.get_DataStatistics import get_DataStatistics
 #### **1. Feature Collecting**
 * **First, Read Contract Addresses to a dataframe**
 ```
-addresses = get_Addresses(Filenames as list)
+addresses = get_Addresses(FileNames as list)
 ```
 * **Note:**
     * **To read all files:** Pass ["All"] for the file name. 
@@ -72,7 +72,12 @@ get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
   * Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to read from or store in a different directory.
 #### **4. Labeled Data Construction**
 ```
+construct_FinalData(Dataset = ['Dataset1Name','Dataset2Name',...], AccountInfo = FileNames as a list,ContractsInfo=FileNames as a list,Opcodes=FileNames as a list,CodeMetrics=FileNames as a list,Labels=FileNames as a list)
 ```
+* **Note:**
+   * To get all files, pass ['All'] for the FileNames.
+   * To get specific files, pass ['File1Name','FileName2',...] for the FileNames.
+   * The function's output is saved in the directory <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/DigVulSCDS">DigVulSCDS</A> (Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
 #### **5. Statistical Data Generation**
 * If the dataset is available in the default directory, pass its name as follows:
 ```
@@ -82,5 +87,6 @@ get_DataStatistics(dataset='DatasetFileName.csv',defaultDir = True)
 ```
 get_DataStatistics(dataset='DatasetFilePath',defaultDir = False)
 ```
+* The function's output is saved in the directory <A Href= "https://github.com/DigVulSC/DigVulSC/tree/main/Statistics">Statistics/</A> (Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
 ## Demo
 * 
