@@ -59,6 +59,11 @@ get_ContractFeatures(DatasetName as a string, FeatureType as list,addresses as d
       *   **Multiple Types:** ['FeatureType 1','FeatureType 2',...]
   * The function's output is saved in the directory <A Href= "https://github.com/DigVulSC/DigVulSC/tree/main/Features">Features/FEATURETYPE/</A> (Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
 #### **2. Solidity Codes Extraction**
+* This function is called automatically after fetching the contract information. However, it can be called independently if needed as follows:
+```
+extract_SourceCodes(DatasetName as a string,ContractsInfo as a dataframe,UniqueFilename as a string)
+```
+* The function's output is saved in <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/RawData/Samples">RawData/Samples</A> and <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/RawData/SamplesSummary">RawData/SamplesSummary</A> (Edit the <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in different directories)
 
 #### **3. Code Metrics Generation**
 ```
