@@ -13,6 +13,9 @@ The DigVulSC framework provides several functions through the following componen
 *  <A Href="https://pypi.org/project/markdown-analysis/"> Mrkdwn_analysis Python library</A> = 0.0.5
 *  An API-key on <A Href="https://etherscan.io/">Etherscan.io</A>. If you don't have an account, you can create a free account on <A Href="https://etherscan.io/">Etherscan.io</A>, and then generate your API key. For further details, check the <A Href="https://docs.etherscan.io/getting-started/viewing-api-usage-statistics">Getting an API key</A> webpage on <A Href="https://etherscan.io/">Etherscan.io</A>. ***Please note that your key should not be shared with others***.
 ## Usage
-* 
+### Initials Steps
+* Edit <A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A> file to add your API-Key.
+* Add the csv file containing the contract addresses to the <A Href="https://github.com/DigVulSC/DigVulSC/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> folder.
+* The DigVulSC framework is designed to read/write specific folders. It also targets certain columns to get contract addresses or data labels. If required, you can edit the configuration file (<A Href="https://github.com/DigVulSC/DigVulSC/blob/main/Scripts/config.json">Scripts/config.json</A>) to meet your requirements.
 ## Demo
 * 
