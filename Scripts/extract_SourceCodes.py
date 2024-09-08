@@ -23,6 +23,7 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = ''):
     path = os.path.join(outDir, DatasetName)
     os.mkdir(path)
     outDir = str(outDir) + '/' + DatasetName
+    print('Source codes are now being extracted to Solidity files; please wait...')
     write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
     outDir = self_main_dir/config_File['RawData']['SamplesSummary']
     get_SamplesSummary(ContractsInfo,str(outDir),UniqueFilename)
@@ -36,6 +37,7 @@ def write_SourceCodesToSolfiles(ContractsInfo,outDir):
         file = open(outDir + '/' + ContractsInfo.at[index,'contractAddress']+'.sol','w')
         file.write(ContractsInfo.at[index,'SourceCode'])
         file.close()
+    print('Done! Solidity files are available in: ' + outDir)
 
 def get_SamplesSummary(ContractsInfo,outDir,UniqueFilename):
     file = open(outDir + '/' + UniqueFilename +'_Summary.txt','w')
@@ -49,8 +51,8 @@ def get_SamplesSummary(ContractsInfo,outDir,UniqueFilename):
         
         if index !=len(ContractsInfo) -1:
             file.write('\n')
-    
     file.close()
+    print('Done! Samples Summary is available in: ' + outDir + '/' + UniqueFilename +'_Summary.txt' )
 
 def generate_UniqueFilename():
     UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]

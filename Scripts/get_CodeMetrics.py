@@ -26,11 +26,12 @@ def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
     metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
     UniqueFilename = generate_UniqueFilename(DatasetName,'Raw_CodeMetrics')
     metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
+    print('Done! Raw Metrics data is available in: ' + Raw_CodeMetrics_OutDir + UniqueFilename + '.csv')
 
     preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
     UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
     preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
-    
+    print('Done! Code Metrics data is available in: ' + CodeMetrics_OutDir + UniqueFilename + '.csv' )
     display(preProcessed_metricsDF)
     return 
 
@@ -66,6 +67,7 @@ def get_Path(dataType,SamplesFolderName):
 #Generate Metrics Reports
 #------------------------
 def generate_MetricsReports(SamplesDirPath,OriginalDestinationPath):
+    print('Metrics reports are now being generated; please wait...')
     for file in os.scandir(SamplesDirPath):
         filePath = ''
         if file.is_file() and '.sol' in file.name:
@@ -81,9 +83,11 @@ def generate_MetricsReports(SamplesDirPath,OriginalDestinationPath):
             except Exception as err:
                 print(f"Unexpected {err=}, {type(err)=}")
                 raise
+    print('Done! Original Metrics Reports are available in: ' + OriginalDestinationPath)
 #Prepare generated Metrics reports (Apply strip() to file contents)
 #------------------------------------------------------------------
 def prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath):
+    print('Metrics reports are now being prepared for the parser; please wait...')
     for filename in os.listdir(OriginalDestinationPath):
         filePath = ''
         filePath1 = ''
@@ -100,12 +104,13 @@ def prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPat
             updatedFile = open(filePath1,'w')
             updatedFile.write('\n'.join(stripped_markdown))
             updatedFile.close()
+    print('Done! Edited Metrics Reports are available in: ' + EditedDestinationPath)
 #Parse MD Metrics Reports
 #------------------------
 def parse_MetricsReports(ReportsFolder):
     metricsDF = createMetricsDF()
     counter = 0
-
+    print('Metrics reports are now being parsed; please wait...')
     for file in os.scandir(ReportsFolder):
         filePath = ''
         codeMetrics = []
@@ -183,7 +188,7 @@ def createMetricsDF():
 #Preprocess Metrics Data
 #------------------------
 def preprocesse_MetricsData(metricsDF):
-    
+    print('Metrics data is now being preprocessed; please wait...')
     #Drop duplicate columns
     metricsDF = metricsDF.loc[:,~metricsDF.columns.duplicated()].copy()
     #Drop empty rows
