@@ -37,7 +37,7 @@ def write_SourceCodesToSolfiles(ContractsInfo,outDir):
         file = open(outDir + '/' + ContractsInfo.at[index,'contractAddress']+'.sol','w')
         file.write(ContractsInfo.at[index,'SourceCode'])
         file.close()
-    print('Done! Solidity files are available in:' + outDir)
+    print('Done! Solidity files are available in: ' + outDir)
 
 def get_SamplesSummary(ContractsInfo,outDir,UniqueFilename):
     file = open(outDir + '/' + UniqueFilename +'_Summary.txt','w')
@@ -52,7 +52,7 @@ def get_SamplesSummary(ContractsInfo,outDir,UniqueFilename):
         if index !=len(ContractsInfo) -1:
             file.write('\n')
     file.close()
-    print('Done! Samples Summary is available in:' + outDir + '/' + UniqueFilename +'_Summary.txt' )
+    print('Done! Samples Summary is available in: ' + outDir + '/' + UniqueFilename +'_Summary.txt' )
 
 def generate_UniqueFilename():
     UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]

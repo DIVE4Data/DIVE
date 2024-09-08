@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import os, json, datetime
+from IPython.display import display
 
 def construct_FinalData(FinalDatasetName = '', Dataset =[], AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
 
@@ -10,28 +11,30 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[], AccountInfo=[],Contr
     CodeMetricsDF = ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics')
     LabelsDF = ReadFeaturesData(Dataset,Labels, dataType = 'Labels')
 
-    DigVulSCDS =pd.DataFrame()
-    DigVulSCDS = AccountInfoDF
-    DigVulSCDS = AccountInfoDF.merge(ContractsInfoDF, on = 'contractAddress', how = 'inner')
-    DigVulSCDS = DigVulSCDS.merge(OpcodesDF, on = 'contractAddress', how = 'inner')
-    DigVulSCDS = DigVulSCDS.merge(CodeMetricsDF, on = 'contractAddress', how = 'inner')
+    FinalData =pd.DataFrame()
+    FinalData = AccountInfoDF
+    FinalData = AccountInfoDF.merge(ContractsInfoDF, on = 'contractAddress', how = 'inner')
+    FinalData = FinalData.merge(OpcodesDF, on = 'contractAddress', how = 'inner')
+    FinalData = FinalData.merge(CodeMetricsDF, on = 'contractAddress', how = 'inner')
 
-    DigVulSCDS_withoutLebels = DigVulSCDS
-    DigVulSCDS_withoutLebels.reset_index(inplace=True,drop=True)
+    FinalData_withoutLebels = FinalData
+    FinalData_withoutLebels.reset_index(inplace=True,drop=True)
     
     #Extract label columns from LabelsDF
     LabelCols = get_Path('LabelsCols')
     commonCols = ['contractAddress'] + list(set(LabelsDF.columns) & set(LabelCols))
     LabelsDF = LabelsDF[commonCols]
     
-    DigVulSCDS = DigVulSCDS.merge(LabelsDF, on = 'contractAddress', how = 'inner')
-    DigVulSCDS.reset_index(inplace=True,drop=True)
+    FinalData = FinalData.merge(LabelsDF, on = 'contractAddress', how = 'inner')
+    FinalData.reset_index(inplace=True,drop=True)
 
     finalDataName = generate_UniqueFilename(FinalDatasetName)
     finalDataPath = str(get_Path('FinalLabeledData'))
-    DigVulSCDS.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
+    FinalData.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
 
-    return DigVulSCDS
+    print('Done! the Combined Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
+    display(FinalData)
+    return True
 
 #Read Features/Labels data to a dataframe
 #----------------------------------------

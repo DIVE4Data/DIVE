@@ -42,7 +42,6 @@ def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
         case 'opcodes' | '3':
             Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
             display(Opcodes)
-
     return True
 
 #Fetched SCs Account Info from Etherscan.io
@@ -87,7 +86,7 @@ def get_AccountInfo(DatasetName,api_key,addresses,outDir):
     AccountInfo = pd.DataFrame(data=info)
     AccountInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
     print('Done! Account Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-    #return AccountInfo
+    return AccountInfo
 
 #Fetched contracts Info from Etherscan.io
 #------------------------------------------
@@ -116,12 +115,12 @@ def get_ContractInfo(DatasetName,api_key,addresses,outDir):
     
     ContractsInfo = pd.DataFrame(data=info)
     UniqueFilename = generate_UniqueFilename(DatasetName,'ContractsInfo')
-
+    
     #Extract Source Codes then remove it from the dataframe
     ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
     ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
     print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-    #return ContractsInfo
+    return ContractsInfo
 
 #Fetched SCs Opcodes from Etherscan.io
 #------------------------------------------
@@ -160,8 +159,8 @@ def get_Opcodes(DatasetName,api_key,addresses,outDir):
     
     Opcodes=pd.DataFrame(data=info)
     Opcodes.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-    print('Done! Opcodes Data is available in ' + str(outDir) + '/' + UniqueFilename + ".csv")
-    #return Opcodes
+    print('Done! Opcodes Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+    return Opcodes
 
 #------------------------------------------
 def generate_UniqueFilename(DatasetName,datatype):
