@@ -51,7 +51,7 @@ def get_AccountInfo(DatasetName,api_key,addresses,outDir):
     counter =1
     info =[]
     NotFound = []
-
+    print('Account information is now being retrieved from Etherscan data; please wait...')
     for i in range(0,len(addresses)): 
         address = addresses['contractAddress'][i].strip()
         #print('Address: '+ address)
@@ -72,7 +72,7 @@ def get_AccountInfo(DatasetName,api_key,addresses,outDir):
                 else:
                     NotFound.append(address)
                 #--------------------------------------
-                print(str(counter)+": ["+ address + "] Done")
+                #print(str(counter)+": ["+ address + "] Done")
                 counter = counter + 1
                 if counter%5 == 0:
                     time.sleep(1)
@@ -94,6 +94,7 @@ def get_AccountInfo(DatasetName,api_key,addresses,outDir):
 def get_ContractInfo(DatasetName,api_key,addresses,outDir):
     counter =1
     info =[]
+    print('Contract information is now being retrieved from Etherscan data; please wait...')
     for i in range(0,len(addresses)): 
         address = addresses['contractAddress'][i].strip()
         #print('Address: '+ address)
@@ -108,13 +109,14 @@ def get_ContractInfo(DatasetName,api_key,addresses,outDir):
             #print('data is: ', data)
             info.append(data)
         #--------------------------------------
-            print(str(counter)+": ["+ address + "] Done")
+            #print(str(counter)+": ["+ address + "] Done")
             counter = counter + 1
             if counter%5 == 0:
                 time.sleep(1)
     
     ContractsInfo = pd.DataFrame(data=info)
     UniqueFilename = generate_UniqueFilename(DatasetName,'ContractsInfo')
+
     #Extract Source Codes then remove it from the dataframe
     ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
     ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
@@ -127,7 +129,7 @@ def get_Opcodes(DatasetName,api_key,addresses,outDir):
     counter =1
     info =[]
     NotFound = []
-
+    print('Opcodes data is now being retrieved from Etherscan data; please wait...')
     for i in range(0,len(addresses)): 
         address = addresses['contractAddress'][i].rstrip()
         if len(address) > 0:
@@ -142,7 +144,7 @@ def get_Opcodes(DatasetName,api_key,addresses,outDir):
                 #print('data is: ', data)
                 info.append(data)
                 #--------------------------------------
-                print(str(counter)+": ["+ address + "] Done")
+                #print(str(counter)+": ["+ address + "] Done")
                 counter = counter + 1
                 if counter%5 == 0:
                     time.sleep(1)
