@@ -6,20 +6,23 @@ from pathlib import Path
 from IPython.display import display
 
 
-def get_CodeMetrics(DatasetName,SamplesDir):
-    if SamplesDir == '' or SamplesDir.lower() == 'default':
-        SamplesDir = './' + str(get_Path('Samples',DatasetName)) + '/' + DatasetName + '/'
+def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
+    if SamplesDirPath == '' or SamplesDirPath.lower() == 'default':
+        SamplesDirPath = './' + str(get_Path('Samples',SamplesFolderName)) + '/' + SamplesFolderName + '/'
     else:
-        SamplesDir = './' + str(SamplesDir) + '/' 
+        SamplesDirPath = './' + str(SamplesDirPath) + '/' 
     
-    OriginalDestinationPath = str(get_Path('OriginalReports',DatasetName)) + '/'
-    EditedDestinationPath = str(get_Path('EditedReports',DatasetName)) + '/'
-    Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics',DatasetName)) + '/'
-    CodeMetrics_OutDir  = str(get_Path('CodeMetrics',DatasetName)) + '/'
+    OriginalDestinationPath = str(get_Path('OriginalReports',SamplesFolderName)) + '/'
+    EditedDestinationPath = str(get_Path('EditedReports',SamplesFolderName)) + '/'
+    Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics',SamplesFolderName)) + '/'
+    CodeMetrics_OutDir  = str(get_Path('CodeMetrics',SamplesFolderName)) + '/'
 
-    generate_MetricsReports(SamplesDir,OriginalDestinationPath)
+    generate_MetricsReports(SamplesDirPath,OriginalDestinationPath)
     prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath)
     
+    if DatasetName == '':
+        DatasetName = SamplesFolderName
+
     metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
     UniqueFilename = generate_UniqueFilename(DatasetName,'Raw_CodeMetrics')
     metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
@@ -28,12 +31,12 @@ def get_CodeMetrics(DatasetName,SamplesDir):
     UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
     preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
     
-    #display(preProcessed_metricsDF)
+    display(preProcessed_metricsDF)
     return 
 
 #Get dataComponent dir path
 #--------------------------
-def get_Path(dataType,DatasetName):
+def get_Path(dataType,SamplesFolderName):
     #Get the correct path to the configuration file
     config_file_name = 'config.json'
     self_dir = Path(__file__).resolve().parent
@@ -50,9 +53,9 @@ def get_Path(dataType,DatasetName):
         #path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
         path = './Features/CodeMetrics/Reports/' + dataType
         if 'Reports' in dataType:
-            outDir = os.path.join(path, DatasetName)
+            outDir = os.path.join(path, SamplesFolderName)
             os.mkdir(outDir)
-            path = str(path) + '/' + DatasetName
+            path = str(path) + '/' + SamplesFolderName
     elif dataType == 'Samples':
         path = config_File['RawData'][dataType]
     else:
@@ -62,12 +65,12 @@ def get_Path(dataType,DatasetName):
 
 #Generate Metrics Reports
 #------------------------
-def generate_MetricsReports(SamplesDir,OriginalDestinationPath):
-    for file in os.scandir(SamplesDir):
+def generate_MetricsReports(SamplesDirPath,OriginalDestinationPath):
+    for file in os.scandir(SamplesDirPath):
         filePath = ''
         if file.is_file() and '.sol' in file.name:
             try:
-                filePath = SamplesDir + file.name
+                filePath = SamplesDirPath + file.name
                 #Save the output to a Markdown file
                 OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.md'
                 os.system('solidity-code-metrics ' + filePath + '>' + OutPath)
@@ -202,5 +205,5 @@ def preprocesse_MetricsData(metricsDF):
     return metricsDF
 
 def generate_UniqueFilename(DatasetName,dataType):
-    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + dataType + '_' + DatasetName
+    UniqueFilename = DatasetName + '_' +  dataType + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename

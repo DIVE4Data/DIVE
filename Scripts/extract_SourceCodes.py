@@ -1,7 +1,7 @@
 from pathlib import Path
 import json, os, datetime
 
-def extract_SourceCodes(DatasetName,ContractsInfo, UniqueFilename):
+def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = ''):
     #Get the correct path to the configuration file
     #-------------------------------------------
     config_file_name = 'config.json'
@@ -15,6 +15,9 @@ def extract_SourceCodes(DatasetName,ContractsInfo, UniqueFilename):
     configFile = open(config_file_path)
     config_File = json.load(configFile)
     configFile.close()
+
+    if DatasetName == '':
+        DatasetName = generate_UniqueFilename()
 
     outDir = self_main_dir/config_File['RawData']['Samples']
     path = os.path.join(outDir, DatasetName)
@@ -48,3 +51,8 @@ def get_SamplesSummary(ContractsInfo,outDir,UniqueFilename):
             file.write('\n')
     
     file.close()
+
+def generate_UniqueFilename():
+    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
+
+    return UniqueFilename

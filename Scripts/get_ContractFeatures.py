@@ -17,7 +17,7 @@ config_file_path = self_dir / config_file_name
 self_main_dir = Path(__file__).resolve().parents[1]
 #-------------------------------------------
 
-def get_ContractFeatures(DatasetName,FeatureType,addresses):
+def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
 
     configFile = open(config_file_path)
     config_File = json.load(configFile)
@@ -116,7 +116,7 @@ def get_ContractInfo(DatasetName,api_key,addresses,outDir):
     ContractsInfo = pd.DataFrame(data=info)
     UniqueFilename = generate_UniqueFilename(DatasetName,'ContractsInfo')
     #Extract Source Codes then remove it from the dataframe
-    ContractsInfo = extract_SourceCodes(DatasetName,ContractsInfo,UniqueFilename)
+    ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
     ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
     print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
     #return ContractsInfo
@@ -163,5 +163,7 @@ def get_Opcodes(DatasetName,api_key,addresses,outDir):
 
 #------------------------------------------
 def generate_UniqueFilename(DatasetName,datatype):
-    UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '_' + datatype + '_' + DatasetName
+    '''if DatasetName == 'DS':
+        DatasetName = datatype'''
+    UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename

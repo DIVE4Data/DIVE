@@ -31,9 +31,10 @@
         "SamplesSummary": "RawData/SamplesSummary/",
         "SC_Addresses": "RawData/SC_Addresses/"
     },
-    "DigVulSCDS":
+    "FinalDS":
     {
-        "OutDir": "DigVulSCDS/"
+        "InitialCombinedData": "Dataseets/InitialCombinedData",
+        "PreprocessedData": "Dataseets/PreprocessedData"
     },
     "outDir":
     {
