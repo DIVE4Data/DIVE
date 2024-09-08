@@ -2,15 +2,27 @@ import pandas as pd
 from pathlib import Path
 import os, json, datetime
 from IPython.display import display
+#---------------------------------------
+#Get the correct path to the configuration file
+config_file_name = 'config.json'
+self_dir = Path(__file__).resolve().parent
+config_file_path = self_dir / config_file_name
 
+#Get the correct path to the main directory
+self_main_dir = Path(__file__).resolve().parents[1]
+
+configFile = open(config_file_path)
+config_File = json.load(configFile)
+configFile.close()
+#---------------------------------------
 def construct_FinalData(FinalDatasetName = '', Dataset =[], AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
-
-    AccountInfoDF = ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo')
-    ContractsInfoDF = ReadFeaturesData(Dataset,ContractsInfo, dataType = 'ContractsInfo')
-    OpcodesDF = ReadFeaturesData(Dataset,Opcodes, dataType = 'Opcodes')
-    CodeMetricsDF = ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics')
-    LabelsDF = ReadFeaturesData(Dataset,Labels, dataType = 'Labels')
-
+    #read data and unify rowID column name
+    AccountInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo'))
+    ContractsInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,ContractsInfo, dataType = 'ContractsInfo'))
+    OpcodesDF = get_RowIDCol(ReadFeaturesData(Dataset,Opcodes, dataType = 'Opcodes'))
+    CodeMetricsDF = get_RowIDCol(ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics'))
+    LabelsDF = get_RowIDCol(ReadFeaturesData(Dataset,Labels, dataType = 'Labels'))
+    
     FinalData =pd.DataFrame()
     FinalData = AccountInfoDF
     FinalData = AccountInfoDF.merge(ContractsInfoDF, on = 'contractAddress', how = 'inner')
@@ -44,7 +56,7 @@ def ReadFeaturesData(Dataset,dataComponent,dataType):
         dataComponentDF = pd.DataFrame()
         for filename in os.listdir(path):
             #if 'csv' in filename and (dataComponent[0].lower() == 'all' or filename in dataComponent) and (filename.split('_')[-1].split('.')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')):
-            if 'csv' in filename and (filename in dataComponent or (dataComponent[0].lower() == 'all' and (filename.split('_')[-1].split('.')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')))):
+            if 'csv' in filename and (filename in dataComponent or (dataComponent[0].lower() == 'all' and (filename.split('.')[0].split('_')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')))):
                 df = pd.read_csv(path + filename)
                 if len(dataComponentDF) == 0:
                     dataComponentDF = df
@@ -59,18 +71,6 @@ def ReadFeaturesData(Dataset,dataComponent,dataType):
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType):
-    #Get the correct path to the configuration file
-    config_file_name = 'config.json'
-    self_dir = Path(__file__).resolve().parent
-    config_file_path = self_dir / config_file_name
-
-    #Get the correct path to the main directory
-    self_main_dir = Path(__file__).resolve().parents[1]
-    
-    configFile = open(config_file_path)
-    config_File = json.load(configFile)
-    configFile.close()
-    
     if dataType == 'Labels':
         path = self_main_dir/config_File['DataLabels'][dataType]
     elif dataType == 'FinalLabeledData':
@@ -82,6 +82,15 @@ def get_Path(dataType):
     
     return path
 
+def get_RowIDCol(df):
+    #Get the RowID column possible names
+    #-----------------------------------
+    RowIDColNames = config_File['DataLabels']['RowID']
+    for column in df.columns:
+        if column.lower() in RowIDColNames:
+            df.rename(columns = {column:'contractAddress'}, inplace = True)
+            return df
+        
 def generate_UniqueFilename(FinalDatasetName):
     if FinalDatasetName == '':
         FinalDatasetName = 'InitialCombinedData'
