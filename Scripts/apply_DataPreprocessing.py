@@ -12,7 +12,6 @@ def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedData
     try:
         config_File = get_ConfigFile()
         dataset = get_initialDataset(datasetName,dataDirPath,config_File)
-        
         if len(PreprocessingTasks)== 1 and PreprocessingTasks[0].lower == 'all':
             for taskID in range(1,PreprocessingTasksNo +1):
                 dataset = call_PreprocessingTask(dataset,str(taskID))
