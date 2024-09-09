@@ -16,38 +16,41 @@ config_File = json.load(configFile)
 configFile.close()
 #---------------------------------------
 def construct_FinalData(FinalDatasetName = '', Dataset =[], AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
-    #read data and unify rowID column name
-    AccountInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo'))
-    ContractsInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,ContractsInfo, dataType = 'ContractsInfo'))
-    OpcodesDF = get_RowIDCol(ReadFeaturesData(Dataset,Opcodes, dataType = 'Opcodes'))
-    CodeMetricsDF = get_RowIDCol(ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics'))
-    LabelsDF = get_RowIDCol(ReadFeaturesData(Dataset,Labels, dataType = 'Labels'))
-    
-    FinalData =pd.DataFrame()
-    FinalData = AccountInfoDF
-    FinalData = AccountInfoDF.merge(ContractsInfoDF, on = 'contractAddress', how = 'inner')
-    FinalData = FinalData.merge(OpcodesDF, on = 'contractAddress', how = 'inner')
-    FinalData = FinalData.merge(CodeMetricsDF, on = 'contractAddress', how = 'inner')
+    try:
+        #read data and unify rowID column name
+        AccountInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo'))
+        ContractsInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,ContractsInfo, dataType = 'ContractsInfo'))
+        OpcodesDF = get_RowIDCol(ReadFeaturesData(Dataset,Opcodes, dataType = 'Opcodes'))
+        CodeMetricsDF = get_RowIDCol(ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics'))
+        LabelsDF = get_RowIDCol(ReadFeaturesData(Dataset,Labels, dataType = 'Labels'))
+        
+        FinalData =pd.DataFrame()
+        FinalData = AccountInfoDF
+        FinalData = AccountInfoDF.merge(ContractsInfoDF, on = 'contractAddress', how = 'inner')
+        FinalData = FinalData.merge(OpcodesDF, on = 'contractAddress', how = 'inner')
+        FinalData = FinalData.merge(CodeMetricsDF, on = 'contractAddress', how = 'inner')
 
-    FinalData_withoutLebels = FinalData
-    FinalData_withoutLebels.reset_index(inplace=True,drop=True)
-    
-    #Extract label columns from LabelsDF
-    LabelCols = get_Path('LabelsCols')
-    commonCols = ['contractAddress'] + list(set(LabelsDF.columns) & set(LabelCols))
-    LabelsDF = LabelsDF[commonCols]
-    
-    FinalData = FinalData.merge(LabelsDF, on = 'contractAddress', how = 'inner')
-    FinalData.reset_index(inplace=True,drop=True)
+        FinalData_withoutLebels = FinalData
+        FinalData_withoutLebels.reset_index(inplace=True,drop=True)
+        
+        #Extract label columns from LabelsDF
+        LabelCols = get_Path('LabelsCols')
+        commonCols = ['contractAddress'] + list(set(LabelsDF.columns) & set(LabelCols))
+        LabelsDF = LabelsDF[commonCols]
+        
+        FinalData = FinalData.merge(LabelsDF, on = 'contractAddress', how = 'inner')
+        FinalData.reset_index(inplace=True,drop=True)
 
-    finalDataName = generate_UniqueFilename(FinalDatasetName)
-    finalDataPath = str(get_Path('FinalLabeledData'))
-    FinalData.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
+        finalDataName = generate_UniqueFilename(FinalDatasetName)
+        finalDataPath = str(get_Path('FinalLabeledData'))
+        FinalData.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
 
-    print('Done! the Combined Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
-    display(FinalData)
-    return True
-
+        print('Done! the Combined Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
+        display(FinalData)
+        return True
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        raise
 #Read Features/Labels data to a dataframe
 #----------------------------------------
 def ReadFeaturesData(Dataset,dataComponent,dataType):

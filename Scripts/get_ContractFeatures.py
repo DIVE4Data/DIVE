@@ -18,32 +18,35 @@ self_main_dir = Path(__file__).resolve().parents[1]
 #-------------------------------------------
 
 def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
+    try:
+        configFile = open(config_file_path)
+        config_File = json.load(configFile)
+        configFile.close()
 
-    configFile = open(config_file_path)
-    config_File = json.load(configFile)
-    configFile.close()
+        api_key = config_File['Etherscan_Account']['API_Key']
 
-    api_key = config_File['Etherscan_Account']['API_Key']
+        match FeatureType[0].lower():
+            case 'all':
+                AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+                display(AccountInfo)
+                ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+                display(ContractInfo)
+                Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+                display(Opcodes)
+            case 'accountinfo' | '1':
+                AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+                display(AccountInfo)
+            case 'contractsinfo' | '2':
+                ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+                display(ContractInfo)
+            case 'opcodes' | '3':
+                Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+                display(Opcodes)
+        return True
 
-    match FeatureType[0].lower():
-        case 'all':
-            AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
-            display(AccountInfo)
-            ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
-            display(ContractInfo)
-            Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
-            display(Opcodes)
-        case 'accountinfo' | '1':
-            AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
-            display(AccountInfo)
-        case 'contractsinfo' | '2':
-            ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
-            display(ContractInfo)
-        case 'opcodes' | '3':
-            Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
-            display(Opcodes)
-    return True
-
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        raise
 #Fetched SCs Account Info from Etherscan.io
 #------------------------------------------
 def get_AccountInfo(DatasetName,api_key,addresses,outDir):

@@ -8,34 +8,38 @@ import json, os
 from IPython.display import display
 
 def get_DataStatistics(dataset,defaultDir):
+    try:
+        outDir = git_Dir(dataType ='Statistics')
+        if defaultDir:
+            datasetPath = git_Dir(dataType ='Dataset')
+        else:
+            datasetPath = git_Dir(dataType ='otherDSPath')
+        dataset = pd.read_csv(datasetPath + dataset)
+
+        print('**Data Info**')
+        print('________________________________')
+        display(dataset.info())
+        print('**Data Describtion**')
+        print('________________________________')
+        display(dataset.describe(include='all'))
+
+        print('**Analysis Tools Frequency**')
+        print('________________________________')
+        get_ToolsFrequency(dataset,outDir)
+        
+        print('**Frequency of Samples Per Year**')
+        print('_________________________________')
+        get_TimestampFrequency(dataset,outDir)
+
+        print('**Frequency of Samples Per Compiler Versions**')
+        print('_______________________________________________')
+        get_CompilerVersionsFrequency(dataset,outDir)
+        return
+
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        raise
     
-    outDir = git_Dir(dataType ='Statistics')
-    if defaultDir:
-        datasetPath = git_Dir(dataType ='Dataset')
-    else:
-        datasetPath = git_Dir(dataType ='otherDSPath')
-    dataset = pd.read_csv(datasetPath + dataset)
-
-    print('**Data Info**')
-    print('________________________________')
-    display(dataset.info())
-    print('**Data Describtion**')
-    print('________________________________')
-    display(dataset.describe(include='all'))
-
-    print('**Analysis Tools Frequency**')
-    print('________________________________')
-    get_ToolsFrequency(dataset,outDir)
-    
-    print('**Frequency of Samples Per Year**')
-    print('_________________________________')
-    get_TimestampFrequency(dataset,outDir)
-
-    print('**Frequency of Samples Per Compiler Versions**')
-    print('_______________________________________________')
-    get_CompilerVersionsFrequency(dataset,outDir)
-    return
-
 def git_Dir(dataType):
     config_file_name = 'config.json'
     

@@ -2,36 +2,40 @@ from pathlib import Path
 import json, os, datetime
 
 def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = ''):
-    #Get the correct path to the configuration file
-    #-------------------------------------------
-    config_file_name = 'config.json'
-    self_dir = Path(__file__).resolve().parent
-    config_file_path = self_dir / config_file_name
-    #-------------------------------------------
-    #Get the correct path to the main directory
-    #-------------------------------------------
-    self_main_dir = Path(__file__).resolve().parents[1]
-    #-------------------------------------------
-    configFile = open(config_file_path)
-    config_File = json.load(configFile)
-    configFile.close()
+    try:
+        #Get the correct path to the configuration file
+        #-------------------------------------------
+        config_file_name = 'config.json'
+        self_dir = Path(__file__).resolve().parent
+        config_file_path = self_dir / config_file_name
+        #-------------------------------------------
+        #Get the correct path to the main directory
+        #-------------------------------------------
+        self_main_dir = Path(__file__).resolve().parents[1]
+        #-------------------------------------------
+        configFile = open(config_file_path)
+        config_File = json.load(configFile)
+        configFile.close()
 
-    if DatasetName == '':
-        DatasetName = generate_UniqueFilename()
+        if DatasetName == '':
+            DatasetName = generate_UniqueFilename()
 
-    outDir = self_main_dir/config_File['RawData']['Samples']
-    path = os.path.join(outDir, DatasetName)
-    os.mkdir(path)
-    outDir = str(outDir) + '/' + DatasetName
-    print('Source codes are now being extracted to Solidity files; please wait...')
-    write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
-    outDir = self_main_dir/config_File['RawData']['SamplesSummary']
-    get_SamplesSummary(ContractsInfo,str(outDir),UniqueFilename)
+        outDir = self_main_dir/config_File['RawData']['Samples']
+        path = os.path.join(outDir, DatasetName)
+        os.mkdir(path)
+        outDir = str(outDir) + '/' + DatasetName
+        print('Source codes are now being extracted to Solidity files; please wait...')
+        write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
+        outDir = self_main_dir/config_File['RawData']['SamplesSummary']
+        get_SamplesSummary(ContractsInfo,str(outDir),UniqueFilename)
 
-    ContractsInfo.drop(columns=['SourceCode'],axis=1,inplace=True)
+        ContractsInfo.drop(columns=['SourceCode'],axis=1,inplace=True)
 
-    return ContractsInfo
-
+        return ContractsInfo
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        raise
+    
 def write_SourceCodesToSolfiles(ContractsInfo,outDir):
     for index, row in ContractsInfo.iterrows():
         file = open(outDir + '/' + ContractsInfo.at[index,'contractAddress']+'.sol','w')

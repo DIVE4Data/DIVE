@@ -7,34 +7,38 @@ from IPython.display import display
 
 
 def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
-    if SamplesDirPath == '' or SamplesDirPath.lower() == 'default':
-        SamplesDirPath = './' + str(get_Path('Samples',SamplesFolderName)) + '/' + SamplesFolderName + '/'
-    else:
-        SamplesDirPath = './' + str(SamplesDirPath) + '/' 
+    try:
+        if SamplesDirPath == '' or SamplesDirPath.lower() == 'default':
+            SamplesDirPath = './' + str(get_Path('Samples',SamplesFolderName)) + '/' + SamplesFolderName + '/'
+        else:
+            SamplesDirPath = './' + str(SamplesDirPath) + '/' 
+        
+        OriginalDestinationPath = str(get_Path('OriginalReports',SamplesFolderName)) + '/'
+        EditedDestinationPath = str(get_Path('EditedReports',SamplesFolderName)) + '/'
+        Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics',SamplesFolderName)) + '/'
+        CodeMetrics_OutDir  = str(get_Path('CodeMetrics',SamplesFolderName)) + '/'
+
+        generate_MetricsReports(SamplesDirPath,OriginalDestinationPath)
+        prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath)
+        
+        if DatasetName == '':
+            DatasetName = SamplesFolderName
+
+        metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
+        UniqueFilename = generate_UniqueFilename(DatasetName,'Raw_CodeMetrics')
+        metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
+        print('Done! Raw Metrics data is available in: ' + Raw_CodeMetrics_OutDir + UniqueFilename + '.csv')
+
+        preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
+        UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
+        preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
+        print('Done! Code Metrics data is available in: ' + CodeMetrics_OutDir + UniqueFilename + '.csv' )
+        display(preProcessed_metricsDF)
+        return True
     
-    OriginalDestinationPath = str(get_Path('OriginalReports',SamplesFolderName)) + '/'
-    EditedDestinationPath = str(get_Path('EditedReports',SamplesFolderName)) + '/'
-    Raw_CodeMetrics_OutDir = str(get_Path('Raw_CodeMetrics',SamplesFolderName)) + '/'
-    CodeMetrics_OutDir  = str(get_Path('CodeMetrics',SamplesFolderName)) + '/'
-
-    generate_MetricsReports(SamplesDirPath,OriginalDestinationPath)
-    prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath)
-    
-    if DatasetName == '':
-        DatasetName = SamplesFolderName
-
-    metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
-    UniqueFilename = generate_UniqueFilename(DatasetName,'Raw_CodeMetrics')
-    metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
-    print('Done! Raw Metrics data is available in: ' + Raw_CodeMetrics_OutDir + UniqueFilename + '.csv')
-
-    preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
-    UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
-    preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
-    print('Done! Code Metrics data is available in: ' + CodeMetrics_OutDir + UniqueFilename + '.csv' )
-    display(preProcessed_metricsDF)
-    return 
-
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        raise
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType,SamplesFolderName):
