@@ -3,7 +3,9 @@ import numpy as np
 from pathlib import Path
 import json, os,datetime
 from IPython.display import display
-from sklearn.preprocessing import LabelEncoder 
+from sklearn.preprocessing import LabelEncoder
+import sys
+sys.set_int_max_str_digits(0)
 
 #Total number of preprocessing tasks currently offered
 PreprocessingTasksNo = 9
@@ -12,13 +14,12 @@ def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedData
     try:
         config_File = get_ConfigFile()
         dataset = get_initialDataset(datasetName,dataDirPath,config_File)
-        
-        if len(PreprocessingTasks)== 1 and PreprocessingTasks[0].lower == 'all':
+        if len(PreprocessingTasks)== 1 and PreprocessingTasks[0].lower()== 'all':
             for taskID in range(1,PreprocessingTasksNo +1):
-                dataset = call_PreprocessingTask(dataset,str(taskID))
+                dataset = call_PreprocessingTask(dataset,str(taskID),config_File)
         else:
             for taskID in PreprocessingTasks:
-                dataset = call_PreprocessingTask(dataset,str(taskID))
+                dataset = call_PreprocessingTask(dataset,str(taskID),config_File)
         
         finalDataName = generate_UniqueFilename(datasetName)
         finalDataPath = str(get_Path('PreprocessedData',config_File))
@@ -111,7 +112,7 @@ def PreprocessingTask8_HandlingCategoricalData(dataset,CategoricalCols):
     return dataset
 def PreprocessingTask9_SetDataIndexColumn(dataset,IndexCol):
     dataset.set_index(IndexCol,drop=True,inplace=True)
-
+    return dataset
 #Get data to be preprocessed
 #---------------------------
 def get_initialDataset(datasetName,dataDirPath,config_File):
@@ -121,7 +122,7 @@ def get_initialDataset(datasetName,dataDirPath,config_File):
         self_main_dir = get_Path('self_main_dir',config_File)
         path = os.path.join(self_main_dir,dataDirPath)
 
-    initialDataset = pd.read_csv(path + datasetName.split('.')[0] + '.csv')
+    initialDataset = pd.read_csv(str(path) + '/' + datasetName.split('.')[0] + '.csv')
     return initialDataset
 
 #Read Configuration file
@@ -145,7 +146,7 @@ def get_Path(dataType,config_File):
     elif dataType == 'PreprocessedData':
         path = self_main_dir/config_File['FinalDS']['PreprocessedData']
     elif dataType in ['NullColsToZero','NullColsToNegativeOne','HexaColsToInt','StringNumColsToInt','StringBoolColsToInt','CategoricalCols','UselesCols','IndexCol'] :
-        path = self_main_dir/config_File['DataToBeProcessed'][dataType]
+        path = config_File['DataToBeProcessed'][dataType]
     return path
 
 #Generate a unique name for the preprocessed data csv file
