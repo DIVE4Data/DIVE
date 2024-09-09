@@ -39,5 +39,16 @@
     "outDir":
     {
         "Statistics": "Statistics/"
+    },
+    "DataToBeProcessed":
+    {
+        "NullColsToZero": ["ConstructorArguments","Experimental Features","Label","SWC","DASP","Tag","Class","Reentrancy","Access Control","Arithmetic", "Unchecked Return Values","DoS","Bad Randomness","Front-Running","Time manipulation","Unknown Unknowns"],
+        "NullColsToNegativeOne": ["txreceipt_status"],
+        "HexaColsToInt": ["from","hash","blockHash","contractAddress","methodId","ConstructorArguments"],
+        "StringNumColsToInt": ["Lines","nLines","nSLOC","Comment Lines","Complex. Score"],
+        "StringBoolColsToInt":["Experimental Features"],
+        "CategoricalCols": ["Opcodes","LicenseType","CompilerVersion","EVMVersion","Library","functionName","ConstructorArguments","ABI"],
+        "UselesCols":["input","ContractName","SwarmSource","Implementation","to","Short Address Attack"],
+        "IndexCol": ["contractAddress"]
     }
 }

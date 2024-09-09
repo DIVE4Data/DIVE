@@ -1,10 +1,12 @@
 import pandas as pd
+import numpy as np
 from pathlib import Path
 import json, os,datetime
 from IPython.display import display
+from sklearn.preprocessing import LabelEncoder 
 
 #Total number of preprocessing tasks currently offered
-PreprocessingTasksNo = 5
+PreprocessingTasksNo = 9
 
 def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedDataDir',PreprocessingTasks=['all']):
     try:
@@ -20,7 +22,7 @@ def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedData
         
         finalDataName = generate_UniqueFilename(datasetName)
         finalDataPath = str(get_Path('PreprocessedData',config_File))
-        dataset.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
+        dataset.to_csv(finalDataPath + '/' + finalDataName+'.csv',index=False)
 
         print('Done! the Preprocessed Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
         display(dataset)
@@ -32,21 +34,83 @@ def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedData
 
 #Identify the preprocessing task to be performed
 #-----------------------------------------------
-def call_PreprocessingTask(dataset,taskID):
+def call_PreprocessingTask(dataset,taskID,config_File):
     match taskID:
-        case '1':
-            return PreprocessingTask1(dataset)
-        case '2':
-            return PreprocessingTask1(dataset)
-        case '3':
-            return PreprocessingTask1(dataset)
+        case '1' | 'DropDuplicateRows':
+            return PreprocessingTask1_DropDuplicateRows(dataset)
+        case '2' | 'FillMissingDataWithZero':
+            dataToBeProcessed = get_Path('NullColsToZero',config_File)
+            return PreprocessingTask2_FillMissingDataWithZero(dataset,dataToBeProcessed)
+        case '3' | 'FillMissingDataWithNegativeOne':
+            dataToBeProcessed = get_Path('NullColsToNegativeOne',config_File)
+            return PreprocessingTask3_FillMissingDataWithNegativeOne(dataset,dataToBeProcessed)
+        case '4' | 'RemoveUselesCols':
+            dataToBeProcessed = get_Path('UselesCols',config_File)
+            return PreprocessingTask4_RemoveUselesCols(dataset,dataToBeProcessed)
+        case '5' | 'HandlingHexaData':
+            dataToBeProcessed = get_Path('HexaColsToInt',config_File)
+            return PreprocessingTask5_HandlingHexaData(dataset,dataToBeProcessed)
+        case '6' | 'HandlingStringNumericalData':
+            dataToBeProcessed = get_Path('StringNumColsToInt',config_File)
+            return PreprocessingTask6_HandlingStringNumericalData(dataset,dataToBeProcessed)
+        case '7' | 'HandlingStringBoolColsToInt':
+            dataToBeProcessed = get_Path('StringBoolColsToInt',config_File)
+            return PreprocessingTask7_HandlingStringBoolColsToInt(dataset,dataToBeProcessed)
+        case '8' | 'HandlingCategoricalData':
+            dataToBeProcessed = get_Path('CategoricalCols',config_File)
+            return PreprocessingTask8_HandlingCategoricalData(dataset,dataToBeProcessed)
+        case '9' | 'SetDataIndexColumn':
+            dataToBeProcessed = get_Path('IndexCol',config_File)
+            PreprocessingTask9_SetDataIndexColumn(dataset,dataToBeProcessed)
+        # default pattern
+        case _:
+            print(taskID + ' is an incorrect Task ID')
 
 #Perform the chosen preprocessed task
 #------------------------------------
-def PreprocessingTask1(dataset):
+def PreprocessingTask1_DropDuplicateRows(dataset):
+    dataset.drop_duplicates(keep='first',inplace=True)
+    dataset.reset_index(drop=True,inplace=True)
     return dataset
-def PreprocessingTask2(dataset):
+def PreprocessingTask2_FillMissingDataWithZero(dataset,NullColsToZero):
+    cols = list(set(dataset.columns) & set(NullColsToZero))
+    dataset[cols] = dataset[cols].fillna(0)
     return dataset
+def PreprocessingTask3_FillMissingDataWithNegativeOne(dataset,NullColsToNegativeOne):
+    ## txreceipt_status values are 0 and 1, indicating failure and success, respectively.
+    ## Blank means it is still waiting for confirmation
+    cols = list(set(dataset.columns) & set(NullColsToNegativeOne))
+    dataset[cols] = dataset[cols].fillna(-1)
+    return dataset
+def PreprocessingTask4_RemoveUselesCols(dataset,UselesCols):
+    cols = list(set(dataset.columns) & set(UselesCols))
+    dataset.drop(columns=cols,axis=1,inplace=True)
+    return dataset
+def PreprocessingTask5_HandlingHexaData(dataset,HexaColsToInt):
+    cols = list(set(dataset.columns) & set(HexaColsToInt))
+    ## convert hexa columns into integer
+    for col in cols:
+        dataset[col]=dataset[col].astype(str).apply(int, base=16)
+    return dataset
+def PreprocessingTask6_HandlingStringNumericalData(dataset,StringNumColsToInt):
+    cols = list(set(dataset.columns) & set(StringNumColsToInt))
+    dataset[cols]=dataset[cols].apply(pd.to_numeric)
+    return dataset
+def PreprocessingTask7_HandlingStringBoolColsToInt(dataset,StringBoolColsToInt):
+    dataset = dataset.replace({'Yes':1,'No':0})
+    '''cols = list(set(dataset.columns) & set(StringBoolColsToInt))  ## ToBeRemoved if "StringBoolColsToInt":["Experimental Features"] handled with the previous code line. Update config file and the call statement
+    for col in cols:
+        dataset[col] = np.where(dataset[col] != 0, 1, 0)'''
+    return dataset
+def PreprocessingTask8_HandlingCategoricalData(dataset,CategoricalCols):
+    cols = list(set(dataset.columns) & set(CategoricalCols)) ##  a special handling function might be added for Opcodes
+    for col in cols:
+        le= LabelEncoder()
+        le.fit(dataset[col].unique().tolist())
+        dataset[col]= le.transform(dataset[col])
+    return dataset
+def PreprocessingTask9_SetDataIndexColumn(dataset,IndexCol):
+    dataset.set_index(IndexCol,drop=True,inplace=True)
 
 #Get data to be preprocessed
 #---------------------------
@@ -80,6 +144,8 @@ def get_Path(dataType,config_File):
         path = self_main_dir/config_File['FinalDS']['InitialCombinedData']
     elif dataType == 'PreprocessedData':
         path = self_main_dir/config_File['FinalDS']['PreprocessedData']
+    elif dataType in ['NullColsToZero','NullColsToNegativeOne','HexaColsToInt','StringNumColsToInt','StringBoolColsToInt','CategoricalCols','UselesCols','IndexCol'] :
+        path = self_main_dir/config_File['DataToBeProcessed'][dataType]
     return path
 
 #Generate a unique name for the preprocessed data csv file
