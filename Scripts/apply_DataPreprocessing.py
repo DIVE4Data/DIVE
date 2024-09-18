@@ -102,7 +102,7 @@ def PreprocessingTask5_ProcessABI(dataset):
 def PreprocessingTask6_ProcessConstructorArguments(dataset):
     min_ArgLength = 1  # 4bits
     max_ArgLength = 64 # 128bits
-    dataset['ConstructorArguments'] = dataset['ConstructorArguments'].str.findall(fr'\d{{{min_ArgLength},{max_ArgLength}}}').map(lambda x: list(map(int, x)))
+    dataset['ConstructorArguments'] = dataset['ConstructorArguments'].str.findall(fr'\d{{{min_ArgLength},{max_ArgLength}}}').apply(lambda x: list(map(int, x)) if isinstance(x, list) else [])
     return dataset
 def PreprocessingTask7_ProcessOpcodes(dataset):
     #Convert Opcodes values into a list
