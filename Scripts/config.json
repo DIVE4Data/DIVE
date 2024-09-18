@@ -47,7 +47,7 @@
         "HexaColsToInt": ["from","hash","blockHash","contractAddress","methodId","ConstructorArguments"],
         "StringNumColsToInt": ["Lines","nLines","nSLOC","Comment Lines","Complex. Score"],
         "StringBoolColsToInt":["Experimental Features"],
-        "CategoricalCols": ["Opcodes","LicenseType","CompilerVersion","EVMVersion","Library","functionName","ConstructorArguments","ABI"],
+        "CategoricalCols": ["Opcodes","LicenseType","CompilerVersion","EVMVersion","Library","functionName","ABI"],
         "UselesCols":["input","ContractName","SwarmSource","Implementation","to","Short Address Attack"],
         "IndexCol": ["contractAddress"]
     }
