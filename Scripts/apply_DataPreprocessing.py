@@ -117,7 +117,7 @@ def PreprocessingTask9_HandlingHexaData(dataset,HexaColsToInt):
     ## convert hexa columns into integer
     for col in cols:
         if col in ['ConstructorArguments']:
-            dataset[col] = dataset[col].apply(lambda x: list(map(lambda hex_val: int(hex_val, 16), x)) if x else [])
+            dataset[col] = dataset[col].apply(lambda x: list(map(lambda hex_val: int(hex_val, 16), x)) if isinstance(x, list) and x else []) #verify that it is a string (Hex) and not an empty list
         else:
             dataset[col]=dataset[col].astype(str).apply(int, base=16)
     return dataset
