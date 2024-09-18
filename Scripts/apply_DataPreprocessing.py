@@ -38,22 +38,22 @@ def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedData
 #-----------------------------------------------
 def call_PreprocessingTask(dataset,taskID,config_File):
     match taskID:
-        case '1' | 'ProcessBytecodes':
-            return PreprocessingTask1_ProcessBytecodes(dataset)
-        case '2' | 'ProcessABI':
-            return PreprocessingTask2_ProcessABI(dataset)
-        case '3' | 'ProcessConstructorArguments':
-            return PreprocessingTask3_ProcessConstructorArguments(dataset)
-        case '4' | 'ProcessOpcodes':
-            return PreprocessingTask4_ProcessOpcodes(dataset)
-        case '5' | 'DropDuplicateRows':
-            return PreprocessingTask5_DropDuplicateRows(dataset)
-        case '6' | 'FillMissingDataWithZero':
+        case '1' | 'DropDuplicateRows':
+            return PreprocessingTask1_DropDuplicateRows(dataset)
+        case '2' | 'FillMissingDataWithZero':
             dataToBeProcessed = get_Path('NullColsToZero',config_File)
-            return PreprocessingTask6_FillMissingDataWithZero(dataset,dataToBeProcessed)
-        case '7' | 'FillMissingDataWithNegativeOne':
+            return PreprocessingTask2_FillMissingDataWithZero(dataset,dataToBeProcessed)
+        case '3' | 'FillMissingDataWithNegativeOne':
             dataToBeProcessed = get_Path('NullColsToNegativeOne',config_File)
-            return PreprocessingTask7_FillMissingDataWithNegativeOne(dataset,dataToBeProcessed)
+            return PreprocessingTask3_FillMissingDataWithNegativeOne(dataset,dataToBeProcessed)
+        case '4' | 'ProcessBytecodes':
+            return PreprocessingTask4_ProcessBytecodes(dataset)
+        case '5' | 'ProcessABI':
+            return PreprocessingTask5_ProcessABI(dataset)
+        case '6' | 'ProcessConstructorArguments':
+            return PreprocessingTask6_ProcessConstructorArguments(dataset)
+        case '7' | 'ProcessOpcodes':
+            return PreprocessingTask7_ProcessOpcodes(dataset)
         case '8' | 'RemoveUselesCols':
             dataToBeProcessed = get_Path('UselesCols',config_File)
             return PreprocessingTask8_RemoveUselesCols(dataset,dataToBeProcessed)
@@ -78,34 +78,35 @@ def call_PreprocessingTask(dataset,taskID,config_File):
 
 #Perform the chosen preprocessed task
 #------------------------------------
-def PreprocessingTask1_ProcessBytecodes(dataset):
-    
-    return dataset
-def PreprocessingTask2_ProcessABI(dataset):
-
-    return dataset
-def PreprocessingTask3_ProcessConstructorArguments(dataset):
-    min_ArgLength = 1  # 4bits
-    max_ArgLength = 64 # 128bits
-    dataset['ConstructorArguments'] = dataset['ConstructorArguments'].str.findall(fr'\d{{{min_ArgLength},{max_ArgLength}}}').map(lambda x: list(map(int, x)))
-    return dataset
-def PreprocessingTask4_ProcessOpcodes(dataset):
-    #Convert Opcodes values into a list
-    dataset['Opcodes'] = dataset['Opcodes'].str.split('<br>')
-    return dataset
-def PreprocessingTask5_DropDuplicateRows(dataset):
+def PreprocessingTask1_DropDuplicateRows(dataset):
     dataset.drop_duplicates(keep='first',inplace=True)
     dataset.reset_index(drop=True,inplace=True)
     return dataset
-def PreprocessingTask6_FillMissingDataWithZero(dataset,NullColsToZero):
+def PreprocessingTask2_FillMissingDataWithZero(dataset,NullColsToZero):
     cols = list(set(dataset.columns) & set(NullColsToZero))
     dataset[cols] = dataset[cols].fillna(0)
     return dataset
-def PreprocessingTask7_FillMissingDataWithNegativeOne(dataset,NullColsToNegativeOne):
+def PreprocessingTask3_FillMissingDataWithNegativeOne(dataset,NullColsToNegativeOne):
     ## txreceipt_status values are 0 and 1, indicating failure and success, respectively.
     ## Blank means it is still waiting for confirmation
     cols = list(set(dataset.columns) & set(NullColsToNegativeOne))
     dataset[cols] = dataset[cols].fillna(-1)
+    return dataset
+
+def PreprocessingTask4_ProcessBytecodes(dataset):
+    
+    return dataset
+def PreprocessingTask5_ProcessABI(dataset):
+
+    return dataset
+def PreprocessingTask6_ProcessConstructorArguments(dataset):
+    min_ArgLength = 1  # 4bits
+    max_ArgLength = 64 # 128bits
+    dataset['ConstructorArguments'] = dataset['ConstructorArguments'].str.findall(fr'\d{{{min_ArgLength},{max_ArgLength}}}').map(lambda x: list(map(int, x)))
+    return dataset
+def PreprocessingTask7_ProcessOpcodes(dataset):
+    #Convert Opcodes values into a list
+    dataset['Opcodes'] = dataset['Opcodes'].str.split('<br>')
     return dataset
 def PreprocessingTask8_RemoveUselesCols(dataset,UselesCols):
     cols = list(set(dataset.columns) & set(UselesCols))
