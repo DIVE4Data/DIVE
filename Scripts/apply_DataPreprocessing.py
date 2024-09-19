@@ -8,7 +8,7 @@ import sys
 sys.set_int_max_str_digits(0)
 
 #Total number of preprocessing tasks currently offered
-PreprocessingTasksNo = 13
+PreprocessingTasksNo = 11
 
 def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedDataDir',PreprocessingTasks=['all']):
     try:
@@ -46,32 +46,28 @@ def call_PreprocessingTask(dataset,taskID,config_File):
         case '3' | 'FillMissingDataWithNegativeOne':
             dataToBeProcessed = get_Path('NullColsToNegativeOne',config_File)
             return PreprocessingTask3_FillMissingDataWithNegativeOne(dataset,dataToBeProcessed)
-        case '4' | 'ProcessBytecodes':
-            return PreprocessingTask4_ProcessBytecodes(dataset)
-        case '5' | 'ProcessABI':
-            return PreprocessingTask5_ProcessABI(dataset)
-        case '6' | 'ProcessConstructorArguments':
-            return PreprocessingTask6_ProcessConstructorArguments(dataset)
-        case '7' | 'ProcessOpcodes':
-            return PreprocessingTask7_ProcessOpcodes(dataset)
-        case '8' | 'RemoveUselesCols':
+        case '4' | 'ProcessConstructorArguments':
+            return PreprocessingTask4_ProcessConstructorArguments(dataset)
+        case '5' | 'ProcessOpcodes':
+            return PreprocessingTask5_ProcessOpcodes(dataset)
+        case '6' | 'RemoveUselesCols':
             dataToBeProcessed = get_Path('UselesCols',config_File)
-            return PreprocessingTask8_RemoveUselesCols(dataset,dataToBeProcessed)
-        case '9' | 'HandlingHexaData':
+            return PreprocessingTask6_RemoveUselesCols(dataset,dataToBeProcessed)
+        case '7' | 'HandlingHexaData':
             dataToBeProcessed = get_Path('HexaColsToInt',config_File)
-            return PreprocessingTask9_HandlingHexaData(dataset,dataToBeProcessed)
-        case '10' | 'HandlingStringNumericalData':
+            return PreprocessingTask7_HandlingHexaData(dataset,dataToBeProcessed)
+        case '8' | 'HandlingStringNumericalData':
             dataToBeProcessed = get_Path('StringNumColsToInt',config_File)
-            return PreprocessingTask10_HandlingStringNumericalData(dataset,dataToBeProcessed)
-        case '11' | 'HandlingStringBoolColsToInt':
+            return PreprocessingTask8_HandlingStringNumericalData(dataset,dataToBeProcessed)
+        case '9' | 'HandlingStringBoolColsToInt':
             dataToBeProcessed = get_Path('StringBoolColsToInt',config_File)
-            return PreprocessingTask11_HandlingStringBoolColsToInt(dataset,dataToBeProcessed)
-        case '12' | 'HandlingCategoricalData':
+            return PreprocessingTask9_HandlingStringBoolColsToInt(dataset,dataToBeProcessed)
+        case '10' | 'HandlingCategoricalData':
             dataToBeProcessed = get_Path('CategoricalCols',config_File)
-            return PreprocessingTask12_HandlingCategoricalData(dataset,dataToBeProcessed)
-        case '13' | 'SetDataIndexColumn':
+            return PreprocessingTask10_HandlingCategoricalData(dataset,dataToBeProcessed)
+        case '11' | 'SetDataIndexColumn':
             dataToBeProcessed = get_Path('IndexCol',config_File)
-            PreprocessingTask13_SetDataIndexColumn(dataset,dataToBeProcessed)
+            PreprocessingTask11_SetDataIndexColumn(dataset,dataToBeProcessed)
         # default pattern
         case _:
             print(taskID + ' is an incorrect Task ID')
@@ -92,26 +88,19 @@ def PreprocessingTask3_FillMissingDataWithNegativeOne(dataset,NullColsToNegative
     cols = list(set(dataset.columns) & set(NullColsToNegativeOne))
     dataset[cols] = dataset[cols].fillna(-1)
     return dataset
-
-def PreprocessingTask4_ProcessBytecodes(dataset):
-    
-    return dataset
-def PreprocessingTask5_ProcessABI(dataset):
-
-    return dataset
-def PreprocessingTask6_ProcessConstructorArguments(dataset):
+def PreprocessingTask4_ProcessConstructorArguments(dataset):
     max_ArgLength = 64 # 128bits
     dataset['ConstructorArguments'] =  dataset['ConstructorArguments'].str.extractall(f'(.{{1,{max_ArgLength}}})')[0].groupby(level=0).agg(list)
     return dataset
-def PreprocessingTask7_ProcessOpcodes(dataset):
+def PreprocessingTask5_ProcessOpcodes(dataset): ################
     #Convert Opcodes values into a list
     dataset['Opcodes'] = dataset['Opcodes'].str.split('<br>')
     return dataset
-def PreprocessingTask8_RemoveUselesCols(dataset,UselesCols):
+def PreprocessingTask6_RemoveUselesCols(dataset,UselesCols):
     cols = list(set(dataset.columns) & set(UselesCols))
     dataset.drop(columns=cols,axis=1,inplace=True)
     return dataset
-def PreprocessingTask9_HandlingHexaData(dataset,HexaColsToInt):
+def PreprocessingTask7_HandlingHexaData(dataset,HexaColsToInt):
     cols = list(set(dataset.columns) & set(HexaColsToInt))
     ## convert hexa columns into integer
     for col in cols:
@@ -120,24 +109,24 @@ def PreprocessingTask9_HandlingHexaData(dataset,HexaColsToInt):
         else:
             dataset[col]=dataset[col].astype(str).apply(int, base=16)
     return dataset
-def PreprocessingTask10_HandlingStringNumericalData(dataset,StringNumColsToInt):
+def PreprocessingTask8_HandlingStringNumericalData(dataset,StringNumColsToInt):
     cols = list(set(dataset.columns) & set(StringNumColsToInt))
     dataset[cols]=dataset[cols].apply(pd.to_numeric)
     return dataset
-def PreprocessingTask11_HandlingStringBoolColsToInt(dataset,StringBoolColsToInt):
+def PreprocessingTask9_HandlingStringBoolColsToInt(dataset,StringBoolColsToInt):
     dataset = dataset.replace({'Yes':1,'No':0})
     '''cols = list(set(dataset.columns) & set(StringBoolColsToInt))  ## ToBeRemoved if "StringBoolColsToInt":["Experimental Features"] handled with the previous code line. Update config file and the call statement
     for col in cols:
         dataset[col] = np.where(dataset[col] != 0, 1, 0)'''
     return dataset
-def PreprocessingTask12_HandlingCategoricalData(dataset,CategoricalCols):
+def PreprocessingTask10_HandlingCategoricalData(dataset,CategoricalCols):
     cols = list(set(dataset.columns) & set(CategoricalCols)) ##  a special handling function might be added for Opcodes
     for col in cols:
         le= LabelEncoder()
         le.fit(dataset[col].unique().tolist())
         dataset[col]= le.transform(dataset[col])
     return dataset
-def PreprocessingTask13_SetDataIndexColumn(dataset,IndexCol):
+def PreprocessingTask11_SetDataIndexColumn(dataset,IndexCol):
     dataset.set_index(IndexCol,drop=True,inplace=True)
     return dataset
 #Get data to be preprocessed

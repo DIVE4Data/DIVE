@@ -24,24 +24,27 @@ def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
         configFile.close()
 
         api_key = config_File['Etherscan_Account']['API_Key']
-
-        match FeatureType[0].lower():
-            case 'all':
-                AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
-                display(AccountInfo)
-                ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
-                display(ContractInfo)
-                Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
-                display(Opcodes)
-            case 'accountinfo' | '1':
-                AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
-                display(AccountInfo)
-            case 'contractsinfo' | '2':
-                ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
-                display(ContractInfo)
-            case 'opcodes' | '3':
-                Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
-                display(Opcodes)
+        for type in FeatureType:
+            match type.lower():
+                case 'all':
+                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+                    display(AccountInfo)
+                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+                    display(ContractInfo)
+                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+                    display(Opcodes)
+                case 'accountinfo' | '1':
+                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+                    display(AccountInfo)
+                case 'contractsinfo' | '2':
+                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+                    display(ContractInfo)
+                case 'opcodes' | '3':
+                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+                    display(Opcodes)
+                 # default pattern
+                case _:
+                    print(type + ' is an incorrect Feature Type')
         return True
 
     except Exception as err:

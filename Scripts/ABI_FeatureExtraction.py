@@ -2,12 +2,14 @@ import pandas as pd
 import json
 
 def ABI_FeatureExtraction(dataset):
-    dataset['ABI'] = dataset['ABI'].apply(lambda s: json.loads(s.replace("'", '"')))
-    #Apply feature extraction to each ABI row
-    ABI_FeaturesDF = dataset['ABI'].apply(FeatureExtraction).apply(pd.Series)
-    #Combine the original dataset with the ABI features
-    dataset_with_ABI_Features = pd.concat([dataset, ABI_FeaturesDF], axis=1)
-    return dataset_with_ABI_Features
+    if 'ABI' in dataset.columns:
+        #Apply feature extraction to each ABI row
+        ABI_FeaturesDF = dataset['ABI'].apply(FeatureExtraction).apply(pd.Series)
+        #Combine the original dataset with the ABI features
+        dataset_with_ABI_Features = pd.concat([dataset, ABI_FeaturesDF], axis=1)
+        return dataset_with_ABI_Features
+    else:
+        return 'The ABI attribute is not present in the given dataset'
 
 def FeatureExtraction(ABI):
     try:
