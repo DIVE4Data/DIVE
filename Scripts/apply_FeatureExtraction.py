@@ -1,6 +1,6 @@
 import pandas as pd
-from Scripts.ABI_FeatureExtraction import ABI_FeatureExtraction
-from Scripts.get_CodeMetrics import get_CodeMetrics
+from Scripts.FeatureExtraction.ABI_FeatureExtraction import ABI_FeatureExtraction
+from Scripts.FeatureExtraction.get_CodeMetrics import get_CodeMetrics
 
 def apply_FeatureExtraction(dataset,attributes):
     try:
