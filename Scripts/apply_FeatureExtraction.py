@@ -1,5 +1,7 @@
 import pandas as pd
 from Scripts.FeatureExtraction.ABI_FeatureExtraction import ABI_FeatureExtraction
+from Scripts.FeatureExtraction.Bytecode_FeatureExtraction import *
+from Scripts.FeatureExtraction.Opcode_FeatureExtraction import *
 from Scripts.FeatureExtraction.get_CodeMetrics import get_CodeMetrics
 
 def apply_FeatureExtraction(dataset,attributes):
@@ -11,7 +13,7 @@ def apply_FeatureExtraction(dataset,attributes):
                     getCodeMetrics()
                 case '1' | 'abi':
                     dataset = ABI_FeatureExtraction(dataset)
-                case '2' | 'input':
+                case '2' | 'input' | 'bytecode':
                     return True
                 case '3' | 'opcode':
                     return True
