@@ -8,7 +8,8 @@
         "AccountInfo": "Features/AccountInfo/",
         "CodeMetrics": "Features/CodeMetrics/CodeMetrics/",
         "ContractsInfo": "Features/ContractsInfo/",
-        "Opcodes": "Features/Opcodes/"
+        "Opcodes": "Features/Opcodes/",
+        "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes"
     },
     "solidity-code-metrics":
     {

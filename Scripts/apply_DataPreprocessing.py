@@ -5,7 +5,6 @@ import json, os,datetime
 from IPython.display import display
 from sklearn.preprocessing import LabelEncoder
 import sys
-sys.set_int_max_str_digits(0)
 
 #Total number of preprocessing tasks currently offered
 PreprocessingTasksNo = 11
