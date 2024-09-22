@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from collections import Counter
 from IPython.display import display
 from pathlib import Path
@@ -80,7 +79,17 @@ def FE_Method_1_StatisticalFeatures(dataset):
 def FE_Method_2_(dataset):
     opcodes = dataset['Opcodes'].str.split('<br>').apply(lambda x: pd.Series(x).str.split().str[0].replace(to_replace='.*Unknown.*', value='Unknown', regex=True).tolist())
 
+    # Function to extract features using CountVectorizer
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(','), lowercase=False)
+    features = vectorizer.fit_transform(opcodes)
     
+    return features, vectorizer.get_feature_names_out()
+
+    # Extract features
+    features, feature_names = extract_features(opcode_list)
+
+    # Convert to DataFrame for better readability
+    features_df = pd.DataFrame(features.toarray(), columns=feature_names)
 
 #=============================================================================================================
 #Read EVM Opcodes csv file
