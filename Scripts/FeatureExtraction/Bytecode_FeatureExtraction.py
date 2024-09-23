@@ -9,21 +9,16 @@ import os, json, datetime
 TotalMethods = 1 
 
 def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
-    print('FE_Method_1_get_Opcodes method, start..')
     try:
         if 'input' in dataset.columns:
             #Get configurations data
-            print('read config file')
             config_File = get_ConfigFile()
-            print('done')
             #---------------------------------------
             #Ensure the rowID column is named 'contractAddress'
-            print('check rowID')
             dataset = get_RowIDCol(dataset,config_File)
             Bytecode_basedFeatures = dataset[['contractAddress', 'input']]
-            print('done. \n get EVM_opcodes')
+            
             EVM_Opcodes = get_EVM_OPCODES(config_File)
-            print('done')
 
             if len(methods)== 1 and methods[0].lower()== 'all':
                 for methodID in range(1,TotalMethods +1):
@@ -100,7 +95,7 @@ def get_ConfigFile(config_file_name = 'config.json'):
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType,config_File):
-    self_main_dir = Path(__file__).resolve().parents[2] #main Dir
+    self_main_dir = Path(__file__).resolve().parents[1] #Script Dir
     if dataType == 'self_main_dir':
         path = self_main_dir
     elif dataType == 'EVM_OpcodesDir':
