@@ -5,10 +5,19 @@
     },
     "Features":
     {
-        "AccountInfo": "Features/AccountInfo/",
-        "CodeMetrics": "Features/CodeMetrics/CodeMetrics/",
-        "ContractsInfo": "Features/ContractsInfo/",
-        "Opcodes": "Features/Opcodes/",
+        "API-based":
+        {
+            "AccountInfo": "Features/API-based/AccountInfo/",
+            "ContractsInfo": "Features/API-based/ContractsInfo/",
+            "Opcodes": "Features/API-based/Opcodes/"
+        },
+        "FE-based":
+        {
+            "ABI-based": "Features/FE-based/ABI-based/",
+            "CodeMetrics": "Features/FE-based/CodeMetrics/CodeMetrics/",
+            "Input-based": "Features/FE-based/Input-based/",
+            "Opcode-based": "Features/FE-based/Opcode-based/"
+        },
         "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes",
         "Feature List": "Feature list.xlsx"
     },
@@ -16,9 +25,9 @@
     {
         "Reports":
         {
-            "OriginalReports": "Features/CodeMetrics/Reports/OriginalReports",
-            "EditedReports": "Features/CodeMetrics/Reports/EditedReports",
-            "Raw_CodeMetrics" : "Features/CodeMetrics/Reports/Raw_CodeMetrics"
+            "OriginalReports": "Features/FE-based/CodeMetrics/Reports/OriginalReports",
+            "EditedReports": "Features/FE-based/CodeMetrics/Reports/EditedReports",
+            "Raw_CodeMetrics" : "Features/FE-based/CodeMetrics/Reports/Raw_CodeMetrics"
         }
     },
     "DataLabels":
