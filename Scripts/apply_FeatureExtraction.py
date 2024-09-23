@@ -4,23 +4,23 @@ from Scripts.FeatureExtraction.Bytecode_FeatureExtraction import Bytecode_Featur
 from Scripts.FeatureExtraction.Opcode_FeatureExtraction import Opcode_FeatureExtraction
 from Scripts.FeatureExtraction.get_CodeMetrics import get_CodeMetrics
 
-def apply_FeatureExtraction(dataset,attributes):
+def apply_FeatureExtraction(DatasetName,dataset,attributes):
     try:
         for attribute in attributes:
             match attribute.lower():
                 case 'all':
-                    dataset = ABI_FeatureExtraction(dataset)
-                    dataset = Bytecode_FeatureExtraction(dataset)
-                    dataset = Opcode_FeatureExtraction(dataset)
+                    dataset = ABI_FeatureExtraction(DatasetName,dataset)
+                    dataset = Bytecode_FeatureExtraction(DatasetName,dataset)
+                    dataset = Opcode_FeatureExtraction(DatasetName,dataset)
                     getCodeMetrics()
                 case '1' | 'abi':
-                    return ABI_FeatureExtraction(dataset)
+                    return ABI_FeatureExtraction(DatasetName,dataset)
                 case '2' | 'input' | 'bytecode':
-                    return Bytecode_FeatureExtraction(dataset)
+                    return Bytecode_FeatureExtraction(DatasetName,dataset)
                 case '3' | 'opcode':
-                    return Opcode_FeatureExtraction(dataset)
+                    return Opcode_FeatureExtraction(DatasetName,dataset)
                 case '4' | 'code metrics':
-                    return getCodeMetrics()
+                    return getCodeMetrics(DatasetName)
                 # default pattern
                 case _:
                     print(attribute + ' is an incorrect attribute')
@@ -28,16 +28,16 @@ def apply_FeatureExtraction(dataset,attributes):
         print(f"Unexpected {err=}, {type(err)=}")
         raise
 
-def getCodeMetrics():
+def getCodeMetrics(DatasetName):
     SamplesFolderName = input('Enter the name of the samples folder')
     SamplesDirPath = input('If the samples folder is located in ./RawData/Samples press Enter, otherwise enter the path to the samples folder.')
-    DatasetName = input('Enter the dataset name.')
+    #DatasetName = input('Enter the dataset name.')
     get_CodeMetrics(SamplesFolderName,SamplesDirPath,DatasetName)
 
-def apply_Bytecode_FeatureExtraction(dataset):
+def apply_Bytecode_FeatureExtraction(DatasetName,dataset):
     methods = input('Enter a list of the extraction methods to apply on Bytecodes')
     return Bytecode_FeatureExtraction(dataset, methods)
 
-def apply_Opcode_FeatureExtraction(dataset):
+def apply_Opcode_FeatureExtraction(DatasetName,dataset):
     methods = input('Enter a list of the extraction methods to apply on Opcodes')
     return Opcode_FeatureExtraction(dataset,methods)

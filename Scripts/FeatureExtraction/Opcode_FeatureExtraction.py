@@ -6,7 +6,7 @@ import os, json
 from sklearn.feature_extraction.text import CountVectorizer
 
 TotalMethods = 2 
-def Opcode_FeatureExtraction(dataset, methods):
+def Opcode_FeatureExtraction(DatasetName,dataset, methods):
     try:
         #config_File = get_ConfigFile()
         #dataset = get_initialDataset(datasetName,dataDirPath,config_File)
