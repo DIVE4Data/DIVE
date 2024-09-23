@@ -47,7 +47,7 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 def call_FeatureExtractionMethod(dataset,methodID,EVM_Opcodes):
     match methodID:
         case '1' | 'get_Opcodes':
-            dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes,EVM_Opcodes)
+            dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes,args=EVM_Opcodes)
             return dataset
         case '2' | '':
             return True #FE_Method_2_(dataset)
