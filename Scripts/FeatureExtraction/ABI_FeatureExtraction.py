@@ -18,7 +18,7 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
 
         #Ensure the rowID column is named 'contractAddress'
         dataset = get_RowIDCol(dataset,config_File)
-        #Combine the original dataset with the ABI features
+        #Combine the dataset index column with the ABI features
         ABI_basedFeatures = pd.concat([dataset['contractAddress'], ABI_FeaturesDF], axis=1)
 
         UniqueFilename = generate_UniqueFilename(DatasetName,'ABI-based')
@@ -26,7 +26,7 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
         path = self_main_dir/config_File['Features']['FE-based']['ABI-based']
         ABI_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
 
-        print('Done! the Combined Data is available in: ' + str(path) + '/' +UniqueFilename+'.csv')
+        print('Done! the ABI-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
         display(ABI_basedFeatures)
 
         return True
