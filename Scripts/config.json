@@ -9,7 +9,8 @@
         "CodeMetrics": "Features/CodeMetrics/CodeMetrics/",
         "ContractsInfo": "Features/ContractsInfo/",
         "Opcodes": "Features/Opcodes/",
-        "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes"
+        "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes",
+        "Feature List": "Feature list.xlsx"
     },
     "solidity-code-metrics":
     {

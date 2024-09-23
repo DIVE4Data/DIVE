@@ -15,7 +15,7 @@ configFile = open(config_file_path)
 config_File = json.load(configFile)
 configFile.close()
 #---------------------------------------
-def construct_FinalData(FinalDatasetName = '', Dataset =[], AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
+def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
     try:
         #read data and unify rowID column name
         AccountInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo'))
@@ -51,6 +51,43 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[], AccountInfo=[],Contr
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise
+
+#Get dataset features (columns) using filtering data
+#---------------------------------------------------
+def get_DatasetFeatures(FeatureTypes):
+    #get features dic
+    features = pd.read_excel(get_Path('Feature List'),sheet_name='Features')
+    #featuresDic = features.to_dict('records')
+    #featuresDic = {item['Feature']:item for item in featuresDic}
+
+    #convert keys and values of FeatureTypes dic to small letter
+    FeatureTypes = dict((key.lower(), [value.lower() for value in values]) for key, values in FeatureTypes.items())
+    #FeatureTypes = dict((key.casefold(), [value.casefold() for value in values]) for key, values in FeatureTypes.items())
+
+    if len(FeatureTypes) == 1 and FeatureTypes == 'all' and FeatureTypes.values() == ['all']:
+        datasetFeatures.append('all')
+    else:
+        #This steps to collect the correct names of feature list columns.
+        filterKeys = features.columns.str.lower().tolist()
+        filters = {}
+        for key in FeatureTypes:
+            if key in filterKeys:
+                keyIndex = filterKeys.index(key)
+                filterName = features.columns[keyIndex]
+
+                #Convert the filter list to casefolded format
+                filterValues = pd.Series(FeatureTypes[key]).str.casefold()
+                # Filter rows where 'Name' matches any name in names_to_filter (ignoring case)
+                filters[filterName] = features[features[filterName].str.casefold().isin(filterValues)][filterName].tolist()
+        #This step to get feature cols
+        mask = pd.Series(True, index=features.index) #Initialize a mask of True values
+        #Apply filters using bitwise AND
+        for key, values in filters.items():
+            mask &= features[key].isin(values)
+        #get filtered features
+        datasetFeatures = features.loc[mask, 'Feature'].tolist()      
+    return datasetFeatures
+
 #Read Features/Labels data to a dataframe
 #----------------------------------------
 def ReadFeaturesData(Dataset,dataComponent,dataType):
