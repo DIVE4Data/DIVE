@@ -7,7 +7,7 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
     if 'ABI' in dataset.columns:
         #Get the correct path to the configuration file
         config_file_name = 'config.json'
-        self_dir = Path(__file__).resolve().parent
+        self_dir = Path(__file__).resolve().parents[1]
         config_file_path = self_dir / config_file_name
         configFile = open(config_file_path)
         config_File = json.load(configFile)
@@ -22,11 +22,11 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
         ABI_basedFeatures = pd.concat([dataset['contractAddress'], ABI_FeaturesDF], axis=1)
 
         UniqueFilename = generate_UniqueFilename(DatasetName,'ABI-based')
-        self_main_dir = Path(__file__).resolve().parents[1]
+        self_main_dir = Path(__file__).resolve().parents[2]
         path = self_main_dir/config_File['Features']['FE-based']['ABI-based']
         ABI_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
 
-        print('Done! the Combined Data is available in: ' + path + '/' +UniqueFilename+'.csv')
+        print('Done! the Combined Data is available in: ' + str(path) + '/' +UniqueFilename+'.csv')
         display(ABI_basedFeatures)
 
         return True
