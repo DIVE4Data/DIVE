@@ -35,9 +35,21 @@ def call_get_CodeMetrics(DatasetName):
     get_CodeMetrics(SamplesFolderName,SamplesDirPath,DatasetName)
 
 def call_Bytecode_FeatureExtraction(DatasetName,dataset):
-    methods = input('Enter a list of the extraction methods to apply on Bytecodes')
+    methods = get_FeatureExtractionMethods('Bytecodes')
     return Bytecode_FeatureExtraction(DatasetName,dataset, methods)
 
 def call_Opcode_FeatureExtraction(DatasetName,dataset):
-    methods = input('Enter a list of the extraction methods to apply on Opcodes')
+    methods = get_FeatureExtractionMethods('Opcodes')
     return Opcode_FeatureExtraction(DatasetName,dataset,methods)
+
+def get_FeatureExtractionMethods(FeatureType):
+    Flag = True
+    methods = []
+    while Flag:
+        method = input('Enter the name or id of Feature extraction method to apply on ' + FeatureType + 
+                       '\n Press Enter without typing anything to exit..')
+        if len(method) > 0:
+            methods.append(method)
+        else:
+            Flag = False
+    return methods

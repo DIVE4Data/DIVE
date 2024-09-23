@@ -39,7 +39,7 @@ def Opcode_FeatureExtraction(DatasetName,dataset, methods):
 #=============================================================================================================    
 def call_FeatureExtractionMethod(config_File,dataset,methodID):
     match methodID:
-        case '1' | '':
+        case '1' | 'StatisticalFeatures':
             return FE_Method_1_StatisticalFeatures(config_File,dataset)
         case '2' | '':
             return FE_Method_2_(dataset)
