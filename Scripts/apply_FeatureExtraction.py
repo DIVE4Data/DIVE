@@ -10,17 +10,17 @@ def apply_FeatureExtraction(DatasetName,dataset,attributes):
             match attribute.lower():
                 case 'all':
                     dataset = ABI_FeatureExtraction(DatasetName,dataset)
-                    dataset = Bytecode_FeatureExtraction(DatasetName,dataset)
-                    dataset = Opcode_FeatureExtraction(DatasetName,dataset)
-                    getCodeMetrics()
+                    dataset = call_Bytecode_FeatureExtraction(DatasetName,dataset)
+                    dataset = call_Opcode_FeatureExtraction(DatasetName,dataset)
+                    call_get_CodeMetrics()
                 case '1' | 'abi':
                     return ABI_FeatureExtraction(DatasetName,dataset)
                 case '2' | 'input' | 'bytecode':
-                    return Bytecode_FeatureExtraction(DatasetName,dataset)
+                    return call_Bytecode_FeatureExtraction(DatasetName,dataset)
                 case '3' | 'opcode':
-                    return Opcode_FeatureExtraction(DatasetName,dataset)
+                    return call_Opcode_FeatureExtraction(DatasetName,dataset)
                 case '4' | 'code metrics':
-                    return getCodeMetrics(DatasetName)
+                    return call_get_CodeMetrics(DatasetName)
                 # default pattern
                 case _:
                     print(attribute + ' is an incorrect attribute')
@@ -28,16 +28,16 @@ def apply_FeatureExtraction(DatasetName,dataset,attributes):
         print(f"Unexpected {err=}, {type(err)=}")
         raise
 
-def getCodeMetrics(DatasetName):
+def call_get_CodeMetrics(DatasetName):
     SamplesFolderName = input('Enter the name of the samples folder')
     SamplesDirPath = input('If the samples folder is located in ./RawData/Samples press Enter, otherwise enter the path to the samples folder.')
     #DatasetName = input('Enter the dataset name.')
     get_CodeMetrics(SamplesFolderName,SamplesDirPath,DatasetName)
 
-def apply_Bytecode_FeatureExtraction(DatasetName,dataset):
+def call_Bytecode_FeatureExtraction(DatasetName,dataset):
     methods = input('Enter a list of the extraction methods to apply on Bytecodes')
     return Bytecode_FeatureExtraction(DatasetName,dataset, methods)
 
-def apply_Opcode_FeatureExtraction(DatasetName,dataset):
+def call_Opcode_FeatureExtraction(DatasetName,dataset):
     methods = input('Enter a list of the extraction methods to apply on Opcodes')
     return Opcode_FeatureExtraction(DatasetName,dataset,methods)
