@@ -7,26 +7,30 @@ from pathlib import Path
 import os, json, datetime
 
 TotalMethods = 1 
-EVM_Opcodes = pd.DataFrame()
-def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 
+def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
+    print('FE_Method_1_get_Opcodes method, start..')
     try:
         if 'input' in dataset.columns:
             #Get configurations data
+            print('read config file')
             config_File = get_ConfigFile()
+            print('done')
             #---------------------------------------
             #Ensure the rowID column is named 'contractAddress'
+            print('check rowID')
             dataset = get_RowIDCol(dataset,config_File)
             Bytecode_basedFeatures = dataset[['contractAddress', 'input']]
-            
+            print('done. \n get EVM_opcodes')
             EVM_Opcodes = get_EVM_OPCODES(config_File)
+            print('done')
 
             if len(methods)== 1 and methods[0].lower()== 'all':
                 for methodID in range(1,TotalMethods +1):
-                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID))
+                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID),EVM_Opcodes)
             else:
                 for methodID in methods:
-                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID))
+                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID),EVM_Opcodes)
             
             UniqueFilename = generate_UniqueFilename(DatasetName,'Input-based')
             self_main_dir = Path(__file__).resolve().parents[2]
@@ -45,11 +49,10 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
         print(f"Unexpected {err=}, {type(err)=}")
     raise
 #=============================================================================================================    
-def call_FeatureExtractionMethod(dataset,methodID):
+def call_FeatureExtractionMethod(dataset,methodID,EVM_Opcodes):
     match methodID:
         case '1' | 'get_Opcodes':
-            print('FE_Method_1_get_Opcodes method, start..')
-            dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes)
+            dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes,EVM_Opcodes)
             return dataset
         case '2' | '':
             return True #FE_Method_2_(dataset)
@@ -57,7 +60,7 @@ def call_FeatureExtractionMethod(dataset,methodID):
         case _:
             print(methodID + ' is an incorrect Method ID')
 #=============================================================================================================
-def FE_Method_1_get_Opcodes(bytecode):
+def FE_Method_1_get_Opcodes(bytecode,EVM_Opcodes):
     # Convert hex bytecode to bytes
     bytecode_bytes = bytes.fromhex(bytecode[2:])  # Skip the '0x' prefix
     opcodes = []
