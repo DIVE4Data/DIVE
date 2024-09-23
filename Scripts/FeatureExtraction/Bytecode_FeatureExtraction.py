@@ -11,7 +11,7 @@ EVM_Opcodes = pd.DataFrame()
 def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 
     try:
-        if 'Opcodes' in dataset.columns:
+        if 'input' in dataset.columns:
             #Get configurations data
             config_File = get_ConfigFile()
             #---------------------------------------
@@ -33,8 +33,9 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
             path = self_main_dir/config_File['Features']['FE-based']['Input-based']
             Bytecode_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
 
-            self_main_dir.relative_to(path.cwd().parent)
-            print('Done! the Bytecode-based Data is available in: ' + str(self_main_dir.relative_to(path.cwd().parent)) + '/' + UniqueFilename + '.csv')
+            path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based']['Input-based']
+
+            print('Done! the Bytecode-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
             display(Bytecode_basedFeatures)
             return True
         else:
@@ -47,6 +48,7 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 def call_FeatureExtractionMethod(dataset,methodID):
     match methodID:
         case '1' | 'get_Opcodes':
+            print('FE_Method_1_get_Opcodes method, start..')
             dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes)
             return dataset
         case '2' | '':
