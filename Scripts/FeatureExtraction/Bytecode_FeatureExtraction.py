@@ -8,7 +8,7 @@ import os, json
 
 TotalMethods = 1 
 EVM_Opcodes = pd.DataFrame()
-def Bytecode_FeatureExtraction(dataset, methods):
+def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 
     try:
         #config_File = get_ConfigFile()

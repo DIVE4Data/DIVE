@@ -36,8 +36,8 @@ def getCodeMetrics(DatasetName):
 
 def apply_Bytecode_FeatureExtraction(DatasetName,dataset):
     methods = input('Enter a list of the extraction methods to apply on Bytecodes')
-    return Bytecode_FeatureExtraction(dataset, methods)
+    return Bytecode_FeatureExtraction(DatasetName,dataset, methods)
 
 def apply_Opcode_FeatureExtraction(DatasetName,dataset):
     methods = input('Enter a list of the extraction methods to apply on Opcodes')
-    return Opcode_FeatureExtraction(dataset,methods)
+    return Opcode_FeatureExtraction(DatasetName,dataset,methods)
