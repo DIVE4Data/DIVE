@@ -4,31 +4,41 @@ import pandas as pd
 from collections import Counter
 from IPython.display import display
 from pathlib import Path
-import os, json
+import os, json, datetime
 
 TotalMethods = 1 
 EVM_Opcodes = pd.DataFrame()
 def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 
     try:
-        #config_File = get_ConfigFile()
-        #dataset = get_initialDataset(datasetName,dataDirPath,config_File)
-        EVM_Opcodes = get_EVM_OPCODES()
+        if 'Opcodes' in dataset.columns:
+            #Get configurations data
+            config_File = get_ConfigFile()
+            #---------------------------------------
+            #Ensure the rowID column is named 'contractAddress'
+            dataset = get_RowIDCol(dataset,config_File)
+            Bytecode_basedFeatures = dataset[['contractAddress', 'input']]
+            
+            EVM_Opcodes = get_EVM_OPCODES(config_File)
 
-        if len(methods)== 1 and methods[0].lower()== 'all':
-            for methodID in range(1,TotalMethods +1):
-                dataset = call_FeatureExtractionMethod(dataset,str(methodID))
+            if len(methods)== 1 and methods[0].lower()== 'all':
+                for methodID in range(1,TotalMethods +1):
+                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID))
+            else:
+                for methodID in methods:
+                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID))
+            
+            UniqueFilename = generate_UniqueFilename(DatasetName,'Input-based')
+            self_main_dir = Path(__file__).resolve().parents[2]
+            path = self_main_dir/config_File['Features']['FE-based']['Input-based']
+            Bytecode_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
+
+            self_main_dir.relative_to(path.cwd().parent)
+            print('Done! the Bytecode-based Data is available in: ' + str(self_main_dir.relative_to(path.cwd().parent)) + '/' + UniqueFilename + '.csv')
+            display(Bytecode_basedFeatures)
+            return True
         else:
-            for methodID in methods:
-                dataset = call_FeatureExtractionMethod(dataset,str(methodID))
-        
-        #finalDataName = generate_UniqueFilename(datasetName)
-        #finalDataPath = str(get_Path('PreprocessedData',config_File))
-        #dataset.to_csv(finalDataPath + '/' + finalDataName+'.csv',index=False)
-
-        #print('Done! the Preprocessed Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
-        display(dataset)
-        return True
+            return 'Bytecode (input) attribute is not present in the given dataset'
     
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
@@ -58,8 +68,7 @@ def FE_Method_1_get_Opcodes(bytecode):
 #=============================================================================================================
 #Read EVM Opcodes csv file
 #--------------------------
-def get_EVM_OPCODES():
-    config_File = get_ConfigFile()
+def get_EVM_OPCODES(config_File):
     OpcodesFolder = get_Path('EVM_OpcodesDir',config_File)
     #get recent Opcodes csv files
     files = [file.name for file in os.scandir(OpcodesFolder) if file.is_file() and file.name.endswith('.csv')]
@@ -77,7 +86,7 @@ def get_EVM_OPCODES():
 #Read Configuration file
 #-----------------------
 def get_ConfigFile(config_file_name = 'config.json'):
-    self_dir = Path(__file__).resolve().parent #current Dir
+    self_dir = Path(__file__).resolve().parents[1] #Script Dir
     config_file_path = self_dir / config_file_name
     configFile = open(config_file_path)
     config_File = json.load(configFile)
@@ -86,9 +95,21 @@ def get_ConfigFile(config_file_name = 'config.json'):
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType,config_File):
-    self_main_dir = Path(__file__).resolve().parents[1] #main Dir
+    self_main_dir = Path(__file__).resolve().parents[2] #main Dir
     if dataType == 'self_main_dir':
         path = self_main_dir
     elif dataType == 'EVM_OpcodesDir':
         path = self_main_dir/config_File['Features']['EVM_OpcodesDir']
     return path
+#------------------------------------------
+def get_RowIDCol(df,config_File):
+    #Get the RowID column possible names
+    RowIDColNames = config_File['DataLabels']['RowID']
+    for column in df.columns:
+        if column.lower() in RowIDColNames:
+            df.rename(columns = {column:'contractAddress'}, inplace = True)
+            return df
+#------------------------------------------
+def generate_UniqueFilename(DatasetName,datatype):
+    UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
+    return UniqueFilename

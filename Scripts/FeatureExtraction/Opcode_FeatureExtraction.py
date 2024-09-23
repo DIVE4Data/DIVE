@@ -28,7 +28,7 @@ def Opcode_FeatureExtraction(DatasetName,dataset, methods):
             path = self_main_dir/config_File['Features']['FE-based']['Opcode-based']
             Opcode_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
 
-            print('Done! the Opcode-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
+            print('Done! the Opcode-based Data is available in: ' + str(self_main_dir.relative_to(path.cwd().parent)) + '/' + UniqueFilename + '.csv')
             display(Opcode_basedFeatures)
             return True
         else:

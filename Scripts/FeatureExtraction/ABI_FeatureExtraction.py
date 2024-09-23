@@ -26,7 +26,7 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
         path = self_main_dir/config_File['Features']['FE-based']['ABI-based']
         ABI_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
 
-        print('Done! the ABI-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
+        print('Done! the ABI-based Data is available in: ' + str(self_main_dir.relative_to(path.cwd().parent)) + '/' + UniqueFilename + '.csv')
         display(ABI_basedFeatures)
 
         return True
