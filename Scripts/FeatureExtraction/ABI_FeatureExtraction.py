@@ -1,13 +1,35 @@
 import pandas as pd
-import json
+from IPython.display import display
+from pathlib import Path
+import json, datetime
 
-def ABI_FeatureExtraction(dataset):
+def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame: dataset
     if 'ABI' in dataset.columns:
+        #Get the correct path to the configuration file
+        config_file_name = 'config.json'
+        self_dir = Path(__file__).resolve().parent
+        config_file_path = self_dir / config_file_name
+        configFile = open(config_file_path)
+        config_File = json.load(configFile)
+        configFile.close()
+        #---------------------------------------
         #Apply feature extraction to each ABI row
         ABI_FeaturesDF = dataset['ABI'].apply(FeatureExtraction).apply(pd.Series)
+
+        #Ensure the rowID column is named 'contractAddress'
+        dataset = get_RowIDCol(dataset,config_File)
         #Combine the original dataset with the ABI features
-        dataset_with_ABI_Features = pd.concat([dataset, ABI_FeaturesDF], axis=1)
-        return dataset_with_ABI_Features
+        ABI_basedFeatures = pd.concat([dataset['contractAddress'], ABI_FeaturesDF], axis=1)
+
+        UniqueFilename = generate_UniqueFilename(DatasetName,'ABI-based')
+        self_main_dir = Path(__file__).resolve().parents[1]
+        path = self_main_dir/config_File['Features']['FE-based']['ABI-based']
+        ABI_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
+
+        print('Done! the Combined Data is available in: ' + path + '/' +UniqueFilename+'.csv')
+        display(ABI_basedFeatures)
+
+        return True
     else:
         return 'The ABI attribute is not present in the given dataset'
 
@@ -66,3 +88,15 @@ def FeatureExtraction(ABI):
     except Exception as err:
         print(f"Unexpected {err=},{type(err)=}")
         raise
+#------------------------------------------
+def get_RowIDCol(df,config_File):
+    #Get the RowID column possible names
+    RowIDColNames = config_File['DataLabels']['RowID']
+    for column in df.columns:
+        if column.lower() in RowIDColNames:
+            df.rename(columns = {column:'contractAddress'}, inplace = True)
+            return df
+#------------------------------------------
+def generate_UniqueFilename(DatasetName,datatype):
+    UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
+    return UniqueFilename
