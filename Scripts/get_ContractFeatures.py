@@ -53,121 +53,155 @@ def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
 #Fetched SCs Account Info from Etherscan.io
 #------------------------------------------
 def get_AccountInfo(DatasetName,api_key,addresses,outDir):
-    counter =1
-    info =[]
-    NotFound = []
-    print('Account information is now being retrieved from Etherscan data; please wait...')
-    for i in range(0,len(addresses)): 
-        address = addresses['contractAddress'][i].strip()
-        #print('Address: '+ address)
-        if len(address) > 0 :
-            request_string = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&apikey={api_key}'
-            response = requests.get(request_string,verify=False) ###### Add verify=False to stop error messages
-            #print(response.text)
-            #--------------------------------------
-            if response.ok:
-                data = {} 
-                noOfTransactions = len(json.loads(response.text) ['result'])
-                if noOfTransactions >0:
-                    data['contractAddress']=address
-                    data['NoOfTransactions'] = noOfTransactions
-                    data |= json.loads(response.text)['result'][0]
-                    #print('data is: ', data)
-                    info.append(data)
-                else:
-                    NotFound.append(address)
+    try:
+        counter =1
+        info =[]
+        NotFound = []
+        print('Account information is now being retrieved from Etherscan data; please wait...')
+        for i in range(0,len(addresses)): 
+            address = addresses['contractAddress'][i].strip()
+            #print('Address: '+ address)
+            if len(address) > 0 :
+                request_string = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&apikey={api_key}'
+                response = requests.get(request_string,verify=False) ###### Add verify=False to stop error messages
+                #print(response.text)
                 #--------------------------------------
+                if response.ok:
+                    data = {} 
+                    noOfTransactions = len(json.loads(response.text) ['result'])
+                    if noOfTransactions >0:
+                        data['contractAddress']=address
+                        data['NoOfTransactions'] = noOfTransactions
+                        data |= json.loads(response.text)['result'][0]
+                        #print('data is: ', data)
+                        info.append(data)
+                    else:
+                        NotFound.append(address)
+                    #--------------------------------------
+                    #print(str(counter)+": ["+ address + "] Done")
+                    counter = counter + 1
+                    if counter%5 == 0:
+                        time.sleep(1)
+                else:
+                    print(address,response.text)
+        
+        UniqueFilename = generate_UniqueFilename(DatasetName,'AccountInfo')
+        if len(NotFound) > 0:
+            AccountInfo_NotFound = pd.DataFrame(data=NotFound)
+            AccountInfo_NotFound.to_csv(str(outDir) + '/NotFound/' + UniqueFilename + "_NotFound.csv",index=False)
+        
+        '''AccountInfo = pd.DataFrame(data=info)
+        AccountInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outDir = self_main_dir.relative_to(Path.cwd().parent)
+        print('Done! Account Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+        return AccountInfo'''
+    except Exception as err:
+        print(f"The run is aborted due to unexpected {err=}, {type(err)=}")
+        raise
+    finally:
+        AccountInfo = pd.DataFrame(data=info)
+        AccountInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outDir = self_main_dir.relative_to(Path.cwd().parent)
+        print('Done! Account Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+        return AccountInfo
+#Fetched contracts Info from Etherscan.io
+#------------------------------------------
+def get_ContractInfo(DatasetName,api_key,addresses,outDir):
+    try:
+        counter =1
+        info =[]
+        print('Contract information is now being retrieved from Etherscan data; please wait...')
+        for i in range(0,len(addresses)): 
+            address = addresses['contractAddress'][i].strip()
+            #print('Address: '+ address)
+            if len(address)>0:
+                request_string = f'https://api.etherscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={api_key}'
+                response = requests.get(request_string, verify=False) ###### Add verify=False to stop error messages
+                #print(response.text)
+            #--------------------------------------
+                data = {} 
+                data['contractAddress']=address
+                data |= json.loads(response.text)['result'][0]
+                #print('data is: ', data)
+                info.append(data)
+            #--------------------------------------
                 #print(str(counter)+": ["+ address + "] Done")
                 counter = counter + 1
                 if counter%5 == 0:
                     time.sleep(1)
-            else:
-                print(address,response.text)
+        
+        ContractsInfo = pd.DataFrame(data=info)
+        UniqueFilename = generate_UniqueFilename(DatasetName,'ContractsInfo')
+        
+        '''#Extract Source Codes then remove it from the dataframe
+        ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
+        ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outDir = self_main_dir.relative_to(Path.cwd().parent)
+        print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+        return ContractsInfo'''
     
-    UniqueFilename = generate_UniqueFilename(DatasetName,'AccountInfo')
-    if len(NotFound) > 0:
-        AccountInfo_NotFound = pd.DataFrame(data=NotFound)
-        AccountInfo_NotFound.to_csv(str(outDir) + '/NotFound/' + UniqueFilename + "_NotFound.csv",index=False)
-    
-    AccountInfo = pd.DataFrame(data=info)
-    AccountInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-    print('Done! Account Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-    return AccountInfo
-
-#Fetched contracts Info from Etherscan.io
-#------------------------------------------
-def get_ContractInfo(DatasetName,api_key,addresses,outDir):
-    counter =1
-    info =[]
-    print('Contract information is now being retrieved from Etherscan data; please wait...')
-    for i in range(0,len(addresses)): 
-        address = addresses['contractAddress'][i].strip()
-        #print('Address: '+ address)
-        if len(address)>0:
-            request_string = f'https://api.etherscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={api_key}'
-            response = requests.get(request_string, verify=False) ###### Add verify=False to stop error messages
-            #print(response.text)
-        #--------------------------------------
-            data = {} 
-            data['contractAddress']=address
-            data |= json.loads(response.text)['result'][0]
-            #print('data is: ', data)
-            info.append(data)
-        #--------------------------------------
-            #print(str(counter)+": ["+ address + "] Done")
-            counter = counter + 1
-            if counter%5 == 0:
-                time.sleep(1)
-    
-    ContractsInfo = pd.DataFrame(data=info)
-    UniqueFilename = generate_UniqueFilename(DatasetName,'ContractsInfo')
-    
-    #Extract Source Codes then remove it from the dataframe
-    ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
-    ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-    print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-    return ContractsInfo
+    except Exception as err:
+        print(f"The run is aborted due to unexpected {err=}, {type(err)=}")
+        raise
+    finally:
+        #Extract Source Codes then remove it from the dataframe
+        ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
+        ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outDir = self_main_dir.relative_to(Path.cwd().parent)
+        print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+        return ContractsInfo
 
 #Fetched SCs Opcodes from Etherscan.io
 #------------------------------------------
 def get_Opcodes(DatasetName,api_key,addresses,outDir):
-    counter =1
-    info =[]
-    NotFound = []
-    print('Opcodes data is now being retrieved from Etherscan data; please wait...')
-    for i in range(0,len(addresses)): 
-        address = addresses['contractAddress'][i].rstrip()
-        if len(address) > 0:
-            request_string = f'https://api.etherscan.io/api?module=opcode&action=getopcode&address={address}&apikey={api_key}'
-            response = requests.get(request_string,verify=False) ###### Add verify=False to stop error messages
-            #print(response.text)
-            #--------------------------------------
-            if response.ok:
-                data = {} 
-                data['contractAddress']=address
-                data['Opcodes']= json.loads(response.text)['result']
-                #print('data is: ', data)
-                info.append(data)
+    try:
+        counter =1
+        info =[]
+        NotFound = []
+        print('Opcodes data is now being retrieved from Etherscan data; please wait...')
+        for i in range(0,len(addresses)): 
+            address = addresses['contractAddress'][i].rstrip()
+            if len(address) > 0:
+                request_string = f'https://api.etherscan.io/api?module=opcode&action=getopcode&address={address}&apikey={api_key}'
+                response = requests.get(request_string,verify=False) ###### Add verify=False to stop error messages
+                #print(response.text)
                 #--------------------------------------
-                #print(str(counter)+": ["+ address + "] Done")
-                counter = counter + 1
-                if counter%5 == 0:
-                    time.sleep(1)
+                if response.ok:
+                    data = {} 
+                    data['contractAddress']=address
+                    data['Opcodes']= json.loads(response.text)['result']
+                    #print('data is: ', data)
+                    info.append(data)
+                    #--------------------------------------
+                    #print(str(counter)+": ["+ address + "] Done")
+                    counter = counter + 1
+                    if counter%5 == 0:
+                        time.sleep(1)
+                else:
+                    print(address,response.text)
             else:
-                print(address,response.text)
-        else:
-            NotFound.append(i)
+                NotFound.append(i)
+        
+        UniqueFilename = generate_UniqueFilename(DatasetName,'Opcodes')
+        if len(NotFound)>0:
+            Opcodes_NotFound = pd.DataFrame(data=NotFound)
+            Opcodes_NotFound.to_csv(str(outDir) + '/NotFound/' + UniqueFilename + "_NotFound.csv",index=False)
+        
+        '''Opcodes=pd.DataFrame(data=info)
+        Opcodes.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outDir = self_main_dir.relative_to(Path.cwd().parent)
+        print('Done! Opcodes Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+        return Opcodes'''
     
-    UniqueFilename = generate_UniqueFilename(DatasetName,'Opcodes')
-    if len(NotFound)>0:
-        Opcodes_NotFound = pd.DataFrame(data=NotFound)
-        Opcodes_NotFound.to_csv(str(outDir) + '/NotFound/' + UniqueFilename + "_NotFound.csv",index=False)
-    
-    Opcodes=pd.DataFrame(data=info)
-    Opcodes.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-    print('Done! Opcodes Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-    return Opcodes
-
+    except Exception as err:
+        print(f"The run is aborted due to unexpected {err=}, {type(err)=}")
+        raise
+    finally:
+        Opcodes=pd.DataFrame(data=info)
+        Opcodes.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outDir = self_main_dir.relative_to(Path.cwd().parent)
+        print('Done! Opcodes Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+        return Opcodes
 #------------------------------------------
 def generate_UniqueFilename(DatasetName,datatype):
     '''if DatasetName == 'DS':

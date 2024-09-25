@@ -23,15 +23,20 @@ def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
         
         if DatasetName == '':
             DatasetName = SamplesFolderName
-
+        
+        
         metricsDF = parse_MetricsReports(ReportsFolder = EditedDestinationPath)
         UniqueFilename = generate_UniqueFilename(DatasetName,'Raw_CodeMetrics')
         metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
+
+        Raw_CodeMetrics_OutDir = get_Path('Raw_CodeMetrics_OutDir',SamplesFolderName)
         print('Done! Raw Metrics data is available in: ' + Raw_CodeMetrics_OutDir + UniqueFilename + '.csv')
 
         preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
         UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
         preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
+        
+        CodeMetrics_OutDir = get_Path('CodeMetrics_OutDir',SamplesFolderName)
         print('Done! Code Metrics data is available in: ' + CodeMetrics_OutDir + UniqueFilename + '.csv' )
         display(preProcessed_metricsDF)
         return True
@@ -56,13 +61,20 @@ def get_Path(dataType,SamplesFolderName):
     
     if 'Reports' in dataType or 'Raw' in dataType:
         #path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
-        path = './Features/CodeMetrics/Reports/' + dataType
+        if 'OutDir' in dataType:
+            dataType = dataType.split('_')[0]
+            path = self_main_dir.relative_to(Path.cwd().parent)/config_File['solidity-code-metrics']['Reports'][dataType]
+        else:
+            path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
         if 'Reports' in dataType:
             outDir = os.path.join(path, SamplesFolderName)
             os.mkdir(outDir)
             path = str(path) + '/' + SamplesFolderName
     elif dataType == 'Samples':
         path = config_File['RawData'][dataType]
+    elif 'OutDir' in dataType:
+        dataType = dataType.split('_')[0]
+        path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based'][dataType]
     else:
         path = self_main_dir/config_File['Features']['FE-based'][dataType]
     
