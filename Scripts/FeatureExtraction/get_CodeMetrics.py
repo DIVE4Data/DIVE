@@ -64,7 +64,7 @@ def get_Path(dataType,SamplesFolderName):
     elif dataType == 'Samples':
         path = config_File['RawData'][dataType]
     else:
-        path = self_main_dir/config_File['Features'][dataType]
+        path = self_main_dir/config_File['Features']['FE-based'][dataType]
     
     return path
 

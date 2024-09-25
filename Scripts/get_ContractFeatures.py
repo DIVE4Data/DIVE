@@ -27,20 +27,20 @@ def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
         for type in FeatureType:
             match type.lower():
                 case 'all':
-                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['API-based']['AccountInfo'])
                     display(AccountInfo)
-                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['ContractsInfo'])
                     display(ContractInfo)
-                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['Opcodes'])
                     display(Opcodes)
                 case 'accountinfo' | '1':
-                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['AccountInfo'])
+                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['API-based']['AccountInfo'])
                     display(AccountInfo)
                 case 'contractsinfo' | '2':
-                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['ContractsInfo'])
+                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['ContractsInfo'])
                     display(ContractInfo)
                 case 'opcodes' | '3':
-                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['Opcodes'])
+                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['Opcodes'])
                     display(Opcodes)
                  # default pattern
                 case _:
