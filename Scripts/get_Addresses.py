@@ -54,6 +54,6 @@ def get_Addresses(addressesFile):
     
 def get_RowIDCol(df,RowIDColNames):
     for column in df.columns:
-        if column.lower() in RowIDColNames:
+        if column.strip().lower() in RowIDColNames:
             df.rename(columns = {column:'contractAddress'}, inplace = True)
             return df
