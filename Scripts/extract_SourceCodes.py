@@ -22,7 +22,8 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = ''):
 
         outDir = self_main_dir/config_File['RawData']['Samples']
         path = os.path.join(outDir, DatasetName)
-        os.mkdir(path)
+        if not os.path.exists(path):
+            os.mkdir(path)
         outDir = str(outDir) + '/' + DatasetName
         print('Source codes are now being extracted to Solidity files; please wait...')
         write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
