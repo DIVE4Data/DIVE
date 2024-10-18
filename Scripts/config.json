@@ -19,7 +19,8 @@
             "Opcode-based": "Features/FE-based/Opcode-based/"
         },
         "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes",
-        "Feature List": "Feature list.xlsx"
+        "Feature List File": "Feature list.xlsx",
+        "Feature List Sheet": "Features"
     },
     "solidity-code-metrics":
     {
