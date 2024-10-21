@@ -9,7 +9,7 @@ from IPython.display import display
 def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
     try:
         if SamplesDirPath == '' or SamplesDirPath.lower() == 'default':
-            SamplesDirPath = './' + str(get_Path('Samples',SamplesFolderName)) + '/' + SamplesFolderName + '/'
+            SamplesDirPath = str(get_Path('Samples',SamplesFolderName)) + '/' + SamplesFolderName + '/'
         else:
             SamplesDirPath = './' + str(SamplesDirPath) + '/' 
         
@@ -30,14 +30,15 @@ def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
         metricsDF.to_csv(Raw_CodeMetrics_OutDir + UniqueFilename + '.csv',index=False)
 
         Raw_CodeMetrics_OutDir = get_Path('Raw_CodeMetrics_OutDir',SamplesFolderName)
-        print('Done! Raw Metrics data is available in: ' + Raw_CodeMetrics_OutDir + UniqueFilename + '.csv')
+        
+        print('Done! Raw Metrics data is available in: ' + str(os.path.relpath(str(Raw_CodeMetrics_OutDir) + UniqueFilename + '.csv', Path.cwd().parent)))
 
         preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
         UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
         preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
         
         CodeMetrics_OutDir = get_Path('CodeMetrics_OutDir',SamplesFolderName)
-        print('Done! Code Metrics data is available in: ' + CodeMetrics_OutDir + UniqueFilename + '.csv' )
+        print('Done! Code Metrics data is available in: ' + str(os.path.relpath(str(CodeMetrics_OutDir) + UniqueFilename + '.csv', Path.cwd().parent)))
         display(preProcessed_metricsDF)
         return True
     
@@ -49,32 +50,29 @@ def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
 def get_Path(dataType,SamplesFolderName):
     #Get the correct path to the configuration file
     config_file_name = 'config.json'
-    self_dir = Path(__file__).resolve().parent
+    self_dir = Path(__file__).resolve().parents[1]
     config_file_path = self_dir / config_file_name
 
     #Get the correct path to the main directory
-    self_main_dir = Path(__file__).resolve().parents[1]
+    self_main_dir = Path(__file__).resolve().parents[2]
     
     configFile = open(config_file_path)
     config_File = json.load(configFile)
     configFile.close()
     
+    dataType = dataType[:-(len("_OutDir"))] if dataType.endswith("_OutDir") else dataType
+
     if 'Reports' in dataType or 'Raw' in dataType:
-        #path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
-        if 'OutDir' in dataType:
-            dataType = dataType.split('_')[0]
-            path = self_main_dir.relative_to(Path.cwd().parent)/config_File['solidity-code-metrics']['Reports'][dataType]
-        else:
-            path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
+        path = self_main_dir/config_File['solidity-code-metrics']['Reports'][dataType]
         if 'Reports' in dataType:
             outDir = os.path.join(path, SamplesFolderName)
-            os.mkdir(outDir)
+            if not os.path.exists(outDir):
+                os.mkdir(outDir)
             path = str(path) + '/' + SamplesFolderName
     elif dataType == 'Samples':
-        path = config_File['RawData'][dataType]
-    elif 'OutDir' in dataType:
-        dataType = dataType.split('_')[0]
-        path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based'][dataType]
+        path = self_main_dir/config_File['RawData'][dataType]
+    #elif 'CodeMetrics' in dataType:
+        #path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based'][dataType]
     else:
         path = self_main_dir/config_File['Features']['FE-based'][dataType]
     
@@ -84,6 +82,7 @@ def get_Path(dataType,SamplesFolderName):
 #------------------------
 def generate_MetricsReports(SamplesDirPath,OriginalDestinationPath):
     print('Metrics reports are now being generated; please wait...')
+
     for file in os.scandir(SamplesDirPath):
         filePath = ''
         if file.is_file() and '.sol' in file.name:
@@ -91,15 +90,16 @@ def generate_MetricsReports(SamplesDirPath,OriginalDestinationPath):
                 filePath = SamplesDirPath + file.name
                 #Save the output to a Markdown file
                 OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.md'
-                os.system('solidity-code-metrics ' + filePath + '>' + OutPath)
-                
+                command = f'solidity-code-metrics "{filePath}" > "{OutPath}"'
+                os.system(command)                
+
                 #Save the output to a HTML file
                 '''OutPath = OriginalDestinationPath + file.name.split('.')[0] + '.html'
                 os.system('solidity-code-metrics ' + filePath + ' --html > ' + OutPath)'''
             except Exception as err:
                 print(f"Unexpected {err=}, {type(err)=}")
                 raise
-    print('Done! Original Metrics Reports are available in: ' + OriginalDestinationPath)
+    print('Done! Original Metrics Reports are available in: ' + str(os.path.relpath(str(OriginalDestinationPath), Path.cwd().parent)))
 #Prepare generated Metrics reports (Apply strip() to file contents)
 #------------------------------------------------------------------
 def prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPath):
@@ -120,7 +120,7 @@ def prepare_GeneratedMetricsReports(OriginalDestinationPath,EditedDestinationPat
             updatedFile = open(filePath1,'w')
             updatedFile.write('\n'.join(stripped_markdown))
             updatedFile.close()
-    print('Done! Edited Metrics Reports are available in: ' + EditedDestinationPath)
+    print('Done! Edited Metrics Reports are available in: ' + str(os.path.relpath(str(EditedDestinationPath), Path.cwd().parent)))
 #Parse MD Metrics Reports
 #------------------------
 def parse_MetricsReports(ReportsFolder):
