@@ -4,7 +4,7 @@ from Scripts.FeatureExtraction.Bytecode_FeatureExtraction import Bytecode_Featur
 from Scripts.FeatureExtraction.Opcode_FeatureExtraction import Opcode_FeatureExtraction
 from Scripts.FeatureExtraction.get_CodeMetrics import get_CodeMetrics
 
-def apply_FeatureExtraction(DatasetName,dataset,attributes):
+def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes):
     try:
         for attribute in attributes:
             match attribute.lower():
@@ -14,13 +14,17 @@ def apply_FeatureExtraction(DatasetName,dataset,attributes):
                     dataset = call_Opcode_FeatureExtraction(DatasetName,dataset)
                     call_get_CodeMetrics()
                 case '1' | 'abi':
+                    dataset = dataset_or_SamplesFolderName
                     return ABI_FeatureExtraction(DatasetName,dataset)
                 case '2' | 'input' | 'bytecode':
+                    dataset = dataset_or_SamplesFolderName
                     return call_Bytecode_FeatureExtraction(DatasetName,dataset)
                 case '3' | 'opcode':
+                    dataset = dataset_or_SamplesFolderName
                     return call_Opcode_FeatureExtraction(DatasetName,dataset)
                 case '4' | 'code metrics':
-                    return call_get_CodeMetrics(DatasetName)
+                    SamplesFolderName = dataset_or_SamplesFolderName
+                    return call_get_CodeMetrics(DatasetName,SamplesFolderName)
                 # default pattern
                 case _:
                     print(attribute + ' is an incorrect attribute')
@@ -28,8 +32,7 @@ def apply_FeatureExtraction(DatasetName,dataset,attributes):
         print(f"Unexpected {err=}, {type(err)=}")
         raise
 
-def call_get_CodeMetrics(DatasetName):
-    SamplesFolderName = input('Enter the name of the samples folder')
+def call_get_CodeMetrics(DatasetName,SamplesFolderName):
     SamplesDirPath = input('If the samples folder is located in ./RawData/Samples press Enter, otherwise enter the path to the samples folder.')
     #DatasetName = input('Enter the dataset name.')
     get_CodeMetrics(SamplesFolderName,SamplesDirPath,DatasetName)
