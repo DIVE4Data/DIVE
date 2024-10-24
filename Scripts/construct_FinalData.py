@@ -2,6 +2,8 @@ import pandas as pd
 from pathlib import Path
 import os, json, datetime
 from IPython.display import display
+from functools import reduce
+from Scripts.preprocessing import preprocessing
 #---------------------------------------
 #Get the correct path to the configuration file
 config_file_name = 'config.json'
@@ -15,37 +17,26 @@ configFile = open(config_file_path)
 config_File = json.load(configFile)
 configFile.close()
 #---------------------------------------
-def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
+def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, Preprocessing =False): #, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
     try:
         #read data and unify rowID column name
-        AccountInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,AccountInfo,dataType = 'AccountInfo'))
-        ContractsInfoDF = get_RowIDCol(ReadFeaturesData(Dataset,ContractsInfo, dataType = 'ContractsInfo'))
-        OpcodesDF = get_RowIDCol(ReadFeaturesData(Dataset,Opcodes, dataType = 'Opcodes'))
-        CodeMetricsDF = get_RowIDCol(ReadFeaturesData(Dataset,CodeMetrics, dataType = 'CodeMetrics'))
-        LabelsDF = get_RowIDCol(ReadFeaturesData(Dataset,Labels, dataType = 'Labels'))
-        
         FinalData =pd.DataFrame()
-        FinalData = AccountInfoDF
-        FinalData = AccountInfoDF.merge(ContractsInfoDF, on = 'contractAddress', how = 'inner')
-        FinalData = FinalData.merge(OpcodesDF, on = 'contractAddress', how = 'inner')
-        FinalData = FinalData.merge(CodeMetricsDF, on = 'contractAddress', how = 'inner')
 
-        FinalData_withoutLebels = FinalData
-        FinalData_withoutLebels.reset_index(inplace=True,drop=True)
-        
-        #Extract label columns from LabelsDF
-        LabelCols = get_Path('LabelsCols')
-        commonCols = ['contractAddress'] + list(set(LabelsDF.columns) & set(LabelCols))
-        LabelsDF = LabelsDF[commonCols]
-        
-        FinalData = FinalData.merge(LabelsDF, on = 'contractAddress', how = 'inner')
-        FinalData.reset_index(inplace=True,drop=True)
+        for key in FeatureTypes:
+            part = pd.DataFrame(ReadFeaturesData(Dataset,FeatureTypes[key],dataType = key,Preprocessing = Preprocessing))
+            if len(FinalData) == 0:
+                FinalData = part
+            else:
+                FinalData = FinalData.join(part)
 
         finalDataName = generate_UniqueFilename(FinalDatasetName)
-        finalDataPath = str(get_Path('FinalLabeledData'))
+        if preprocessing:
+            finalDataPath = str(get_Path('PreprocessedData'))
+        else:
+            finalDataPath = str(get_Path('FinalLabeledData'))
         FinalData.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
 
-        print('Done! the Combined Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
+        print('Done! the Combined Data is available in: ' + str(os.path.relpath(str(finalDataPath) + '/' +finalDataName+'.csv', Path.cwd().parent)))
         display(FinalData)
         return True
     except Exception as err:
@@ -90,14 +81,14 @@ def get_DatasetFeatures(FeatureTypes):
 
 #Read Features/Labels data to a dataframe
 #----------------------------------------
-def ReadFeaturesData(Dataset,dataComponent,dataType):
+def ReadFeaturesData(Dataset,dataComponent,dataType,Preprocessing):
     path = str(get_Path(dataType)) + '/'
     if dataComponent[0].lower() == 'all' or len(dataComponent) > 1:
         dataComponentDF = pd.DataFrame()
         for filename in os.listdir(path):
             #if 'csv' in filename and (dataComponent[0].lower() == 'all' or filename in dataComponent) and (filename.split('_')[-1].split('.')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')):
-            if 'csv' in filename and (filename in dataComponent or (dataComponent[0].lower() == 'all' and (filename.split('.')[0].split('_')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')))):
-                df = pd.read_csv(path + filename)
+            if '.csv' in filename and (filename in dataComponent or (dataComponent[0].lower() == 'all' and (filename.split('.')[0].split('_')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')))):
+                df = pd.read_csv(path + filename,low_memory=False)
                 if len(dataComponentDF) == 0:
                     dataComponentDF = df
                 else:
@@ -105,7 +96,9 @@ def ReadFeaturesData(Dataset,dataComponent,dataType):
         dataComponentDF.drop_duplicates(keep='first',inplace=True)
         dataComponentDF.reset_index(inplace=True, drop=True)
     else:
-        dataComponentDF = pd.read_csv(path + dataComponent[0]) 
+        dataComponentDF = pd.read_csv(path + dataComponent[0],low_memory=False)
+    if Preprocessing:
+        dataComponentDF = preprocessing(dataComponentDF,['All'])
     return dataComponentDF
 
 #Get dataComponent dir path
@@ -115,10 +108,15 @@ def get_Path(dataType):
         path = self_main_dir/config_File['DataLabels'][dataType]
     elif dataType == 'FinalLabeledData':
         path = self_main_dir/config_File['FinalDS']['InitialCombinedData']
+    elif dataType == 'PreprocessedData':
+        path = self_main_dir/config_File['FinalDS']['PreprocessedData']
     elif dataType == 'LabelsCols':
         path = config_File['DataLabels'][dataType]
     else:
-        path = self_main_dir/config_File['Features'][dataType]
+        if dataType in ['AccountInfo','ContractsInfo','Opcodes']:
+            path = self_main_dir/config_File['Features']['API-based'][dataType]
+        else:
+            path = self_main_dir/config_File['Features']['FE-based'][dataType]
     
     return path
 
