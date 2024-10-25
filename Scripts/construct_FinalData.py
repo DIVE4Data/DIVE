@@ -47,7 +47,7 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, Pr
 #---------------------------------------------------
 def get_DatasetFeatures(FeatureTypes):
     #get features dic
-    features = pd.read_excel(get_Path('Feature List'),sheet_name='Features')
+    features = pd.read_excel(get_Path('Feature List File'),sheet_name='Features')
     #featuresDic = features.to_dict('records')
     #featuresDic = {item['Feature']:item for item in featuresDic}
 
@@ -115,9 +115,10 @@ def get_Path(dataType):
     else:
         if dataType in ['AccountInfo','ContractsInfo','Opcodes']:
             path = self_main_dir/config_File['Features']['API-based'][dataType]
-        else:
+        elif dataType in ['ABI-based','CodeMetrics','Input-based','Opcode-based']:
             path = self_main_dir/config_File['Features']['FE-based'][dataType]
-    
+        else:
+            path = self_main_dir/config_File['Features'][dataType]
     return path
 
 def get_RowIDCol(df):
