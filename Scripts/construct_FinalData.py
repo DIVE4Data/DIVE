@@ -118,7 +118,7 @@ def get_Path(dataType):
         elif dataType in ['ABI-based','CodeMetrics','Input-based','Opcode-based']:
             path = self_main_dir/config_File['Features']['FE-based'][dataType]
         else:
-            path = self_main_dir/config_File['Features'][dataType]
+            path = Path(__file__).resolve().parent/config_File['Features'][dataType]
     return path
 
 def get_RowIDCol(df):
