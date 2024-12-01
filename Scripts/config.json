@@ -34,7 +34,7 @@
     "DataLabels":
     {
         "Labels": "Labels/",
-        "RowID": ["contractaddress","address","addr"],
+        "RowID": ["contractaddress","address","addr","id"],
         "LabelsCols": ["Label","SWC","DASP","Tag","Class"]
     },
     "RawData":
