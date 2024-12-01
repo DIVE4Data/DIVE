@@ -17,20 +17,21 @@ configFile = open(config_file_path)
 config_File = json.load(configFile)
 configFile.close()
 #---------------------------------------
-def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, Preprocessing =False): #, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
+def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, applyPreprocessing =False): #, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
     try:
         #read data and unify rowID column name
         FinalData =pd.DataFrame()
 
         for key in FeatureTypes:
-            part = pd.DataFrame(ReadFeaturesData(Dataset,FeatureTypes[key],dataType = key,Preprocessing = Preprocessing))
+            part = pd.DataFrame(ReadFeaturesData(Dataset,FeatureTypes[key],dataType = key,applyPreprocessing = applyPreprocessing))
+
             if len(FinalData) == 0:
                 FinalData = part
             else:
-                FinalData = FinalData.join(part)
+                FinalData = FinalData.merge(part, on='contractAddress', how='left')
 
         finalDataName = generate_UniqueFilename(FinalDatasetName)
-        if preprocessing:
+        if applyPreprocessing == True:
             finalDataPath = str(get_Path('PreprocessedData'))
         else:
             finalDataPath = str(get_Path('FinalLabeledData'))
@@ -81,7 +82,7 @@ def get_DatasetFeatures(FeatureTypes):
 
 #Read Features/Labels data to a dataframe
 #----------------------------------------
-def ReadFeaturesData(Dataset,dataComponent,dataType,Preprocessing):
+def ReadFeaturesData(Dataset,dataComponent,dataType,applyPreprocessing):
     path = str(get_Path(dataType)) + '/'
     if dataComponent[0].lower() == 'all' or len(dataComponent) > 1:
         dataComponentDF = pd.DataFrame()
@@ -97,8 +98,10 @@ def ReadFeaturesData(Dataset,dataComponent,dataType,Preprocessing):
         dataComponentDF.reset_index(inplace=True, drop=True)
     else:
         dataComponentDF = pd.read_csv(path + dataComponent[0],low_memory=False)
-    if Preprocessing:
+    if applyPreprocessing:
         dataComponentDF = preprocessing(dataComponentDF,['All'])
+    
+    dataComponentDF = get_RowIDCol(dataComponentDF)
     return dataComponentDF
 
 #Get dataComponent dir path
