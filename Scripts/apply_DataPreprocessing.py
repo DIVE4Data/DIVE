@@ -25,7 +25,8 @@ def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedData
         finalDataPath = str(get_Path('PreprocessedData',config_File))
         dataset.to_csv(finalDataPath + '/' + finalDataName+'.csv',index=False)
 
-        print('Done! the Preprocessed Data is available in: ' + finalDataPath + '/' +finalDataName+'.csv')
+        print('Done! Code Metrics data is available in: ' + str(os.path.relpath(str(CodeMetrics_OutDir) + UniqueFilename + '.csv', Path.cwd().parent)))
+
         display(dataset)
         return True
     
