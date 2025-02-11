@@ -58,10 +58,10 @@
         "NullColsToNegativeOne": ["txreceipt_status"],
         "HexaColsToInt": ["from","hash","blockHash","ConstructorArguments","Implementation"],
         "StringNumColsToInt": ["Lines","nLines","nSLOC","Comment Lines","Complex. Score"],
-        "StringBoolColsToInt":["Experimental Features"],
-        "CategoricalCols": ["LicenseType","CompilerVersion","EVMVersion","Library","ABI","mostFrequentOpcode"],
-        "UselesCols":["input","ContractName","SwarmSource","Implementation","to","Short Address Attack","Opcodes","ABI","methodId","functionName","functions","extractedOpcodes","UniqueInputTypes","UniqueOutputTypes","events"],
+        "CategoricalCols": ["methodId", "LicenseType","CompilerVersion","EVMVersion","Library","mostFrequentOpcode","Experimental Features"],
+        "UselesCols":["functionName","functions","UniqueInputTypes","UniqueOutputTypes","events"],
         "ConstructorArgs": ["ConstructorArguments"],
-        "IndexCol": ["contractAddress"]
+        "IndexCol": ["contractAddress"],
+        "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes","ExtractedOpcodes","ConstructorArguments","ABI"]
     }
 }

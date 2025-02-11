@@ -2,7 +2,7 @@ import pandas as pd
 from collections import Counter
 from IPython.display import display
 from pathlib import Path
-import os, json, datetime
+import os, json, datetime, ast
 from sklearn.feature_extraction.text import CountVectorizer
 
 TotalMethods = 2 
