@@ -95,4 +95,13 @@ get_DataStatistics(dataset='DatasetFilePath',defaultDir = False)
 ```
 * The function's output is saved in the directory <A Href= "https://github.com/SMART-DIVE/DIVE/tree/main/Statistics">Statistics/</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
 ## Demo
-* 
+*  
+---
+## License
+
+This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
+
+🚫 **Patent Rights Reserved**  
+This project may be covered by pending or granted patents. The authors reserve all rights under applicable patent laws.  
+The use of this software does **not grant any rights to use patented inventions**.  
+For commercial licensing or patent-related inquiries, please contact the authors directly.
