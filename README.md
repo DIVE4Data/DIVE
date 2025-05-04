@@ -105,3 +105,6 @@ This project is licensed under the [Creative Commons Attribution-NonCommercial 4
 * This project may be covered by pending or granted patents. The authors reserve all rights under applicable patent laws.  
 * The use of this software does **not grant any rights to use patented inventions**.  
 * For commercial licensing or patent-related inquiries, please contact the authors directly.
+
+## 🛡️ Disclaimer
+* DIVE is provided as a research tool and is under active development. While we strive for reliability, we do not provide warranties or guarantees. Please use it responsibly and at your own discretion.
