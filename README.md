@@ -102,6 +102,6 @@ get_DataStatistics(dataset='DatasetFilePath',defaultDir = False)
 This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
 
 🚫 **Patent Rights Reserved**  
-This project may be covered by pending or granted patents. The authors reserve all rights under applicable patent laws.  
-The use of this software does **not grant any rights to use patented inventions**.  
-For commercial licensing or patent-related inquiries, please contact the authors directly.
+* This project may be covered by pending or granted patents. The authors reserve all rights under applicable patent laws.  
+* The use of this software does **not grant any rights to use patented inventions**.  
+* For commercial licensing or patent-related inquiries, please contact the authors directly.
