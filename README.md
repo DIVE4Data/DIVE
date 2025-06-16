@@ -35,12 +35,26 @@ Generate statistics and visualizations that provide insights into the dataset.
 ## 📦 Requirements
 
 - [Python](https://www.python.org/) >= **3.12.2**  
-- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics) >= **0.0.26**  
-- [`mrkdwn_analysis`](https://pypi.org/project/markdown-analysis/) == **0.0.5**  
+- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics) >= **0.0.26**
+  > Install using one of the following:
+  ```bash
+  # Using Yarn
+  yarn global add solidity-code-metrics@^0.0.26
+  
+  # Or using npm
+  npm install -g solidity-code-metrics@^0.0.26
+  ```
+ 
 - 🔑 Etherscan API Key  
   > Create an account at [Etherscan.io](https://etherscan.io/) and follow their [API key guide](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).  
   > ⚠️ **Do not share your API key publicly.**
 
+- **Python dependencies** are listed in [`requirements.txt`](https://github.com/SMART-DIVE/DIVE/blob/main/requirements.txt).  
+You can install them using:
+
+  ```bash
+  pip install -r requirements.txt
+  ```
 ---
 
 ## ⚙️ Usage
