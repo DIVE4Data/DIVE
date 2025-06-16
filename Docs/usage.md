@@ -24,6 +24,7 @@ get_ContractFeatures(DatasetName as a string, FeatureType as list,addresses as d
 - **Multiple types** → `["AccountInfo", "Opcodes"]`
 
 > 📁 Results are saved in: [`Features/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
+---
 
 ## 2️⃣ Solidity Code Extraction
 * This function is automatically invoked after fetching contract information, but can also be called manually
@@ -32,6 +33,7 @@ extract_SourceCodes(DatasetName as a string,ContractsInfo as a dataframe,UniqueF
 ```
 > 📁 Results are saved in: [`RawData/Samples/`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples) and [`RawData/SamplesSummary/`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SamplesSummary) (To save in different directories, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 
+---
 ## 3️⃣ Code Metrics Generation
 ```python
 get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
@@ -47,7 +49,8 @@ get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
   > Default samples path: [`RawData/Samples`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples)
   > 📁 Results are saved in: [`Features/CodeMetrics/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/CodeMetrics)
   > (To read or save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
-    
+---
+
 ## 4️⃣ Labeled Data Construction
 ```python
 construct_FinalData(Dataset = ['Dataset1Name','Dataset2Name',...], AccountInfo = FileNames as a list,ContractsInfo=FileNames as a list,Opcodes=FileNames as a list,CodeMetrics=FileNames as a list,Labels=FileNames as a list)
@@ -57,7 +60,7 @@ construct_FinalData(Dataset = ['Dataset1Name','Dataset2Name',...], AccountInfo =
 - **Specific file(s)** → `["File1Name", "FileName2"]`
 
 > 📁 Results are saved in: [`DIVE_Dataset/`](https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
-  
+---  
 
 ## 5️⃣ Statistical Data Generation
 
