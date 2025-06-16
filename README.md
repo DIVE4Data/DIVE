@@ -1,37 +1,70 @@
-# DIVE Framework
-A Blockchain digging framework and constructing vulnerability-tagged smart contract datasets.
+# 🚀 DIVE Framework  
+*A blockchain digging framework for constructing vulnerability-tagged smart contract datasets.*
+
+---
 
 ## 🔍 Key Features
-The DIVE framework provides several functions through the following components:
-* **Feature Collecting:** This component enables fetching information about the smart contract and its account from a public Blockchain network. Currently, it only supports the <A Href="https://ethereum.org/en/">Ethereum</A> Blockchain. It makes use of <A Href="https://etherscan.io/">Etherscan.io</A>, an Ethereum Blockchain Explorer, to obtain Ethereum block data. This component can collect three distinct feature sets: (1) Contract information. (2) Account information. (3) Opcodes.
-* **Solidity Codes Extraction:** This component assists in extracting the contract's source code and creating the <A Href="https://soliditylang.org/">Solidity</A> code file.
-* **Code Metrics Generation:** This component gathers useful code metrics by analyzing the contract's source code. It leverages <A Href="https://classic.yarnpkg.com/en/package/solidity-code-metrics">Solidity Code Metrics</A>, an open-source package that generates an analysis markdown report containing a variety of valuable data besides Solidity code metrics. It employs <A Href="https://pypi.org/project/markdown-analysis/"> Mrkdwn_analysis</A> Python library to parse markdown reports and extract useful features.
-* **Labeled Data Construction:** This component creates the final dataset by merging valuable attributes obtained by the previous components.
-* **Statistical Data Generation:** This component helps in drawing insights on the dataset by presenting some statistical data and charts.
 
-## Requirements
-*  <A Href="https://www.python.org/">Python</A> >=3.12.2
-*  <A Href="https://classic.yarnpkg.com/en/package/solidity-code-metrics">Solidity Code Metrics</A> >= 0.0.26
-*  <A Href="https://pypi.org/project/markdown-analysis/"> Mrkdwn_analysis Python library</A> = 0.0.5
-*  An API-key on <A Href="https://etherscan.io/">Etherscan.io</A>. If you don't have an account, you can create a free account on <A Href="https://etherscan.io/">Etherscan.io</A>, and then generate your API key. For further details, check the <A Href="https://docs.etherscan.io/getting-started/viewing-api-usage-statistics">Getting an API key</A> webpage on <A Href="https://etherscan.io/">Etherscan.io</A>. ***Please note that your key should not be shared with others***.
+The DIVE framework offers powerful tools through five main components:
 
-## Usage
-### Initials Steps
-* Clone <A Href="https://github.com/SMART-DIVE/DIVE"> DIVE repository </A>
-```
+### 1. 🧾 Feature Collecting  
+Fetch smart contract and account data from public blockchains.  
+- ✅ Currently supports [Ethereum](https://ethereum.org/en/).  
+- 🔗 Uses [Etherscan.io](https://etherscan.io/) as a data source.  
+- 📊 Collects:
+  - Contract information  
+  - Account information  
+  - Opcodes  
+
+### 2. 🧠 Solidity Code Extraction  
+Extract and save contract source code as `.sol` files using [Solidity](https://soliditylang.org/).
+
+### 3. 📈 Code Metrics Generation  
+Analyze source code using:
+- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics)  
+- [`mrkdwn_analysis`](https://pypi.org/project/markdown-analysis/) to parse markdown and extract features.
+
+### 4. 🏷️ Labeled Data Construction  
+Merge outputs from previous steps to construct a labeled dataset.
+
+### 5. 📊 Statistical Data Generation  
+Generate statistics and visualizations that provide insights into the dataset.
+
+---
+
+## 📦 Requirements
+
+- [Python](https://www.python.org/) >= **3.12.2**  
+- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics) >= **0.0.26**  
+- [`mrkdwn_analysis`](https://pypi.org/project/markdown-analysis/) == **0.0.5**  
+- 🔑 Etherscan API Key  
+  > Create an account at [Etherscan.io](https://etherscan.io/) and follow their [API key guide](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).  
+  > ⚠️ **Do not share your API key publicly.**
+
+---
+
+## ⚙️ Usage
+
+### 🔧 Initial Setup
+1. **Clone the repository:**
+```bash
       git clone https://github.com/SMART-DIVE/DIVE.git
 ```
-* Edit <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to add your API-Key.
-```
+2. **Add your API key**
+* Edit <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A>
+```json
 "Etherscan_Account": 
     {
         "API_Key": "Your API Key"
     }
 ```
-* Add the csv file containing the contract addresses to the <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> folder.
-* The DIVE framework is designed to read/write specific folders. It also targets certain columns to get contract addresses or data labels. If required, you can edit the configuration file (<A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A>) to meet your requirements.
-* To utilize any script, first import it into your Python code.
-```
+3. **Add contract addresses**
+Place your CSV file in <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> folder.
+
+> The DIVE framework is designed to read/write specific folders. It also targets certain columns to get contract addresses or data labels. If required, you can edit the configuration file (<A Href="https://github.com/SMART-DIVE/DIVE/blob/main/config.json">config.json</A>) to meet your requirements.
+
+4. **To utilize any script, first import it into your Python code:**
+```python
 from Scripts.get_Addresses import get_Addresses
 from Scripts.get_ContractFeatures import get_ContractFeatures
 from Scripts.get_CodeMetrics import get_CodeMetrics
@@ -39,38 +72,43 @@ from Scripts.construct_FinalData import construct_FinalData
 from Scripts.get_DataStatistics import get_DataStatistics
 from Scripts.extract_SourceCodes import extract_SourceCodes
 ```
-### Using Framework Functions
-#### **1. Feature Collecting**
-* **First, Read Contract Addresses to a dataframe**
-```
+
+### 🛠️ Using Framework Functions
+
+### 1️⃣ Feature Collection
+
+1. **Read contract addresses to a dataframe**
+```python
 addresses = get_Addresses(FileNames as list)
 ```
-* **Note:**
-    * **To read all files:** Pass ["All"] for the file name. 
-    * **To get addresses from a specific file:** Type the file name with ".csv"
-    * **To get addresses from multiple files:** type ['file1.csv','file2.csv',...'fileN.csv']
-    *  The function reads files from the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to read files from a different directory)
-* **Get contract features:**
-```
+**Options:**
+- **All files** → `["All"]`  
+- **Specific file(s)** → `["file1.csv", "file2.csv"]`
+
+   > The function reads files from the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/config.json">config.json</A> file to read files from a different directory)
+
+2. **Get contract features:**
+```python
 get_ContractFeatures(DatasetName as a string, FeatureType as list,addresses as dataframe)
 ```
-* **Note:**
-   * **To get all feature types:** Pass ["All"] for FeatureType. 
-   * **To get specific feature type:** Pass the feature type/s as follows:
-      *   **Account Info:** ['AccountInfo] or ['1']
-      *   **Contract Info:** ['ContractInfo] or ['2']
-      *   **Opcodes:** ['Opcodes] or ['3']
-      *   **Multiple Types:** ['FeatureType 1','FeatureType 2',...]
-  * The function's output is saved in the directory <A Href= "https://github.com/SMART-DIVE/DIVE/tree/main/Features">Features/FEATURETYPE/</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
-#### **2. Solidity Codes Extraction**
+**Feature types:**
+
+- `'AccountInfo'` or `'1'`  
+- `'ContractInfo'` or `'2'`  
+- `'Opcodes'` or `'3'`  
+- **Multiple types** → `["AccountInfo", "Opcodes"]`
+
+> 📁 Results are saved in: [`Features/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features) (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/config.json">config.json</A> file to store the function output in a different directory)
+
+### 2️⃣ Solidity Codes Extraction
 * This function is called automatically after fetching the contract information. However, it can be called independently if needed as follows:
-```
+```python
 extract_SourceCodes(DatasetName as a string,ContractsInfo as a dataframe,UniqueFilename as a string)
 ```
-* The function's output is saved in <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples">RawData/Samples</A> and <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SamplesSummary">RawData/SamplesSummary</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in different directories)
+> 📁 Results are saved in: [`RawData/Samples/`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples>RawData/Samples) and [`RawData/SamplesSummary/`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SamplesSummary) (To save in different directories, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 
-#### **3. Code Metrics Generation**
-```
+### 3️⃣ Code Metrics Generation
+```python
 get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
 ```
 * **Note:** 
@@ -79,27 +117,31 @@ get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
   * The default samples path is <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples">RawData/Samples</A>
   * The function's output is saved in the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/Features/CodeMetrics">Features/CodeMetrics/</A> 
   * Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to read from or store in a different directory.
-#### **4. Labeled Data Construction**
-```
+    
+### 4️⃣ Labeled Data Construction
+```python
 construct_FinalData(Dataset = ['Dataset1Name','Dataset2Name',...], AccountInfo = FileNames as a list,ContractsInfo=FileNames as a list,Opcodes=FileNames as a list,CodeMetrics=FileNames as a list,Labels=FileNames as a list)
 ```
 * **Note:**
    * To get all files, pass ['All'] for the FileNames.
    * To get specific files, pass ['File1Name','FileName2',...] for the FileNames.
    * The function's output is saved in the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset">DIVE_Dataset</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
-#### **5. Statistical Data Generation**
+
+### 5️⃣ Statistical Data Generation
 * If the dataset is available in the default directory, pass its name as follows:
-```
+```python
 get_DataStatistics(dataset='DatasetFileName.csv',defaultDir = True)
 ```
 * If the dataset is available in a different directory, Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file or pass its path as follows:
-```
+```python
 get_DataStatistics(dataset='DatasetFilePath',defaultDir = False)
 ```
 * The function's output is saved in the directory <A Href= "https://github.com/SMART-DIVE/DIVE/tree/main/Statistics">Statistics/</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
+---
 ## Demo
 *  
 ---
+
 ## 📦 License
 
 This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
