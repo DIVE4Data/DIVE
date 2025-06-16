@@ -56,7 +56,70 @@ You can install them using:
   pip install -r requirements.txt
   ```
 ---
+## 📁 Folder Structure
+```
+DIVE/
+├── Datasets/                    # Generated datasets
+│   ├── InitialCombinedData/     # Merged raw features before preprocessing
+│   └── PreprocessedData/        # Cleaned, transformed datasets for ML
+│
+├── Features/                    # Extracted features
+│   ├── API-based/               # Features collected from Etherscan APIs
+│   │   ├── AccountInfo/         # Account-level features
+│   │   ├── ContractsInfo/       # Contract metadata from Etherscan
+│   │   └── Opcodes/             # Opcode data from Etherscan
+│   ├── FE-based/                # Feature engineering outputs
+│   │   ├── ABI-based/           # Features extracted from ABI
+│   │   ├── CodeMetrics/         # Code metric data
+│   │   │   ├── CodeMetrics/     # Parsed metric values
+│   │   │   └── Reports/         # Raw/edited Markdown metric reports
+│   │   │       ├── EditedReports/
+│   │   │       ├── OriginalReports/
+│   │   │       └── Raw_CodeMetrics/
+│   │   ├── Input-based/         # Features derived from the Input attribute
+│   │   └── Opcode-based/        # Features derived from opcode-level analysis
+│
+├── Labels/                      # Ground-truth labels for contracts
+│
+├── RawData/                     # Data collected or downloaded
+│   ├── Samples/                 # Extracted Solidity source code samples
+│   ├── SamplesSummary/          # 
+│   └── SC_Addresses/            # CSVs of smart contract addresses
+│
+├── Scripts/                             # Main processing and utility scripts
+│
+│   ├── FeatureExtraction/               # Scripts for extracting low-level features
+│   │   ├── EVM_Opcodes/                 # Contains opcode-related resources
+│   │   │   ├── EVM_Opcodes_*.xlsx       # Excel file(s) listing EVM opcodes and metadata
+│   │   ├── ABI_FeatureExtraction.py     # Extracts features from ABI (Application Binary Interface)
+│   │   ├── Bytecode_FeatureExtraction.py# Extracts bytecode-level features
+│   │   ├── get_Bytecode.py              # Retrieves bytecode for contracts
+│   │   ├── get_CodeMetrics.py           # Calls external tools (i.e., solidity-code-metrics) to compute code metrics
+│   │   ├── get_OpcodesList.py           # Generates the EVM opcode reference list (EVM_Opcodes_*.xlsx)
+│   │   └── Opcode_FeatureExtraction.py  # Extracts features from opcodes (e.g., opcode metrics) 
+│
+│   ├── FeatureSelection/                # Script for selecting relevant features for analysis/modeling
+│   │   └── get_FilteredFeatures.py      # Applies feature selection (uses classification defined in Feature list.xlsx)
+│
+│   ├── apply_DataPreprocessing.py       # Cleans, normalizes, and transforms data
+│   ├── apply_FeatureExtraction.py       # Coordinates the execution of multiple feature extraction steps
+│   ├── construct_FinalData.py           # Merges feature sets and labels to construct the final dataset
+│   ├── extract_SourceCodes.py           # Extracts Solidity source code (included in Etherscan API responses) 
+│   ├── get_Addresses.py                 # Loads and filters smart contract addresses from input CSV files
+│   ├── get_ContractFeatures.py          # Orchestrates retrieval of contract info from Etherscan
+│   └── get_DataStatistics.py            # Generates summary statistics and visualizations for the dataset
+│
+├── Statistics/                  # Analysis outputs and statistical summaries
+│
+├── config.json                  # Configuration file for paths and API key
+├── DIVE.ipynb                   # Interactive notebook for demonstrating the framework
+├── Feature list.xlsx            # Documentation of features and their descriptions
+├── LICENSE.md                   # License: CC BY-NC 4.0
+├── README.md                    # Project overview and usage instructions
+└── requirements.txt             # Python package dependencies
+```
 
+---
 ## ⚙️ Usage
 
 ### 🔧 Initial Setup
