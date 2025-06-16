@@ -61,7 +61,7 @@ Generate statistics and visualizations that provide insights into the dataset.
 3. **Add contract addresses**
 Place your CSV file in <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> folder.
 
-> The DIVE framework is designed to read/write specific folders. It also targets certain columns to get contract addresses or data labels. If required, you can edit the configuration file (<A Href="https://github.com/SMART-DIVE/DIVE/blob/main/config.json">config.json</A>) to meet your requirements.
+> The DIVE framework is designed to read/write specific folders. It also targets certain columns to get contract addresses or data labels. If required, you can edit the configuration file [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json) to meet your requirements.
 
 4. **To utilize any script, first import it into your Python code:**
 ```python
@@ -85,7 +85,7 @@ addresses = get_Addresses(FileNames as list)
 - **All files** → `["All"]`  
 - **Specific file(s)** → `["file1.csv", "file2.csv"]`
 
-   > The function reads files from the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses">RawData/SC_Addresses</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/config.json">config.json</A> file to read files from a different directory)
+   > The function reads files from the directory [`RawData/SC_Addresses\`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SC_Addresses) (To read files from a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 
 2. **Get contract features:**
 ```python
@@ -98,9 +98,9 @@ get_ContractFeatures(DatasetName as a string, FeatureType as list,addresses as d
 - `'Opcodes'` or `'3'`  
 - **Multiple types** → `["AccountInfo", "Opcodes"]`
 
-> 📁 Results are saved in: [`Features/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features) (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/config.json">config.json</A> file to store the function output in a different directory)
+> 📁 Results are saved in: [`Features/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 
-### 2️⃣ Solidity Codes Extraction
+### 2️⃣ Solidity Code Extraction
 * This function is called automatically after fetching the contract information. However, it can be called independently if needed as follows:
 ```python
 extract_SourceCodes(DatasetName as a string,ContractsInfo as a dataframe,UniqueFilename as a string)
@@ -111,21 +111,24 @@ extract_SourceCodes(DatasetName as a string,ContractsInfo as a dataframe,UniqueF
 ```python
 get_CodeMetrics(DatasetName as a string, SamplesDir as a path)
 ```
-* **Note:** 
-  * To process samples that are stored in the default directory: SamplesDir = '' or SamplesDir = 'All'
-  * To process samples stored in a different directory: SamplesDir = 'Type the path to the samples directory.'
-  * The default samples path is <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples">RawData/Samples</A>
-  * The function's output is saved in the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/Features/CodeMetrics">Features/CodeMetrics/</A> 
-  * Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to read from or store in a different directory.
+**Options:**
+  - To process samples that are stored in the default directory: SamplesDir = '' or SamplesDir = 'All'
+  - To process samples stored in a different directory: SamplesDir = 'Type the path to the samples directory.'
+    
+  > Default samples path: [`RawData/Samples`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples)
+  > 📁 Results are saved in: [`Features/CodeMetrics/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/CodeMetrics)
+  > (To read or save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
     
 ### 4️⃣ Labeled Data Construction
 ```python
 construct_FinalData(Dataset = ['Dataset1Name','Dataset2Name',...], AccountInfo = FileNames as a list,ContractsInfo=FileNames as a list,Opcodes=FileNames as a list,CodeMetrics=FileNames as a list,Labels=FileNames as a list)
 ```
-* **Note:**
-   * To get all files, pass ['All'] for the FileNames.
-   * To get specific files, pass ['File1Name','FileName2',...] for the FileNames.
-   * The function's output is saved in the directory <A Href="https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset">DIVE_Dataset</A> (Edit the <A Href="https://github.com/SMART-DIVE/DIVE/blob/main/Scripts/config.json">Scripts/config.json</A> file to store the function output in a different directory)
+**Options:**
+- **All files** → `["All"]`  
+- **Specific file(s)** → `["File1Name", "FileName2"]`
+
+> 📁 Results are saved in: [`DIVE_Dataset/`](https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
+  
 
 ### 5️⃣ Statistical Data Generation
 * If the dataset is available in the default directory, pass its name as follows:
