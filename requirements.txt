@@ -7,5 +7,5 @@ matplotlib
 seaborn
 hexbytes
 py-solc-x
-mrkdwn-analysis
+mrkdwn-analysis==0.0.5
 beautifulsoup4
