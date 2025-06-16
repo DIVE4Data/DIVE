@@ -50,7 +50,7 @@ def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
 def get_Path(dataType,SamplesFolderName):
     #Get the correct path to the configuration file
     config_file_name = 'config.json'
-    self_dir = Path(__file__).resolve().parents[1]
+    self_dir = Path(__file__).resolve().parents[2]
     config_file_path = self_dir / config_file_name
 
     #Get the correct path to the main directory

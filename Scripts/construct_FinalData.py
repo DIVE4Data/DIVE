@@ -7,7 +7,7 @@ from Scripts.preprocessing import preprocessing
 #---------------------------------------
 #Get the correct path to the configuration file
 config_file_name = 'config.json'
-self_dir = Path(__file__).resolve().parent
+self_dir = Path(__file__).resolve().parents[1]
 config_file_path = self_dir / config_file_name
 
 #Get the correct path to the main directory

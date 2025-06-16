@@ -1,0 +1,11 @@
+pandas
+numpy
+IPython
+scikit-learn
+requests
+matplotlib
+seaborn
+hexbytes
+py-solc-x
+mrkdwn-analysis
+beautifulsoup4

@@ -117,7 +117,7 @@ def get_OpcodeCategories(config_File):
 #Read Configuration file
 #-----------------------
 def get_ConfigFile(config_file_name = 'config.json'):
-    self_dir = Path(__file__).resolve().parents[1]
+    self_dir = Path(__file__).resolve().parents[2]
     config_file_path = self_dir / config_file_name
     configFile = open(config_file_path)
     config_File = json.load(configFile)

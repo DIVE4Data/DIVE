@@ -6,15 +6,14 @@ from IPython.display import display
 from Scripts.extract_SourceCodes import extract_SourceCodes
 
 #-------------------------------------------
-#Get the correct path to the configuration file
-#-------------------------------------------
-config_file_name = 'config.json'
-self_dir = Path(__file__).resolve().parent
-config_file_path = self_dir / config_file_name
-#-------------------------------------------
 #Get the correct path to the main directory
 #-------------------------------------------
 self_main_dir = Path(__file__).resolve().parents[1]
+#-------------------------------------------
+#Get the correct path to the configuration file
+#-------------------------------------------
+config_file_name = 'config.json'
+config_file_path = self_main_dir / config_file_name
 #-------------------------------------------
 
 def get_ContractFeatures(FeatureType,addresses,DatasetName=''):

@@ -213,7 +213,7 @@ def get_initialDataset(datasetName,dataDirPath,config_File):
 #Read Configuration file
 #-----------------------
 def get_ConfigFile(config_file_name = 'config.json'):
-    self_dir = Path(__file__).resolve().parent
+    self_dir = Path(__file__).resolve().parents[1]
     config_file_path = self_dir / config_file_name
     configFile = open(config_file_path)
     config_File = json.load(configFile)

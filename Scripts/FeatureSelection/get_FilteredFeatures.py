@@ -6,7 +6,7 @@ def get_FilteredFeatures(filters):
     try:
         #get feature list file path
         configFile = readConfigFile()
-        main_dir = Path(__file__).resolve().parents[1]
+        main_dir = Path(__file__).resolve().parents[2]
         featureList = str(main_dir) + configFile['Features']['Feature List File']
         # Read the CSV file
         featureListDF = pd.read_excel(featureList,sheet_name = configFile['Features']['Feature List Sheet'])
@@ -41,8 +41,8 @@ def get_FilteredFeatures(filters):
 
 def readConfigFile():
     config_file_name = 'config.json'
-    self_dir = Path(__file__).resolve().parent
-    config_file_path = self_dir / config_file_name
+    self_main_dir = Path(__file__).resolve().parents[2]
+    config_file_path = self_main_dir / config_file_name
     
     configFile = open(config_file_path)
     config_File = json.load(configFile)

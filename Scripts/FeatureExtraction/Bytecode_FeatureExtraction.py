@@ -86,7 +86,7 @@ def get_EVM_OPCODES(config_File):
 #Read Configuration file
 #-----------------------
 def get_ConfigFile(config_file_name = 'config.json'):
-    self_dir = Path(__file__).resolve().parents[1] #Script Dir
+    self_dir = Path(__file__).resolve().parents[2] #DIVE Dir
     config_file_path = self_dir / config_file_name
     configFile = open(config_file_path)
     config_File = json.load(configFile)
@@ -95,7 +95,7 @@ def get_ConfigFile(config_file_name = 'config.json'):
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType,config_File):
-    self_main_dir = Path(__file__).resolve().parents[1] #Script Dir
+    self_main_dir = Path(__file__).resolve().parents[2] #DIVE Dir
     if dataType == 'self_main_dir':
         path = self_main_dir
     elif dataType == 'EVM_OpcodesDir':
