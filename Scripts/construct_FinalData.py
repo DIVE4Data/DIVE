@@ -19,8 +19,12 @@ configFile.close()
 #---------------------------------------
 def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, applyPreprocessing =False): #, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
     try:
-        #read data and unify rowID column name
+        #create a new dataframe and fill index column for labled dataset.
         FinalData =pd.DataFrame()
+        label_key = next((k for k in FeatureTypes if k.lower() == 'labels'), None)
+        if label_key is not None:
+            LabelsDF = pd.DataFrame(ReadFeaturesData(Dataset, FeatureTypes[label_key], dataType=label_key, applyPreprocessing=False))
+            FinalData['contractAddress'] = LabelsDF['contractAddress']
 
         for key in FeatureTypes:
             part = pd.DataFrame(ReadFeaturesData(Dataset,FeatureTypes[key],dataType = key,applyPreprocessing = applyPreprocessing))
