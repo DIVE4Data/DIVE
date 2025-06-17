@@ -95,10 +95,12 @@ def PreprocessingTask1_DropDuplicate(dataset):
     return dataset
 #------------------------------------
 def PreprocessingTask2_HideProtectedAttributes(dataset,ProtectedAttributes,savePath):
-    protectedDataset = dataset[ProtectedAttributes]
+    dataset.insert(0, 'contractID', range(1, len(dataset) + 1))
+    protectedDatasetCols = ['contractID'] + ProtectedAttributes
+    protectedDataset = dataset[protectedDatasetCols]
     protectedDatasetName = generate_UniqueFilename('ProtectedAttributes')
     protectedDataset.to_csv(savePath + '/' + protectedDatasetName+'.csv',index=False)
-    print('Done! the protected attirbutes data is available in:' + str(os.path.relpath(str(savePath) + '/' +protectedDatasetName+'.csv', Path.cwd().parent)))
+    print('Done! the protected attirbutes data is available in:' + str(os.path.relpath(str(savePath) + '/' + protectedDatasetName+'.csv', Path.cwd().parent)))
     dataset = dataset.drop(columns=ProtectedAttributes)
     return dataset
 #------------------------------------
