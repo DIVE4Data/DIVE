@@ -9,7 +9,7 @@ import sys
 #Total number of preprocessing tasks currently offered
 PreprocessingTasksNo = 11 #### All tasks will be applied except PreprocessingTask12_SetDataIndexColumn task
 
-def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedDataDir',PreprocessingTasks=['all']):
+def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['all']):
     try:
         config_File = get_ConfigFile()
         dataset = get_initialDataset(datasetName,dataDirPath,config_File)
@@ -203,7 +203,7 @@ def PreprocessingTask12_SetDataIndexColumn(dataset,IndexCol):
 #Get data to be preprocessed
 #---------------------------
 def get_initialDataset(datasetName,dataDirPath,config_File):
-    if dataDirPath == 'Default_InitialCombinedDataDir':
+    if dataDirPath:
         path = get_Path('InitialCombinedData',config_File)
     else:
         self_main_dir = get_Path('self_main_dir',config_File)

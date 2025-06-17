@@ -60,7 +60,7 @@ def git_Dir(dataType):
 
 def create_outDir(StatisticsDir):
     #Create new out dir inside StatisticsDir
-    UniqueDirName = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
+    UniqueDirName = str(datetime.now().date()).replace('-', '') + '_' + str(datetime.now().time()).replace(':', '').split('.')[0]
     path = os.path.join(StatisticsDir, UniqueDirName)
     os.mkdir(path)
 
