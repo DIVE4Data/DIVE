@@ -3,7 +3,7 @@ from pathlib import Path
 import os, json, datetime
 from IPython.display import display
 from functools import reduce
-from Scripts.preprocessing import preprocessing
+from Scripts.apply_DataPreprocessing import apply_DataPreprocessing
 #---------------------------------------
 #Get the correct path to the configuration file
 config_file_name = 'config.json'
@@ -87,7 +87,6 @@ def ReadFeaturesData(Dataset,dataComponent,dataType,applyPreprocessing):
     if dataComponent[0].lower() == 'all' or len(dataComponent) > 1:
         dataComponentDF = pd.DataFrame()
         for filename in os.listdir(path):
-            #if 'csv' in filename and (dataComponent[0].lower() == 'all' or filename in dataComponent) and (filename.split('_')[-1].split('.')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')):
             if '.csv' in filename and (filename in dataComponent or (dataComponent[0].lower() == 'all' and (filename.split('.')[0].split('_')[0] in Dataset or (len(Dataset) == 1 and Dataset[0].lower() =='all')))):
                 df = pd.read_csv(path + filename,low_memory=False)
                 if len(dataComponentDF) == 0:
@@ -99,7 +98,7 @@ def ReadFeaturesData(Dataset,dataComponent,dataType,applyPreprocessing):
     else:
         dataComponentDF = pd.read_csv(path + dataComponent[0],low_memory=False)
     if applyPreprocessing:
-        dataComponentDF = preprocessing(dataComponentDF,['All'])
+        dataComponentDF = apply_DataPreprocessing(dataComponentDF,['All'])
     
     dataComponentDF = get_RowIDCol(dataComponentDF)
     return dataComponentDF
