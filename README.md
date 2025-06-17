@@ -1,4 +1,4 @@
-# 🚀 DIVE Framework  
+# DIVE Framework  
 *A blockchain digging framework for constructing vulnerability-tagged smart contract datasets.*
 
 ---
@@ -56,7 +56,7 @@ You can install them using:
   pip install -r requirements.txt
   ```
 ---
-## 📁 Folder Structure
+## 📁 Repository Structure
 ```
 DIVE/
 ├── Datasets/                    # Generated datasets
