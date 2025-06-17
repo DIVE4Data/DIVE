@@ -20,7 +20,7 @@ def get_OpcodesList():
     if OpcodesDataUpdated(OpcodesDF,OpcodesFolder):
         filename = 'EVM_Opcodes' + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '.csv'
         OpcodesDF.to_csv(os.path.join(OpcodesFolder, filename), index=False)
-        print("Opcodes data saved to " + OpcodesFolder + '/' + filename)
+        print('Done! Opcode data saved to:' + str(os.path.relpath(str(OpcodesFolder) + '/' +filename, Path.cwd().parent)))
     else:
         print('Opcodes data is up-to-date no need to create a new opcodes file.')
 
