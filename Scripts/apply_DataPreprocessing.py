@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 import sys
 
 #Total number of preprocessing tasks currently offered
-PreprocessingTasksNo = 11 #### All tasks will be applied except PreprocessingTask11_SetDataIndexColumn task
+PreprocessingTasksNo = 11 #### All tasks will be applied except PreprocessingTask12_SetDataIndexColumn task
 
 def apply_DataPreprocessing(datasetName,dataDirPath='Default_InitialCombinedDataDir',PreprocessingTasks=['all']):
     try:
