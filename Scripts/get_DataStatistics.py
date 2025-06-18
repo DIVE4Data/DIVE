@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 import pandas as pd
+import numpy as np
 from pathlib import Path
 import json, os
 from IPython.display import display
