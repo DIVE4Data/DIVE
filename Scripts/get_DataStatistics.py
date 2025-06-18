@@ -14,7 +14,7 @@ def get_DataStatistics(dataset,defaultDir):
             datasetPath = git_Dir(dataType ='Dataset')
         else:
             datasetPath = git_Dir(dataType ='otherDSPath')
-        dataset = pd.read_csv(datasetPath + dataset)
+        dataset = pd.read_csv(str(datasetPath) + '/' + dataset)
 
         print('**Data Info**')
         print('________________________________')
@@ -53,7 +53,7 @@ def git_Dir(dataType):
         StatisticsDir = self_main_dir/config_File['outDir']['Statistics']
         Dir = create_outDir(StatisticsDir)
     elif dataType == 'Dataset' :
-        Dir = self_main_dir/config_File['DigVulSCDS']['OutDir']
+        Dir = self_main_dir/config_File['FinalDS']['PreprocessedData']
     else:
         Dir = self_main_dir
     return Dir
@@ -64,7 +64,7 @@ def create_outDir(StatisticsDir):
     path = os.path.join(StatisticsDir, UniqueDirName)
     os.mkdir(path)
 
-    outDir = StatisticsDir + UniqueDirName + '/'
+    outDir = path + '/'
     return outDir
      
 def get_ToolsFrequency(dataset,outDir):
