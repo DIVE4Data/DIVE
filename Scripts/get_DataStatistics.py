@@ -278,7 +278,7 @@ def get_LabelsFrequency(dataset,outDir):
 
         fig.savefig(outDir + "Distribution of Vulnerability Categories.pdf", format="pdf", dpi=300) 
     except Exception as e:
-        print(f"Failed to generate full profile report due to: {e}")
+        print(f"Failed to compute vulnerability distribution due to: {e}")
 #----------------------------------------------------------------       
 def get_ProfileReport(dataset,outDir, datasetName,QuickReport):
     print('**Data Profiling Report**')
@@ -312,5 +312,5 @@ def get_Info(dataType):
     if dataType == 'self_main_dir':
         info = self_main_dir
     elif dataType == 'LabelsCols':
-        info = self_main_dir/config_File['DataLabels']['LabelsCols']
+        info = config_File['DataLabels']['LabelsCols']
     return info
