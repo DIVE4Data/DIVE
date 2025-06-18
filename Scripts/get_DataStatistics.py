@@ -159,16 +159,15 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
 
     # Conditionally map integers back to string versions
     #--------------------------------
-    sample_value = dataset['CompilerVersion'].iloc[0]
-    # Check if it's an integer or all numeric (as str)
-    if isinstance(sample_value, (int, float)) or (isinstance(sample_value, str) and sample_value.isdigit()):
-        # Load your mapping JSON file
+    is_numeric = dataset['CompilerVersion'].apply(lambda x: isinstance(x, (int, float)) or (isinstance(x, str) and x.isdigit())).all()
+    if is_numeric:
+        # Load mapping
         with open(categories_path, 'r') as f:
             mapping_json = json.load(f)
-        # Reverse the mapping: int → string
+        # Reverse the mapping: int → str
         int_to_compilerversion = {v: k for k, v in mapping_json["CompilerVersion"].items()}
-
-        dataset['CompilerVersion'] = dataset['CompilerVersion'].astype(int).map(int_to_compilerversion)
+        dataset['CompilerVersion'] = dataset['CompilerVersion'].astype(int)
+        dataset['CompilerVersion'] = dataset['CompilerVersion'].map(int_to_compilerversion).astype(str)
     #--------------------------------
 
     #Extract simplified and base versions
