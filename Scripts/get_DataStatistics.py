@@ -10,7 +10,7 @@ from ydata_profiling import ProfileReport
 
 # If the final preprocessed data is stored in the default directory, pass only the file name and set defaultDir=True.
 # Otherwise, pass the full path to the file and set defaultDir=False.
-def get_DataStatistics(datasetName,defaultDir = True):
+def get_DataStatistics(datasetName,defaultDir = True, QuickReport = True):
     try:
         outDir = git_Dir(dataType ='Statistics')
         outDir = create_outDir(outDir,(datasetName.split('_')[-1].split('.')[0])) 
@@ -36,7 +36,7 @@ def get_DataStatistics(datasetName,defaultDir = True):
             
         get_TimestampFrequency(dataset,outDir)
         get_CompilerVersionsFrequency(dataset,outDir,categories_path)
-        get_ProfileReport(dataset,outDir,datasetName.split('_')[-1].split('.')[0])
+        get_ProfileReport(dataset,outDir,datasetName.split('_')[-1].split('.')[0],QuickReport)
 
         return
 
@@ -246,14 +246,14 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
 #def get_LabelsFrequency(dataset):    
     
 #----------------------------------------------------------------       
-def get_ProfileReport(dataset,outDir, datasetName):
+def get_ProfileReport(dataset,outDir, datasetName,QuickReport):
     print('**Data Profiling Report**')
     print('_______________________________________________')
 
     try:
         os.makedirs(outDir, exist_ok=True)
 
-        profile = ProfileReport(dataset, title = datasetName + " Profiling Report", minimal=False)
+        profile = ProfileReport(dataset, title = datasetName + " Profiling Report", minimal=QuickReport)
 
         report_path = os.path.join(outDir, 'Profiling_DetailedReport.html')
         profile.to_file(output_file=report_path)
