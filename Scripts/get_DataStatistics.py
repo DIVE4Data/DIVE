@@ -25,8 +25,8 @@ def get_DataStatistics(datasetName,defaultDir = True):
             dataset = pd.read_csv(os.path.join(datasetPath, datasetName))
         
         # Derive CategoricalColsMappings.json file path from dataset name
-            parts = datasetName.replace('.csv', '').split('_')
-            categories_path = os.path.join(datasetPath, f'{parts[0]}_CategoricalColsMappings_{"_".join(parts[-2:])}.json')
+        parts = datasetName.replace('.csv', '').split('_')
+        categories_path = os.path.join(datasetPath, f'{parts[0]}_CategoricalColsMappings_{"_".join(parts[-2:])}.json')
 
         get_datasetInfo(dataset,outDir)
         get_datasetSummary(dataset,outDir)   
