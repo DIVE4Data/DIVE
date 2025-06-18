@@ -36,6 +36,7 @@ def get_DataStatistics(datasetName,defaultDir = True, QuickReport = True):
             
         get_TimestampFrequency(dataset,outDir)
         get_CompilerVersionsFrequency(dataset,outDir,categories_path)
+        get_LabelsFrequency(dataset,outDir)
         get_ProfileReport(dataset,outDir,datasetName.split('_')[-1].split('.')[0],QuickReport)
 
         return
@@ -244,34 +245,40 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
     fig.savefig(outDir + "Number_of_Samples_per_Compiler_Version.pdf", format="pdf", dpi=300)
 #----------------------------------------------------------------    
 def get_LabelsFrequency(dataset,outDir):
-    LabelsCols = get_Info('LabelsCols')
-    existing_label_cols = [col for col in LabelsCols if col in dataset.columns]
-    df = dataset[existing_label_cols]
+    print('**Distribution of Vulnerability Categories**')
+    print('_______________________________________________')
+   
+    try:
+        LabelsCols = get_Info('LabelsCols')
+        existing_label_cols = [col for col in LabelsCols if col in dataset.columns]
+        df = dataset[existing_label_cols]
 
-    # Calculate the sum of 1s for each category
-    sums = df.sum()
+        # Calculate the sum of 1s for each category
+        sums = df.sum()
 
-    # Plotting
-    fig = plt.figure(figsize=(12, 6))
-    ax1 = sums.plot(kind='bar', color='skyblue',edgecolor='black', width=0.6)
-    plt.title('Distribution of Vulnerability Categories')
-    plt.xlabel('Vulnerability Types')
-    plt.ylabel('Samples')
-    plt.xticks(rotation=45)
+        # Plotting
+        fig = plt.figure(figsize=(12, 6))
+        ax1 = sums.plot(kind='bar', color='skyblue',edgecolor='black', width=0.6)
+        plt.title('Distribution of Vulnerability Categories')
+        plt.xlabel('Vulnerability Types')
+        plt.ylabel('Samples')
+        plt.xticks(rotation=45)
 
-    #Add number for each bar
-    for p in ax1.patches:
-                if p.get_height() > 0:
-                    ax1.text(p.get_x()+0.1,
-                    p.get_height()+ 20 ,
-                    '{0:.0f}'.format(p.get_height()),
-                    color='black', size='small')
+        #Add number for each bar
+        for p in ax1.patches:
+                    if p.get_height() > 0:
+                        ax1.text(p.get_x()+0.1,
+                        p.get_height()+ 20 ,
+                        '{0:.0f}'.format(p.get_height()),
+                        color='black', size='small')
 
-    plt.grid(axis='y', color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
-    plt.grid(axis='y', color="grey", which='minor', linestyle=':', linewidth="0.5");
-    plt.show()  
+        plt.grid(axis='y', color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
+        plt.grid(axis='y', color="grey", which='minor', linestyle=':', linewidth="0.5");
+        plt.show()  
 
-    fig.savefig(outDir + "Distribution of Vulnerability Categories.pdf", format="pdf", dpi=300) 
+        fig.savefig(outDir + "Distribution of Vulnerability Categories.pdf", format="pdf", dpi=300) 
+    except Exception as e:
+        print(f"Failed to generate full profile report due to: {e}")
 #----------------------------------------------------------------       
 def get_ProfileReport(dataset,outDir, datasetName,QuickReport):
     print('**Data Profiling Report**')
