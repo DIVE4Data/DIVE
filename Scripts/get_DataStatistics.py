@@ -243,8 +243,35 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
 
     fig.savefig(outDir + "Number_of_Samples_per_Compiler_Version.pdf", format="pdf", dpi=300)
 #----------------------------------------------------------------    
-#def get_LabelsFrequency(dataset):    
-    
+def get_LabelsFrequency(dataset,outDir):
+    LabelsCols = get_Info('LabelsCols')
+    existing_label_cols = [col for col in LabelsCols if col in dataset.columns]
+    df = dataset[existing_label_cols]
+
+    # Calculate the sum of 1s for each category
+    sums = df.sum()
+
+    # Plotting
+    fig = plt.figure(figsize=(12, 6))
+    ax1 = sums.plot(kind='bar', color='skyblue',edgecolor='black', width=0.6)
+    plt.title('Distribution of Vulnerability Categories')
+    plt.xlabel('Vulnerability Types')
+    plt.ylabel('Samples')
+    plt.xticks(rotation=45)
+
+    #Add number for each bar
+    for p in ax1.patches:
+                if p.get_height() > 0:
+                    ax1.text(p.get_x()+0.1,
+                    p.get_height()+ 20 ,
+                    '{0:.0f}'.format(p.get_height()),
+                    color='black', size='small')
+
+    plt.grid(axis='y', color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
+    plt.grid(axis='y', color="grey", which='minor', linestyle=':', linewidth="0.5");
+    plt.show()  
+
+    fig.savefig(outDir + "Distribution of Vulnerability Categories.pdf", format="pdf", dpi=300) 
 #----------------------------------------------------------------       
 def get_ProfileReport(dataset,outDir, datasetName,QuickReport):
     print('**Data Profiling Report**')
@@ -263,3 +290,20 @@ def get_ProfileReport(dataset,outDir, datasetName,QuickReport):
 
     except Exception as e:
         print(f"Failed to generate full profile report due to: {e}")
+#--------------------------------------------------
+def get_ConfigFile(config_file_name = 'config.json'):
+    self_dir = Path(__file__).resolve().parents[1]
+    config_file_path = self_dir / config_file_name
+    configFile = open(config_file_path)
+    config_File = json.load(configFile)
+    configFile.close()
+    return config_File
+
+def get_Info(dataType):
+    config_File = get_ConfigFile(config_file_name = 'config.json')
+    self_main_dir = Path(__file__).resolve().parents[1]
+    if dataType == 'self_main_dir':
+        info = self_main_dir
+    elif dataType == 'LabelsCols':
+        info = self_main_dir/config_File['DataLabels']['LabelsCols']
+    return info

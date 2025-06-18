@@ -35,7 +35,8 @@
     {
         "Labels": "Labels/",
         "RowID": ["contractaddress","address","addr","id"],
-        "LabelsCols": ["Label","SWC","DASP","Tag","Class"]
+        "LabelsCols": ["Label","SWC","DASP","Tag","Class","Reentrancy","Access Control","Arithmetic","Unchecked Return Values","DoS","Bad Randomness","Front-Running","Time manipulation"]
+
     },
     "RawData":
     {
