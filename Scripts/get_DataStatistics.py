@@ -4,42 +4,39 @@ from datetime import datetime
 import pandas as pd
 from pathlib import Path
 import json, os
-
 from IPython.display import display
+from ydata_profiling import ProfileReport
 
-def get_DataStatistics(dataset,defaultDir):
+# If the final preprocessed data is stored in the default directory, pass only the file name and set defaultDir=True.
+# Otherwise, pass the full path to the file and set defaultDir=False.
+def get_DataStatistics(datasetName,defaultDir = True):
     try:
         outDir = git_Dir(dataType ='Statistics')
+        outDir = create_outDir(outDir,(datasetName.split('_')[-1].split('.')[0])) 
+
+        #Read dataset
         if defaultDir:
-            datasetPath = git_Dir(dataType ='Dataset')
+            datasetPath = git_Dir(dataType = 'Dataset')
+            dataset = pd.read_csv(str(datasetPath) + '/' + datasetName)
         else:
-            datasetPath = git_Dir(dataType ='otherDSPath')
-        dataset = pd.read_csv(str(datasetPath) + '/' + dataset)
+            dataset = pd.read_csv(datasetName)
 
-        print('**Data Info**')
-        print('________________________________')
-        display(dataset.info())
-        print('**Data Describtion**')
-        print('________________________________')
-        display(dataset.describe(include='all'))
+        get_datasetInfo(dataset,outDir)
+        get_datasetSummary(dataset,outDir)   
 
-        print('**Analysis Tools Frequency**')
-        print('________________________________')
-        get_ToolsFrequency(dataset,outDir)
-        
-        print('**Frequency of Samples Per Year**')
-        print('_________________________________')
+        if 'Analysis Tools' in dataset.columns:
+            get_ToolsFrequency(dataset,outDir)
+            
         get_TimestampFrequency(dataset,outDir)
-
-        print('**Frequency of Samples Per Compiler Versions**')
-        print('_______________________________________________')
         get_CompilerVersionsFrequency(dataset,outDir)
+        get_ProfileReport(dataset,outDir,datasetName.split('_')[-1].split('.')[0])
+
         return
 
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise
-    
+#----------------------------------------------------------------    
 def git_Dir(dataType):
     config_file_name = 'config.json'
     self_main_dir = Path(__file__).resolve().parents[1]
@@ -50,24 +47,46 @@ def git_Dir(dataType):
     configFile.close()
 
     if dataType == 'Statistics':
-        StatisticsDir = self_main_dir/config_File['outDir']['Statistics']
-        Dir = create_outDir(StatisticsDir)
+        Dir = self_main_dir/config_File['outDir']['Statistics']
     elif dataType == 'Dataset' :
         Dir = self_main_dir/config_File['FinalDS']['PreprocessedData']
     else:
         Dir = self_main_dir
     return Dir
-
-def create_outDir(StatisticsDir):
+#----------------------------------------------------------------    
+def create_outDir(StatisticsDir,datasetName):
     #Create new out dir inside StatisticsDir
-    UniqueDirName = str(datetime.now().date()).replace('-', '') + '_' + str(datetime.now().time()).replace(':', '').split('.')[0]
+    UniqueDirName = str(datetime.now().date()).replace('-', '') + '_' + str(datetime.now().time()).replace(':', '').split('.')[0]+ '_' + datasetName
     path = os.path.join(StatisticsDir, UniqueDirName)
     os.mkdir(path)
 
-    outDir = path + '/'
+    os.makedirs(outDir, exist_ok=True)
+    outDir = str(StatisticsDir) + UniqueDirName + '/'
     return outDir
-     
+#----------------------------------------------------------------
+def get_datasetInfo(dataset,outDir):    
+    print('**Data Info**')
+    print('________________________________')
+    display(dataset.info())
+
+    os.makedirs(outDir, exist_ok=True)
+    datasetInfo_file_path = os.path.join(outDir, 'datasetInfo.txt')
+    with open(datasetInfo_file_path, 'w') as f:
+        dataset.info(buf=f)  
+        f.flush()
+#----------------------------------------------------------------
+def get_datasetSummary(dataset,outDir):
+    print('**Data Describtion**')
+    print('________________________________')
+    summary = dataset.describe(include='all')
+    display(summary)
+
+    os.makedirs(outDir, exist_ok=True)
+    summary.to_html(outDir + 'datasetSummary.html')
+#----------------------------------------------------------------       
 def get_ToolsFrequency(dataset,outDir):
+    print('**Analysis Tools Frequency**')
+    print('________________________________')
     print('Frequency of analysis tools in the labeled data:\n')
     ax=dataset['Analysis Tools'].value_counts().plot(kind='bar',figsize=[15,4])
     plt.title('Frequency of analysis tools in the labeled data')
@@ -81,10 +100,15 @@ def get_ToolsFrequency(dataset,outDir):
                     p.get_height()* 1 ,
                     '{0:.0f}'.format(p.get_height()),
                     color='black', size='large')
+    
+    os.makedirs(outDir, exist_ok=True)
     plt.savefig(outDir + 'ToolsFrequency.png')
     plt.show()
-
+#----------------------------------------------------------------    
 def get_TimestampFrequency(dataset,outDir):
+    print('**Frequency of Samples Per Year**')
+    print('_________________________________')
+
     timestamps = dataset['timeStamp']
     dates = []
     for timestamp in timestamps:
@@ -101,10 +125,14 @@ def get_TimestampFrequency(dataset,outDir):
     plt.grid(True, color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
     plt.grid(True, color="grey", which='minor', linestyle=':', linewidth="0.5");
     plt.minorticks_on()
+
+    os.makedirs(outDir, exist_ok=True)
     plt.savefig(outDir + 'TimestampFrequency.png')
     plt.show()
-
+#----------------------------------------------------------------    
 def get_CompilerVersionsFrequency(dataset,outDir):
+    print('**Frequency of Samples Per Compiler Versions**')
+    print('_______________________________________________')
     dataset['CompilerVersion'] = dataset['CompilerVersion'].str.split('+').str[0]
     dataset['CompilerVersion'] = dataset['CompilerVersion'].str.split('-').str[0]
     compilerVersions= pd.DataFrame(dataset['CompilerVersion'].value_counts())
@@ -115,7 +143,28 @@ def get_CompilerVersionsFrequency(dataset,outDir):
     plt.grid(True, color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
     plt.grid(True, color="grey", which='minor', linestyle=':', linewidth="0.5");
     plt.minorticks_on()
+
+    os.makedirs(outDir, exist_ok=True)
     plt.savefig(outDir + 'CompilerVersionsFrequency.png')
     plt.show()
-
+#----------------------------------------------------------------    
 #def get_LabelsFrequency(dataset):    
+    
+#----------------------------------------------------------------       
+def get_ProfileReport(dataset,outDir, datasetName):
+    print('**Data Profiling Report**')
+    print('_______________________________________________')
+
+    try:
+        os.makedirs(outDir, exist_ok=True)
+
+        profile = ProfileReport(dataset, title = datasetName + " Profiling Report", minimal=False)
+
+        report_path = os.path.join(outDir, 'Profiling_DetailedReport.html')
+        profile.to_file(output_file=report_path)
+
+        relative_path = os.path.relpath(report_path, start=Path.cwd().parent)
+        print(f'Done! The Data Profiling Report is available at: {relative_path}')
+
+    except Exception as e:
+        print(f"Failed to generate full profile report due to: {e}")

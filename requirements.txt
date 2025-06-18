@@ -9,3 +9,4 @@ hexbytes
 py-solc-x
 mrkdwn-analysis==0.0.5
 beautifulsoup4
+ydata-profiling
