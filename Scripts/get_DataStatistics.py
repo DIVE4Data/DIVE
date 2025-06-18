@@ -10,20 +10,31 @@ from ydata_profiling import ProfileReport
 
 # If the final preprocessed data is stored in the default directory, pass only the file name and set defaultDir=True.
 # Otherwise, pass the full path to the file and set defaultDir=False.
-def get_DataStatistics(datasetName,defaultDir = True, QuickReport = True):
+def get_DataStatistics(datasetName, voteDataName, dataset_defaultDir = True, voteData_defaultDir = True, QuickReport = True):
     try:
         outDir = git_Dir(dataType ='Statistics')
         outDir = create_outDir(outDir,(datasetName.split('_')[-1].split('.')[0])) 
 
         #Read dataset
-        if defaultDir:
+        if dataset_defaultDir:
             datasetPath = git_Dir(dataType = 'Dataset')
-            dataset = pd.read_csv(str(datasetPath) + '/' + datasetName)
+            dataset = pd.read_csv(str(datasetPath) + '/' + datasetName)    
         else:
             datasetPath = os.path.dirname(datasetName)
             datasetName = os.path.basename(datasetName)
             dataset = pd.read_csv(os.path.join(datasetPath, datasetName))
         
+        if voteDataName !="":
+            if voteData_defaultDir:
+                voteData_Path = git_Dir(dataType = 'Labels')
+                voteData = pd.read_csv(str(voteData_Path) + '/' + voteDataName) 
+            else:
+                voteDataPath = os.path.dirname(voteDataName)
+                voteDataName = os.path.basename(voteDataName)
+                voteData = pd.read_csv(os.path.join(voteDataPath, voteDataName))
+        else:
+            voteData = ""
+    
         # Derive CategoricalColsMappings.json file path from dataset name
         parts = datasetName.replace('.csv', '').split('_')
         categories_path = os.path.join(datasetPath, f'{parts[0]}_CategoricalColsMappings_{"_".join(parts[-2:])}.json')
@@ -31,8 +42,8 @@ def get_DataStatistics(datasetName,defaultDir = True, QuickReport = True):
         get_datasetInfo(dataset,outDir)
         get_datasetSummary(dataset,outDir)   
 
-        if 'Analysis Tools' in dataset.columns:
-            get_ToolsFrequency(dataset,outDir)
+        if len(voteData) > 0 and 'Tools' in voteData.columns:
+            get_ToolsFrequency(voteData,outDir)
             
         get_TimestampFrequency(dataset,outDir)
         get_CompilerVersionsFrequency(dataset,outDir,categories_path)
@@ -59,6 +70,8 @@ def git_Dir(dataType):
             Dir = self_main_dir/config_File['outDir']['Statistics']
         elif dataType == 'Dataset' :
             Dir = self_main_dir/config_File['FinalDS']['PreprocessedData']
+        elif dataType == 'Labels':
+            Dir = self_main_dir/config_File['DataLabels']['Labels']
         else:
             Dir = self_main_dir
         return Dir
@@ -107,27 +120,84 @@ def get_datasetSummary(dataset,outDir):
         print(f"Unexpected {err=}, {type(err)=}")
         raise   
 #----------------------------------------------------------------       
-def get_ToolsFrequency(dataset,outDir):
+def get_ToolsFrequency(voteData,outDir):
     try:
         print('**Analysis Tools Frequency**')
         print('________________________________')
         print('Frequency of analysis tools in the labeled data:\n')
-        ax=dataset['Analysis Tools'].value_counts().plot(kind='bar',figsize=[15,4])
-        plt.title('Frequency of analysis tools in the labeled data')
-        plt.xticks(rotation = 90)
+
+        #Parse the Tools column into actual lists
+        voteData['Tools'] = voteData['Tools'].apply(eval)
+
+        #Add a new column to count the number of tools used for each sample
+        voteData['Num Tools'] = voteData['Tools'].apply(len)
+
+        #Group by unique tool sets
+        voteData['Tool Set'] = voteData['Tools'].apply(lambda x: ', '.join(sorted(x)))
+        tool_set_summary = voteData.groupby(['Tool Set', 'Num Tools']).size().reset_index(name='Count')
+
+        #Group data by the number of tools
+        grouped_data = tool_set_summary.groupby('Num Tools')
+        grouped_totals = tool_set_summary.groupby('Num Tools')['Count'].sum()
+
+        #Create the chart with bars and line plot
+        fig, ax1 = plt.subplots(figsize=(16, 8))
+
+        #Bar chart for tool sets using shades of blue
+        x_positions = []
+        x_labels = []
+        current_position = 0
+        group_positions = []
+        for num_tools, group in grouped_data:
+            for _, row in group.iterrows():
+                ax1.bar(
+                    current_position,
+                    row['Count'],
+                    width=0.8,
+                    color=sns.color_palette('Blues', len(grouped_data))[num_tools - 2],
+                    edgecolor='black',)
+                x_positions.append(current_position)
+                x_labels.append(row['Tool Set'])
+                current_position += 1
+            group_positions.append((current_position - len(group) + current_position - 1) / 2)
+            current_position += 2  # Space between groups
+            
+        #Add number for each bar
+        for p in ax1.patches:
+                    if p.get_height() > 0:
+                        ax1.text(p.get_x()-0.1,
+                        p.get_height()* 1 ,
+                        '{0:.0f}'.format(p.get_height()),
+                        color='black', size='small')
+
+        #Set bar chart properties
+        ax1.set_xticks(x_positions)
+        ax1.set_xticklabels(x_labels, rotation=45, ha='right')
+        ax1.set_ylabel('Number of Samples per Analysis Tool Set', fontsize=12)
+        ax1.set_xlabel('Analysis Tool Sets', fontsize=12)
+        ax1.set_title('Number of Labeled Samples per Analysis Tool Set', fontsize=14)
+        ax1.tick_params(axis="y", labelsize=10)
+
+        #Secondary y-axis for the line chart (total samples per group)
+        ax2 = ax1.twinx()
+        ax2.plot(group_positions, grouped_totals, color='blue', marker="o", linestyle='-', linewidth=1, label='Total Samples')
+        for pos, total in zip(group_positions, grouped_totals):
+            ax2.text(pos, total + 180, f"{int(total)}", ha='center', fontsize=10, color='maroon')
+        ax2.set_ylabel('Total Samples by Set Size', fontsize=12, color='grey')
+        ax2.tick_params(axis='y', labelcolor='grey', labelsize=10)
+
+        #Add legends
+        #ax1.legend(title="Number of Tools", loc="upper left", bbox_to_anchor=(1.05, 1))
+        #ax2.legend(loc="upper right", bbox_to_anchor=(1.05, 0.9))
+        ax2.legend(loc="best")
+
         plt.grid(True, color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
         plt.grid(True, color="grey", which='minor', linestyle=':', linewidth="0.5");
 
-        for p in ax.patches:
-                    if p.get_height() > 0:
-                        ax.text(p.get_x()-0.1,
-                        p.get_height()* 1 ,
-                        '{0:.0f}'.format(p.get_height()),
-                        color='black', size='large')
-        
-        os.makedirs(outDir, exist_ok=True)
-        plt.savefig(outDir + 'ToolsFrequency.png')
+        plt.tight_layout()
         plt.show()
+
+        fig.savefig(outDir + "/Number_of_Samples_per_Analysis_Tool_Set.pdf", format="pdf", dpi=300)
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise
