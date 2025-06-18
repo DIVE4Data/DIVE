@@ -60,7 +60,6 @@ def create_outDir(StatisticsDir,datasetName):
     path = os.path.join(StatisticsDir, UniqueDirName)
     os.mkdir(path)
 
-    os.makedirs(outDir, exist_ok=True)
     outDir = str(StatisticsDir) + UniqueDirName + '/'
     return outDir
 #----------------------------------------------------------------
