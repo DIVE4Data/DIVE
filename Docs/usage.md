@@ -100,15 +100,17 @@ apply_DataPreprocessing(datasetName as string, dataDirPath as bool or string, Pr
 
 ## 6️⃣ Statistical Data Generation
 
-**If the dataset is in the default directory**, pass its name as follows:
-
 ```python
 get_DataStatistics(datasetName as string, voteDataName as string, dataset_defaultDir as bool, voteData_defaultDir as bool, QuickReport as bool)
 ```
 
-**If the dataset is available in a different directory**, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json) file or pass its path as follows:
-```python
-get_DataStatistics(dataset='DatasetFilePath',defaultDir = False)
-```
-> 📁 Results are saved in: [`Statistics`](https://github.com/SMART-DIVE/DIVE/tree/main/Statistics) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
+**Parameters:**
+- **`datasetName`** → Name of the main dataset.
+- **`voteDataName`** → Name of the dataset containing voting information (used when multiple analysis tools are applied for labeling). Otherwise, it can be left empty, i.e., `""`.
+- **`dataset_defaultDir`** → Set to `True` to load from the default directory [`Datasets/PreprocessedData`](https://github.com/SMART-DIVE/DIVE/tree/main/Datasets/PreprocessedData); if `False`, provide the full file path including the filename for `datasetName`.
+- **`voteData_defaultDir`** → Set to `True` to load from the default directory [`Labels/`](https://github.com/SMART-DIVE/DIVE/tree/main/Labels); if `False`, provide the full file path including the filename for `voteDataName`.
+- **`QuickReport`** → Set to `True` to generate a minimal `pandas-profiling` report. If `False`, `ydata_profiling` will generate a full report, which may take longer on large datasets.
+
+  
+> 📁 Results are saved in: [`Statistics`](https://github.com/SMART-DIVE/DIVE/tree/main/Statistics) > To use a different directory for saving or reading, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json).
 ---
