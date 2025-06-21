@@ -56,11 +56,15 @@ get_CodeMetrics(SamplesFolderName as a string, SamplesDirPath as a path, Dataset
 ```python
 construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dataset2Name',...], FeatureTypes = {'Type1':['All' 'or list files'], 'Type2':['All' 'or list files'] , ... }, applyPreprocessing = False)
 ```
-**Options:**
-- **All files** → `["All"]`  
-- **Specific file(s)** → `["File1Name.csv", "FileName2.csv"]`
-- **Type** → `"AccountInfo" or "ContractsInfo" or "Opcodes" or "CodeMetrics" or "Opcode-based" or "Input-based" or "ABI-based" or "Labels"`
-- **applyPreprocessing** → `True or False`
+**Parameters:**
+- **`FinalDatasetName`** → Name of the final dataset to be created.
+- **`Dataset`** → List of dataset names to include, e.g., `['Dataset1Name', 'Dataset2Name']`.
+- **`FeatureTypes`** → A dictionary specifying the feature types and corresponding files to include.  
+  Available types include: `"AccountInfo"`, `"ContractsInfo"`, `"Opcodes"`, `"CodeMetrics"`, `"Opcode-based"`, `"Input-based"`, `"ABI-based"`, and `"Labels"`.  
+  For each type, you can use:
+  - `'all'` → to include all available files, or  
+  - a list like `['File1.csv', 'File2.csv']` → to include specific files.
+- **`applyPreprocessing`** → Set to `True` to apply preprocessing during construction, otherwise `False`.
 
 > 📁 Data are collected from their default directories. Results are saved in: [`DIVE_Dataset/`](https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset).  
 > To use a different directory for saving or reading, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json).
@@ -68,7 +72,30 @@ construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dat
 --- 
 
 ## 5️⃣ Apply Data Preprocessing
+```python
+apply_DataPreprocessing(datasetName as string, dataDirPath as bool or string, PreprocessingTasks as a list)
+```
+**Parameters:**
+- **`datasetName`** → Name of the dataset.
+- **`dataDirPath`** → `True` to use the default directory, or provide a custom path like `"path/to/your/samples"`.
+- **`PreprocessingTasks`** → Use `['all']` to perform all tasks, or specify a list of tasks to apply. Supported tasks include:
 
+  - `1` or `'DropDuplicates'`
+  - `2` or `'HideProtectedAttributes'`
+  - `3` or `'FillMissingData'`
+  - `4` or `'ProcessConstructorArguments'`
+  - `5` or `'ProcessOpcodes'`
+  - `6` or `'RemoveUselesCols'`
+  - `7` or `'HandlingHexaData'`
+  - `8` or `'HandlingStringNumericalData'`
+  - `9` or `'HandlingStringBoolColsToInt'`
+  - `10` or `'HandlingCategoricalData'`
+  - `11` or `'ConvertFloatColumns_to_Int'`
+  - `12` or `'SetDataIndexColumn'`
+
+> 📁 Results are saved in: [`Features/FE-based/CodeMetrics/CodeMetrics`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/FE-based/CodeMetrics/CodeMetrics)
+> To use a different directory for saving or reading, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json).
+     
 ---
 
 ## 6️⃣ Statistical Data Generation
