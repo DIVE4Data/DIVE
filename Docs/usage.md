@@ -103,7 +103,7 @@ apply_DataPreprocessing(datasetName as string, dataDirPath as bool or string, Pr
 **If the dataset is in the default directory**, pass its name as follows:
 
 ```python
-get_DataStatistics(dataset='DatasetFileName.csv',defaultDir = True)
+get_DataStatistics(datasetName as string, voteDataName as string, dataset_defaultDir as bool, voteData_defaultDir as bool, QuickReport as bool)
 ```
 
 **If the dataset is available in a different directory**, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json) file or pass its path as follows:
