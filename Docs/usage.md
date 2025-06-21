@@ -72,9 +72,11 @@ construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dat
 --- 
 
 ## 5️⃣ Apply Data Preprocessing
+
 ```python
 apply_DataPreprocessing(datasetName as string, dataDirPath as bool or string, PreprocessingTasks as a list)
 ```
+
 **Parameters:**
 - **`datasetName`** → Name of the dataset.
 - **`dataDirPath`** → `True` to use the default directory, or provide a custom path like `"path/to/your/samples"`.
@@ -104,8 +106,18 @@ apply_DataPreprocessing(datasetName as string, dataDirPath as bool or string, Pr
 get_DataStatistics(datasetName as string, voteDataName as string, dataset_defaultDir as bool, voteData_defaultDir as bool, QuickReport as bool)
 ```
 
+The `get_DataStatistics` function generates statistical summaries and a profiling report for a given dataset. It performs:
+
+- Basic dataset info and summary (`get_datasetInfo`, `get_datasetSummary`)
+- Label distribution analysis (`get_LabelsFrequency`)
+- Compiler version and timestamp frequency (`get_CompilerVersionsFrequency`, `get_TimestampFrequency`)
+- Analysis tools frequency (`get_ToolsFrequency`), only if voting data is provided and contains a `Tools` column
+- A profiling report using `pandas-profiling` (via the `ydata_profiling` package), with an option to generate a fast or detailed version (`get_ProfileReport`)
+
+> **Note:** Although `get_DataStatistics()` runs all of these steps by default, you can also call each function individually if you only need specific parts of the analysis.
+
 **Parameters:**
-- **`datasetName`** → Name of the main dataset.
+- **`datasetName`** → Name of the preprocessed dataset.
 - **`voteDataName`** → Name of the dataset containing voting information (used when multiple analysis tools are applied for labeling). Otherwise, it can be left empty, i.e., `""`.
 - **`dataset_defaultDir`** → Set to `True` to load from the default directory [`Datasets/PreprocessedData`](https://github.com/SMART-DIVE/DIVE/tree/main/Datasets/PreprocessedData); if `False`, provide the full file path including the filename for `datasetName`.
 - **`voteData_defaultDir`** → Set to `True` to load from the default directory [`Labels/`](https://github.com/SMART-DIVE/DIVE/tree/main/Labels); if `False`, provide the full file path including the filename for `voteDataName`.
