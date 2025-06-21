@@ -24,7 +24,7 @@ get_ContractFeatures(FeatureType as list, addresses as dataframe, DatasetName as
 - **Multiple types** → `["AccountInfo", "Opcodes"]`
 - **All supported types** →`["All"]`
 
-> 📁 Results are saved in: [`Features/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
+> 📁 Results are saved in: [`Features/API-based/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/API-based) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 ---
 
 ## 2️⃣ Solidity Code Extraction
@@ -48,7 +48,7 @@ get_CodeMetrics(SamplesFolderName as a string, SamplesDirPath as a path, Dataset
   `SamplesDir = "path/to/your/samples"`
     
   > Default samples path: [`RawData/Samples`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples)
-  > 📁 Results are saved in: [`Features/CodeMetrics/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/CodeMetrics)
+  > 📁 Results are saved in: [`Features/FE-based/CodeMetrics/CodeMetrics/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/FE-based/CodeMetrics/CodeMetrics)
   > (To read or save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 ---
 
@@ -66,7 +66,7 @@ construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dat
   - a list like `['File1.csv', 'File2.csv']` → to include specific files.
 - **`applyPreprocessing`** → Set to `True` to apply preprocessing during construction, otherwise `False`.
 
-> 📁 Data are collected from their default directories. Results are saved in: [`DIVE_Dataset/`](https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset).  
+> 📁 Data is collected from their default directories. Results are saved in: [`Datasets/`](https://github.com/SMART-DIVE/DIVE/tree/main/Datasets).  
 > To use a different directory for saving or reading, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json).
 
 --- 
@@ -95,7 +95,7 @@ apply_DataPreprocessing(datasetName as string, dataDirPath as bool or string, Pr
   - `11` or `'ConvertFloatColumns_to_Int'`
   - `12` or `'SetDataIndexColumn'`
 
-> 📁 Results are saved in: [`Features/FE-based/CodeMetrics/CodeMetrics`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/FE-based/CodeMetrics/CodeMetrics)
+> 📁 Results are saved in: [`Datasets/PreprocessedData/`](https://github.com/SMART-DIVE/DIVE/tree/main/Datasets/PreprocessedData)
 > To use a different directory for saving or reading, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json).
      
 ---
