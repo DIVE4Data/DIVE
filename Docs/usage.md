@@ -52,18 +52,26 @@ get_CodeMetrics(SamplesFolderName as a string, SamplesDirPath as a path, Dataset
   > (To read or save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 ---
 
-## 4️⃣ Labeled Data Construction
+## 4️⃣ Construction Final Data
 ```python
-construct_FinalData(Dataset = ['Dataset1Name','Dataset2Name',...], AccountInfo = FileNames as a list,ContractsInfo=FileNames as a list,Opcodes=FileNames as a list,CodeMetrics=FileNames as a list,Labels=FileNames as a list)
+construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dataset2Name',...], FeatureTypes = {'Type1':['All' 'or list files'], 'Type2':['All' 'or list files'] , ... }, applyPreprocessing = False)
 ```
 **Options:**
 - **All files** → `["All"]`  
-- **Specific file(s)** → `["File1Name", "FileName2"]`
+- **Specific file(s)** → `["File1Name.csv", "FileName2.csv"]`
+- **Type** → `"AccountInfo" or "ContractsInfo" or "Opcodes" or "CodeMetrics" or "Opcode-based" or "Input-based" or "ABI-based" or "Labels"`
+- **applyPreprocessing** → `True or False`
 
-> 📁 Results are saved in: [`DIVE_Dataset/`](https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset) (To save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
----  
+> 📁 Data are collected from their default directories. Results are saved in: [`DIVE_Dataset/`](https://github.com/SMART-DIVE/DIVE/tree/main/DIVE_Dataset).  
+> To use a different directory for saving or reading, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json).
 
-## 5️⃣ Statistical Data Generation
+--- 
+
+## 5️⃣ Apply Data Preprocessing
+
+---
+
+## 6️⃣ Statistical Data Generation
 
 **If the dataset is in the default directory**, pass its name as follows:
 
