@@ -63,6 +63,6 @@
         "UselesCols":["functionName","functions","UniqueInputTypes","UniqueOutputTypes","events"],
         "ConstructorArgs": ["ConstructorArguments"],
         "IndexCol": ["contractAddress"],
-        "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes","ExtractedOpcodes","ConstructorArguments","ABI"]
+        "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes","ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber"]
     }
 }

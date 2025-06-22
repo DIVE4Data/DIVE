@@ -49,8 +49,7 @@ def call_FeatureExtractionMethod(dataset,methodID,EVM_Opcodes):
         case '1' | 'get_Opcodes':
             dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes,args=(EVM_Opcodes,))
             return dataset
-        case '2' | '':
-            return True #FE_Method_2_(dataset)
+       # case '2' | '':  # Advanced FE methods will be added in the coming releases.
         # default pattern
         case _:
             print(methodID + ' is an incorrect Method ID')
