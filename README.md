@@ -9,15 +9,15 @@ The DIVE framework offers powerful tools through five main components:
 
 ### 1. 🧾 Feature Collecting  
 Fetch smart contract and account data from public blockchains.  
-- ✅ Currently supports [Ethereum](https://ethereum.org/en/).  
-- 🔗 Uses [Etherscan.io](https://etherscan.io/) as a data source.  
+- ✅ Currently supports [`Ethereum`](https://ethereum.org/en/).  
+- 🔗 Uses [`Etherscan.io`](https://etherscan.io/) as a data source.  
 - 📊 Collects:
   - Contract information  
   - Account information  
   - Opcodes  
 
 ### 2. 🧠 Solidity Code Extraction  
-Extract and save contract source code as `.sol` files using [Solidity](https://soliditylang.org/).
+Extract and save contract source code as `.sol` files using [`Solidity`](https://soliditylang.org/).
 
 ### 3. 📈 Code Metrics Generation  
 Analyze source code using:
@@ -34,7 +34,7 @@ Generate statistics and visualizations that provide insights into the dataset.
 
 ## 📦 Requirements
 
-- [Python](https://www.python.org/) >= **3.12.2**  
+- [`Python`](https://www.python.org/) >= **3.12.2**  
 - [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics) >= **0.0.26**
   > Install using one of the following:
   ```bash
@@ -46,7 +46,7 @@ Generate statistics and visualizations that provide insights into the dataset.
   ```
  
 - 🔑 Etherscan API Key  
-  > Create an account at [Etherscan.io](https://etherscan.io/) and follow their [API key guide](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).  
+  > Create an account at [`Etherscan.io`](https://etherscan.io/) and follow their [`API key guide`](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).  
   > ⚠️ **Do not share your API key publicly.**
 
 - **Python dependencies** are listed in [`requirements.txt`](https://github.com/SMART-DIVE/DIVE/blob/main/requirements.txt).  
@@ -128,11 +128,11 @@ DIVE/
 
 ### 🔧 Initial Setup
 
-- See full instructions in [Docs/initial-setup.md](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/initial-setup.md)
+- See full instructions in [`Docs/initial-setup.md`](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/initial-setup.md)
 
 ### 🛠️ Using Framework Functions
 
-- Each function is explained in detail in [Docs/usage.md](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/usage.md)
+- Each function is explained in detail in [`Docs/usage.md`](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/usage.md)
 
 ---
 
@@ -142,7 +142,7 @@ DIVE/
 
 ## 📦 License
 
-This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
+This project is licensed under the [`Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)`](https://creativecommons.org/licenses/by-nc/4.0/).
 
 🚫 **Patent Rights Reserved**  
 * This project may be covered by pending or granted patents. The authors reserve all rights under applicable patent laws.  
