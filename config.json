@@ -9,14 +9,17 @@
         {
             "AccountInfo": "Features/API-based/AccountInfo/",
             "ContractsInfo": "Features/API-based/ContractsInfo/",
-            "Opcodes": "Features/API-based/Opcodes/"
+            "Opcodes": "Features/API-based/Opcodes/",
+            "BlockInfo": "Features/API-based/BlockInfo/"
         },
         "FE-based":
         {
             "ABI-based": "Features/FE-based/ABI-based/",
             "CodeMetrics": "Features/FE-based/CodeMetrics/CodeMetrics/",
             "Input-based": "Features/FE-based/Input-based/",
-            "Opcode-based": "Features/FE-based/Opcode-based/"
+            "Opcode-based": "Features/FE-based/Opcode-based/",
+            "Timestamp-based": "Features/FE-based/Timestamp-based/",
+            "TransactionIndex": "Features/FE-based/TransactionIndex/"
         },
         "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes",
         "Feature List File": "Feature list.xlsx",
@@ -59,10 +62,12 @@
         "NullColsToNegativeOne": ["txreceipt_status"],
         "HexaColsToInt": ["from","hash","blockHash","ConstructorArguments","Implementation"],
         "StringNumColsToInt": ["Lines","nLines","nSLOC","Comment Lines","Complex. Score"],
-        "CategoricalCols": ["methodId", "LicenseType","CompilerVersion","EVMVersion","Library","mostFrequentOpcode","Experimental Features"],
+        "CategoricalCols": ["methodId", "LicenseType","CompilerVersion","EVMVersion","Library","mostFrequentOpcode","Experimental Features", "part_of_day"],
         "UselesCols":["functionName","functions","UniqueInputTypes","UniqueOutputTypes","events"],
         "ConstructorArgs": ["ConstructorArguments"],
         "IndexCol": ["contractAddress"],
-        "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes","ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber"]
+        "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes",
+                                "ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber", "transactionIndex",
+                                "timeStamp", "part_of_day", "quarter"]
     }
 }
