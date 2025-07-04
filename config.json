@@ -19,12 +19,13 @@
             "Input-based": "Features/FE-based/Input-based/",
             "Opcode-based": "Features/FE-based/Opcode-based/",
             "Timestamp-based": "Features/FE-based/Timestamp-based/",
-            "TransactionIndex": "Features/FE-based/TransactionIndex/"
+            "TransactionIndex": "Features/FE-based/TransactionIndex/",
+            "Library-based": "Features/FE-based/Library-based/"
         },
         "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes",
         "Feature List File": "Feature list.xlsx",
         "Feature List Sheet": "Features"
-    },
+        },
     "solidity-code-metrics":
     {
         "Reports":
@@ -68,6 +69,7 @@
         "IndexCol": ["contractAddress"],
         "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes",
                                 "ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber", "transactionIndex",
-                                "timeStamp", "part_of_day", "quarter"]
+                                "timeStamp", "part_of_day", "quarter",
+                                "ExternalLibNames"]
     }
 }

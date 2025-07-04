@@ -8,15 +8,17 @@ import os, json, datetime
 
 TotalMethods = 1 
 
-def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
+#def Bytecode_FeatureExtraction(DatasetName,dataset, methods, Col='input'):
+def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input'):
+    methods = [1]
     try:
-        if 'input' in dataset.columns:
+        if Col in dataset.columns:
             #Get configurations data
             config_File = get_ConfigFile()
             #---------------------------------------
             #Ensure the rowID column is named 'contractAddress'
             dataset = get_RowIDCol(dataset,config_File)
-            Bytecode_basedFeatures = dataset[['contractAddress', 'input']]
+            Bytecode_basedFeatures = dataset[['contractAddress', Col]]
             
             EVM_Opcodes = get_EVM_OPCODES(config_File)
 
@@ -36,9 +38,8 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, methods):
 
             print('Done! the Bytecode-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
             display(Bytecode_basedFeatures)
-            return True
         else:
-            return 'Bytecode (input) attribute is not present in the given dataset'
+            print(f'The {Col} attribute is not present in the given dataset')
     
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")

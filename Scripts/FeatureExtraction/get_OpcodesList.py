@@ -1,7 +1,7 @@
 #Requirements: install beautifulsoup4
 #pip install requests beautifulsoup4
 
-import requests,datetime, os
+import requests,datetime, os,json
 from pathlib import Path
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -14,8 +14,15 @@ def get_OpcodesList():
     OpcodesDF = set_categories(OpcodesDF)
     
     #Write opcodes data to a new csv file
+    self_main_dir = Path.cwd() 
+    config_file_name = 'config.json'
+    config_file_path = self_main_dir / config_file_name
+
+    with open(config_file_path) as configFile:
+        config_File = json.load(configFile)
     self_dir = Path(__file__).resolve().parent
-    OpcodesFolder = str(self_dir) + '/EVM_Opcodes'
+    OpcodesFolder = str(self_dir) + config_File['Features']['EVM_OpcodesDir']
+
     #if the opcodes data not present, write it to a new file
     if OpcodesDataUpdated(OpcodesDF,OpcodesFolder):
         filename = 'EVM_Opcodes' + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0] + '.csv'

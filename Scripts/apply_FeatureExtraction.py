@@ -5,6 +5,7 @@ from Scripts.FeatureExtraction.Opcode_FeatureExtraction import Opcode_FeatureExt
 from Scripts.FeatureExtraction.get_CodeMetrics import get_CodeMetrics
 from Scripts.FeatureExtraction.Timestamp_FeatureExtraction import Timestamp_FeatureExtraction
 from Scripts.FeatureExtraction.transactionIndex_FeatureExtraction import transactionIndex_FeatureExtraction
+from Scripts.FeatureExtraction.Library_FeatureExtraction import library_FeatureExtraction
 
 def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes):
     try:
@@ -12,30 +13,34 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes)
             match attribute.lower():
                 case 'all':
                     dataset = dataset_or_SamplesFolderName
-                    ABI_FeatureExtraction(DatasetName,dataset)
-                    Timestamp_FeatureExtraction(DatasetName,dataset)
-                    call_transactionIndex_FeatureExtraction(DatasetName,dataset)
+                    ABI_FeatureExtraction(DatasetName,dataset, Col='ABI')
+                    Timestamp_FeatureExtraction(DatasetName,dataset, Col='timeStamp')
+                    library_FeatureExtraction(DatasetName, dataset, Col='Library')
+                    transactionIndex_FeatureExtraction(DatasetName,dataset, Col='transactionIndex')
+                    call_Bytecode_FeatureExtraction(DatasetName,dataset)
+                    call_Opcode_FeatureExtraction(DatasetName,dataset)
                     call_get_CodeMetrics()
-                    #dataset = call_Bytecode_FeatureExtraction(DatasetName,dataset)
-                    #dataset = call_Opcode_FeatureExtraction(DatasetName,dataset)
                 case '1' | 'abi':
                     dataset = dataset_or_SamplesFolderName
-                    return ABI_FeatureExtraction(DatasetName,dataset)
-                case '2' | 'input' | 'bytecode':
+                    ABI_FeatureExtraction(DatasetName,dataset, Col='ABI')
+                case '2' | 'timestamp':
                     dataset = dataset_or_SamplesFolderName
-                    return call_Bytecode_FeatureExtraction(DatasetName,dataset)
-                case '3' | 'opcode':
+                    Timestamp_FeatureExtraction(DatasetName,dataset, Col='timeStamp')
+                case '3' | 'library':
                     dataset = dataset_or_SamplesFolderName
-                    return call_Opcode_FeatureExtraction(DatasetName,dataset)
-                case '4' | 'timestamp':
+                    library_FeatureExtraction(DatasetName, dataset, Col='Library')
+                case '4' | 'transactionIndex':
                     dataset = dataset_or_SamplesFolderName
-                    return Timestamp_FeatureExtraction(DatasetName,dataset)
-                case '5' | 'transactionIndex':
-                    dataset = dataset_or_SamplesFolderName
-                    return  transactionIndex_FeatureExtraction(DatasetName,dataset)
-                case '6' | 'code metrics':
+                    transactionIndex_FeatureExtraction(DatasetName,dataset, Col='transactionIndex')
+                case '5' | 'code metrics':
                     SamplesFolderName = dataset_or_SamplesFolderName
-                    return call_get_CodeMetrics(DatasetName,SamplesFolderName)
+                    call_get_CodeMetrics(DatasetName,SamplesFolderName)
+                case '6' | 'input' | 'bytecode':
+                    dataset = dataset_or_SamplesFolderName
+                    call_Bytecode_FeatureExtraction(DatasetName,dataset)
+                case '7' | 'opcode':
+                    dataset = dataset_or_SamplesFolderName
+                    call_Opcode_FeatureExtraction(DatasetName,dataset)
                 case _:
                     print(attribute + ' is an incorrect attribute')
     except Exception as err:
@@ -47,17 +52,15 @@ def call_get_CodeMetrics(DatasetName,SamplesFolderName):
     #DatasetName = input('Enter the dataset name.')
     get_CodeMetrics(SamplesFolderName,SamplesDirPath,DatasetName)
 
-def call_transactionIndex_FeatureExtraction(DatasetName,dataset):
-    blockInfo_fileName = input('Provide the name of the blockInfo file. If the file not in the default dir, provide the full path.')
-    return transactionIndex_FeatureExtraction(DatasetName,dataset,blockInfo_fileName)
-
 def call_Bytecode_FeatureExtraction(DatasetName,dataset):
-    methods = get_FeatureExtractionMethods('Bytecodes')
-    return Bytecode_FeatureExtraction(DatasetName,dataset, methods)
+    #methods = get_FeatureExtractionMethods('Bytecodes')
+    #Bytecode_FeatureExtraction(DatasetName,dataset, methods)
+    Bytecode_FeatureExtraction(DatasetName,dataset)
 
 def call_Opcode_FeatureExtraction(DatasetName,dataset):
-    methods = get_FeatureExtractionMethods('Opcodes')
-    return Opcode_FeatureExtraction(DatasetName,dataset,methods)
+    #methods = get_FeatureExtractionMethods('Opcodes')
+    #Opcode_FeatureExtraction(DatasetName,dataset, methods='1', Col='Opcodes')
+    Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes')
 
 def get_FeatureExtractionMethods(FeatureType):
     Flag = True

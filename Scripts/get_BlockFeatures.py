@@ -2,31 +2,33 @@ import requests, json, datetime
 from pathlib import Path
 from IPython.display import display
 
-def get_ContractFeatures(dataset, DatasetName=''):
+def get_ContractFeatures(dataset, DatasetName='', Col='blocknumber'):
     try:
-        self_main_dir = Path.cwd() 
-        config_file_name = 'config.json'
-        config_file_path = self_main_dir / config_file_name
+        if Col in dataset.columns:
+            self_main_dir = Path.cwd() 
+            config_file_name = 'config.json'
+            config_file_path = self_main_dir / config_file_name
 
-        with open(config_file_path) as configFile:
-            config_File = json.load(configFile)
+            with open(config_file_path) as configFile:
+                config_File = json.load(configFile)
 
-        blockInfo = dataset['blocknumber'].value_counts().reset_index()
-        blockInfo.columns = ['blocknumber', 'occurrences']
-        blockInfo = blockInfo.sort_values(by='blocknumber').reset_index(drop=True)
+            blockInfo = dataset[Col].value_counts().reset_index()
+            blockInfo.columns = [Col, 'occurrences']
+            blockInfo = blockInfo.sort_values(by=Col).reset_index(drop=True)
 
-        api_key = config_File['Etherscan_Account']['API_Key']
+            api_key = config_File['Etherscan_Account']['API_Key']
 
-        blockInfo['transactionCount'] = blockInfo['blocknumber'].apply(lambda blk: get_transaction_count(blk, api_key))
+            blockInfo['transactionCount'] = blockInfo[Col].apply(lambda blk: get_transaction_count(blk, api_key))
 
-        UniqueFilename = generate_UniqueFilename(DatasetName,'blockInfo')
-        outDir = self_main_dir/config_File['Features']['API-based']['BlockInfo']
-        blockInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-        outDir = self_main_dir.relative_to(Path.cwd().parent)
-        print('Done! Block Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-        display(blockInfo)
-        return blockInfo
-
+            UniqueFilename = generate_UniqueFilename(DatasetName,'blockInfo')
+            outDir = self_main_dir/config_File['Features']['API-based']['BlockInfo']
+            blockInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+            outDir = self_main_dir.relative_to(Path.cwd().parent)
+            print('Done! Block Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+            display(blockInfo)
+            return blockInfo
+        else:
+            print(f'The {Col} attribute is not present in the given dataset')
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise

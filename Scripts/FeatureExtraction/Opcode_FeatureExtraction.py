@@ -6,15 +6,17 @@ import os, json, datetime, ast
 from sklearn.feature_extraction.text import CountVectorizer
 
 TotalMethods = 2 
-def Opcode_FeatureExtraction(DatasetName,dataset, methods):
+#def Opcode_FeatureExtraction(DatasetName,dataset, methods, Col='Opcodes'):
+def Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes'):
+    methods = [1]
     try:
-        if 'Opcodes' in dataset.columns:
+        if Col in dataset.columns:
             #Get configurations data
             config_File = get_ConfigFile()
             #---------------------------------------
             #Ensure the rowID column is named 'contractAddress'
             dataset = get_RowIDCol(dataset,config_File)
-            Opcode_basedFeatures = dataset[['contractAddress', 'Opcodes']]
+            Opcode_basedFeatures = dataset[['contractAddress', Col]]
 
             if len(methods)== 1 and methods[0].lower()== 'all':
                 for methodID in range(1,TotalMethods +1):
@@ -32,9 +34,8 @@ def Opcode_FeatureExtraction(DatasetName,dataset, methods):
             
             print('Done! the Opcode-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
             display(Opcode_basedFeatures)
-            return True
         else:
-            return 'Opcodes  attribute is not present in the given dataset'
+            print(f'The {Col} attribute is not present in the given dataset')
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
     raise
@@ -43,8 +44,8 @@ def call_FeatureExtractionMethod(config_File,dataset,methodID):
     match methodID:
         case '1' | 'StatisticalFeatures':
             return FE_Method_1_StatisticalFeatures(config_File,dataset)
-        case '2' | '':
-            return FE_Method_2_(dataset)
+        #case '2' | '':
+            #return FE_Method_2_(dataset)
         # default pattern
         case _:
             print(methodID + ' is an incorrect Method ID')
@@ -85,7 +86,7 @@ def FE_Method_1_StatisticalFeatures(config_File,dataset):
 #=============================================================================================================
 #Method #2
 #--------------------------
-def FE_Method_2_(dataset):
+'''def FE_Method_2_(dataset):
     opcodes = dataset['Opcodes'].str.split('<br>').apply(lambda x: pd.Series(x).str.split().str[0].replace(to_replace='.*Unknown.*', value='Unknown', regex=True).tolist())
 
     # Function to extract features using CountVectorizer
@@ -98,7 +99,7 @@ def FE_Method_2_(dataset):
     features, feature_names = extract_features(opcode_list)
 
     # Convert to DataFrame for better readability
-    features_df = pd.DataFrame(features.toarray(), columns=feature_names)
+    features_df = pd.DataFrame(features.toarray(), columns=feature_names)'''
 
 #=============================================================================================================
 #Read EVM Opcodes csv file

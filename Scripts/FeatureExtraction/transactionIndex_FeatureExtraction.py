@@ -4,41 +4,41 @@ from IPython.display import display
 import pandas as pd
 from Scripts.get_BlockFeatures import get_BlockFeatures
 
-def transactionIndex_FeatureExtraction(DatasetName,dataset):
+def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='TransactionIndex'):
     try:
-        self_main_dir = Path.cwd() 
-        config_file_name = 'config.json'
-        config_file_path = self_main_dir / config_file_name
+        if Col in dataset.columns:
+            self_main_dir = Path.cwd() 
+            config_file_name = 'config.json'
+            config_file_path = self_main_dir / config_file_name
 
-        with open(config_file_path) as configFile:
-            config_File = json.load(configFile)
-        
-        blockInfo = get_BlockFeatures(dataset, DatasetName)
+            with open(config_file_path) as configFile:
+                config_File = json.load(configFile)
+            
+            blockInfo = get_BlockFeatures(dataset, DatasetName)
 
-        dataset = pd.merge(dataset, blockInfo[['blockNumber', 'transactionCount']], on='blockNumber', how='left')
-        dataset['relative_tx_position'] = dataset['transactionIndex'] / dataset['transactionCount']
-        dataset['block_position'] = dataset['relative_tx_position'].apply(categorize_position)
+            dataset = pd.merge(dataset, blockInfo[['blockNumber', 'transactionCount']], on='blockNumber', how='left')
+            dataset['relative_tx_position'] = dataset['transactionIndex'] / dataset['transactionCount']
+            dataset['block_position'] = dataset['relative_tx_position'].apply(categorize_position)
 
-        # Determine the contract identifier column
-        if 'contractID' in dataset.columns:
-            contract_col = 'contractID'
-        elif 'contractAddress' in dataset.columns:
-            contract_col = 'contractAddress'
+            # Determine the contract identifier column
+            if 'contractID' in dataset.columns:
+                contract_col = 'contractID'
+            elif 'contractAddress' in dataset.columns:
+                contract_col = 'contractAddress'
+            else:
+                raise KeyError('Neither "contractID" nor "contractAddress" found in dataset.')
+
+            # Select output columns
+            transactionIndex_Feature = dataset[[contract_col, 'blockNumber', 'transactionCount', Col, 'relative_tx_position', 'block_position']]
+
+            UniqueFilename = generate_UniqueFilename(DatasetName,Col)
+            outDir = self_main_dir/config_File['Features']['FE-based'][Col]
+            transactionIndex_Feature.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+            outDir = self_main_dir.relative_to(Path.cwd().parent)
+            print('Done! the TransactionIndex-based Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
+            display(transactionIndex_Feature)
         else:
-            raise KeyError('Neither "contractID" nor "contractAddress" found in dataset.')
-
-        # Select output columns
-        transactionIndex_Feature = dataset[[contract_col, 'blockNumber', 'transactionCount', 'transactionIndex', 'relative_tx_position', 'block_position']]
-
-        UniqueFilename = generate_UniqueFilename(DatasetName,'TransactionIndex')
-        outDir = self_main_dir/config_File['Features']['FE-based']['TransactionIndex']
-        transactionIndex_Feature.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-        outDir = self_main_dir.relative_to(Path.cwd().parent)
-        print('Done! the TransactionIndex-based Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-        display(transactionIndex_Feature)
-
-        return
-    
+            print(f'The {Col} attribute is not present in the given dataset')
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise

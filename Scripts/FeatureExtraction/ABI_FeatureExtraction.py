@@ -3,8 +3,8 @@ from IPython.display import display
 from pathlib import Path
 import json, datetime
 
-def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame: dataset
-    if 'ABI' in dataset.columns:
+def ABI_FeatureExtraction(DatasetName, dataset, Col='ABI'): #String: DatasetName, DataFrame: dataset
+    if Col in dataset.columns:
         #Get the correct path to the configuration file
         config_file_name = 'config.json'
         self_dir = Path(__file__).resolve().parents[2]
@@ -14,7 +14,7 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
         configFile.close()
         #---------------------------------------
         #Apply feature extraction to each ABI row
-        ABI_FeaturesDF = dataset['ABI'].apply(FeatureExtraction).apply(pd.Series)
+        ABI_FeaturesDF = dataset[Col].apply(FeatureExtraction).apply(pd.Series)
 
         #Ensure the rowID column is named 'contractAddress'
         dataset = get_RowIDCol(dataset,config_File)
@@ -30,10 +30,8 @@ def ABI_FeatureExtraction(DatasetName, dataset): #String: DatasetName, DataFrame
 
         print('Done! the ABI-based Data is available in: ' + str(path) + '/' + UniqueFilename + '.csv')
         display(ABI_basedFeatures)
-
-        return True
     else:
-        return 'The ABI attribute is not present in the given dataset'
+        print(f'The {Col} attribute is not present in the given dataset')
 
 def FeatureExtraction(ABI):
     try:
