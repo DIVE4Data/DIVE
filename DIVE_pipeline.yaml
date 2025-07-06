@@ -1,0 +1,98 @@
+# Top-level input configuration
+input:
+  addressesFile: ["All"]                  # Specify ["All"] to include all address files, or list specific ones
+  datasetName: "datasetname"              # Unique name for the dataset used throughout the pipeline
+  configurationFile: "config.json"        # Name of the global configuration file
+  installRequirements: true               # Set to true to install all required Python packages before running the pipeline
+
+
+# Main pipeline execution steps
+pipeline:
+
+
+# Step 1: Collect smart contract attributes via Etherscan APIs
+  # For large datasets, this step may take hours or even days to complete,
+  # depending on your subscription level and connection speed.
+  # Therefore, it is recommended to run this step separately
+  # (i.e., disable all other steps during this run).
+  get_ContractFeatures:
+    enable: true                           # Enable or disable this step
+    featureTypes:                          # Select types of features to extract
+      accountInfo: true                    # Extract account-related information
+      contractsInfo: true                  # Extract contract-based infromation
+      opcodes: true                        # Extract EVM opcodes used in the contracts
+
+
+  # Step 2: Apply feature extraction to the dataset
+  apply_FeatureExtraction:
+    enable: true                           # Enable or disable this step
+    datasetName: "{input.datasetName}"     # The input dataset name
+    attributes:                            # List of attributes to include in the feature extraction process
+      ABI: true                           
+      timestamp: true                      
+      Library: true                      
+      transactionIndex: true       
+      code metrics: true                   
+      input: true                          
+      opcode: true                        
+
+
+# Step 3: Combine multiple datasets and features into one final dataset
+  constructFinalData:
+    enable: true                             # Enable or disable this step
+    finalDatasetName: "{input.datasetName}"  # Name for the resulting final dataset
+    sourceDatasets:                          # Datasets to combine; replace with real names
+      - "Dataset#1Name"
+      - "Dataset#2Name"
+      - "..."                              # Add more datasets as needed
+    FeatureTypes:                          # Specify feature sources for the final dataset
+      AccountInfo:        ["All or list of files"]       # Account information sources
+      ContractsInfo:      ["All or list of files"]       # Contract information sources
+      Opcodes:            ["All or list of files"]       # Opcode-related features
+      CodeMetrics:        ["All or list of files"]       # Code metric features
+      Opcode-based:       ["All or list of files"]       # Derived features from opcodes
+      Input-based:        ["All or list of files"]       # Features derived from inputs
+      ABI-based:          ["All or list of files"]       # Features from ABI
+      Library-based:      ["All or list of files"]       # Library-based features
+      Timestamp-based:    ["All or list of files"]       # Timestamp-derived features
+      Transactionindex:   ["All or list of files"]       # TransactionIndex features
+      Labels:             ["All or list of files"]       # Ground truth or classification labels
+    apply_DataPreprocessing: false          # Set to true to apply preprocessing after merging; if enabled, you should disable the 'apply_DataPreprocessing' step manually
+
+
+# Step 4: Clean and preprocess the combined dataset
+  apply_DataPreprocessing:
+    enable: true                           # Enable or disable this step
+    datasetName: ""                        # Leave empty to use dataset name from the previous step (Step 3)
+    dataDirPath: true                      # Use default directory (true) or specify custom path
+    PreprocessingTasks:                    # List of preprocessing steps to apply
+      DropDuplicates: true                 # Remove duplicate rows
+      HideProtectedAttributes: true        # Mask or drop sensitive attributes
+      FillMissingData: true                # Handle missing values using suitable strategy
+      ProcessConstructorArguments: true    # Parse and process constructor inputs from contracts
+      ProcessOpcodes: true                 # Normalize or vectorize opcodes
+      RemoveUselesCols: true               # Remove columns with no predictive value
+      HandlingHexaData: true               # Convert or clean hexadecimal fields
+      HandlingStringNumericalData: true    # Convert numerical values stored as strings to proper numbers
+      HandlingStringBoolColsToInt: true    # Convert boolean-like strings ("true"/"false") to 1/0
+      HandlingCategoricalData: true        # Encode categorical variables
+      ConvertFloatColumns_to_Int: true     # Convert float columns to integers where appropriate
+
+
+# Step 5: Generate dataset statistics and summaries
+  get_DataStatistics:
+    enable: true                           # Enable or disable this step
+    datasetName: ""                        # # Leave empty to use dataset name from the previous step (Step 4)
+    voteDataName: "voteDataName"           # Name for voting dataset
+    dataset_defaultDir: true               # Use default directory for main dataset
+    voteData_defaultDir: true              # Use custom directory for vote data 
+    QuickReport: false                     # Set to true to generate a brief summary instead of a full report
+
+
+# Step 6: Filter features based on metadata defined in Feature list.xlsx
+  get_FilteredFeatures:
+    enable: false                           # Enable or disable this step
+    filters:                               # Define filters as key-value pairs; filters must correspond to one of the columns in Feature list.xlsx
+      filter1: ['value1', 'value2']
+      filter2: ['value1', 'value2']
+      # Add more filters as needed

@@ -33,17 +33,6 @@ def Timestamp_FeatureExtraction(DatasetName, dataset, Col='timeStamp'):
                         'hour_sin', 'hour_cos', 'dayofweek_sin', 'dayofweek_cos']
             Timestamp_basedFeatures = dataset[['contractAddress'] + new_cols].copy()
 
-            '''# Reorder: keep 'timeStamp', insert new_cols, then the rest
-            new_cols = ['quarter', 'part_of_day',
-                        'hour_sin', 'hour_cos', 'dayofweek_sin', 'dayofweek_cos']
-            cols = dataset_encoded.columns.tolist()
-            ts_index = cols.index('timeStamp') + 1
-
-            for col in new_cols:
-                cols.remove(col)
-            cols[ts_index:ts_index] = new_cols 
-            dataset = dataset_encoded[cols]'''
-
             UniqueFilename = generate_UniqueFilename(DatasetName,'Timestamp-based')
             self_main_dir = Path(__file__).resolve().parents[2]
             path = self_main_dir/config_File['Features']['FE-based']['Timestamp-based']
