@@ -6,7 +6,7 @@ from pathlib import Path
 from IPython.display import display
 
 
-def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
+def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = '',session_path=None):
     try:
         if SamplesDirPath == '' or SamplesDirPath.lower() == 'default':
             SamplesDirPath = str(get_Path('Samples',SamplesFolderName)) + '/' + SamplesFolderName + '/'
@@ -36,7 +36,11 @@ def get_CodeMetrics(SamplesFolderName,SamplesDirPath = '',DatasetName = ''):
 
             preProcessed_metricsDF = preprocesse_MetricsData(metricsDF)
             UniqueFilename = generate_UniqueFilename(DatasetName,'CodeMetrics')
-            preProcessed_metricsDF.to_csv(CodeMetrics_OutDir + UniqueFilename + '.csv' ,index=False)
+            outputPath = CodeMetrics_OutDir + UniqueFilename + '.csv'
+            preProcessed_metricsDF.to_csv(outputPath,index=False)
+
+            if session_path:
+                write_session(session_path, {"CodeMetrics": outputPath})
             
             CodeMetrics_OutDir = get_Path('CodeMetrics_OutDir',SamplesFolderName)
             print('Done! Code Metrics data is available in: ' + str(os.path.relpath(str(CodeMetrics_OutDir) + UniqueFilename + '.csv', Path.cwd().parent)))
@@ -229,3 +233,13 @@ def preprocesse_MetricsData(metricsDF):
 def generate_UniqueFilename(DatasetName,dataType):
     UniqueFilename = DatasetName + '_' +  dataType + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

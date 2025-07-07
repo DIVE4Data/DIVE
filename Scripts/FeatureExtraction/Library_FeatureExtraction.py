@@ -3,7 +3,7 @@ from pathlib import Path
 from IPython.display import display
 import pandas as pd
 
-def library_FeatureExtraction(DatasetName, dataset, Col='Library'):
+def library_FeatureExtraction(DatasetName, dataset, Col='Library',session_path=None):
     try:
         if Col in dataset.columns:
             self_main_dir = Path.cwd() 
@@ -29,7 +29,11 @@ def library_FeatureExtraction(DatasetName, dataset, Col='Library'):
             UniqueFilename = generate_UniqueFilename(DatasetName, 'Library')
             outDir = self_main_dir / config_File['Features']['FE-based']['Library-based']
             outDir.mkdir(parents=True, exist_ok=True)
-            library_Feature.to_csv(str(outDir / (UniqueFilename + ".csv")), index=False)
+            outputPath = str(outDir / (UniqueFilename + ".csv"))
+            library_Feature.to_csv(outputPath, index=False)
+
+            if session_path:
+                write_session(session_path, {"Library": outputPath})
 
             relOutDir = self_main_dir.relative_to(Path.cwd().parent)
             print('Done! The Library-based data is available in: ' + str(relOutDir / (UniqueFilename + ".csv")))
@@ -54,3 +58,13 @@ def extract_libNames(row):
 def generate_UniqueFilename(DatasetName, datatype):
     now = datetime.datetime.now()
     return f"{DatasetName}_{datatype}_{now.date().isoformat().replace('-', '')}_{now.time().isoformat().replace(':', '').split('.')[0]}"
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

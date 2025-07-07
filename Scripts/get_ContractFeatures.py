@@ -16,7 +16,7 @@ config_file_name = 'config.json'
 config_file_path = self_main_dir / config_file_name
 #-------------------------------------------
 
-def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
+def get_ContractFeatures(FeatureType,addresses,DatasetName='', session_path=None):
     try:
         configFile = open(config_file_path)
         config_File = json.load(configFile)
@@ -26,20 +26,20 @@ def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
         for type in FeatureType:
             match type.lower():
                 case 'all':
-                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['API-based']['AccountInfo'])
+                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['API-based']['AccountInfo'],session_path=session_path)
                     display(AccountInfo)
-                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['ContractsInfo'])
+                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['ContractsInfo'],session_path=session_path)
                     display(ContractInfo)
-                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['Opcodes'])
+                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['Opcodes'],session_path=session_path)
                     display(Opcodes)
                 case 'accountinfo' | '1':
-                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['API-based']['AccountInfo'])
+                    AccountInfo = get_AccountInfo(DatasetName,api_key,addresses, outDir = self_main_dir/config_File['Features']['API-based']['AccountInfo'],session_path=session_path)
                     display(AccountInfo)
                 case 'contractsinfo' | '2':
-                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['ContractsInfo'])
+                    ContractInfo = get_ContractInfo(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['ContractsInfo'],session_path=session_path)
                     display(ContractInfo)
                 case 'opcodes' | '3':
-                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['Opcodes'])
+                    Opcodes = get_Opcodes(DatasetName,api_key,addresses,outDir = self_main_dir/config_File['Features']['API-based']['Opcodes'],session_path=session_path)
                     display(Opcodes)
                  # default pattern
                 case _:
@@ -51,7 +51,7 @@ def get_ContractFeatures(FeatureType,addresses,DatasetName=''):
         raise
 #Fetched SCs Account Info from Etherscan.io
 #------------------------------------------
-def get_AccountInfo(DatasetName,api_key,addresses,outDir):
+def get_AccountInfo(DatasetName,api_key,addresses,outDir,session_path):
     try:
         counter =1
         info =[]
@@ -99,13 +99,16 @@ def get_AccountInfo(DatasetName,api_key,addresses,outDir):
         raise
     finally:
         AccountInfo = pd.DataFrame(data=info)
-        AccountInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outputPath = str(outDir) + '/' + UniqueFilename + ".csv"
+        AccountInfo.to_csv(outputPath,index=False)
         outDir = self_main_dir.relative_to(Path.cwd().parent)
+        if session_path:
+            write_session(session_path, {"AccountInfo": outputPath})
         print('Done! Account Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
         return AccountInfo
 #Fetched contracts Info from Etherscan.io
 #------------------------------------------
-def get_ContractInfo(DatasetName,api_key,addresses,outDir):
+def get_ContractInfo(DatasetName,api_key,addresses,outDir,session_path):
     try:
         counter =1
         info =[]
@@ -145,14 +148,17 @@ def get_ContractInfo(DatasetName,api_key,addresses,outDir):
     finally:
         #Extract Source Codes then remove it from the dataframe
         ContractsInfo = extract_SourceCodes(ContractsInfo,UniqueFilename,DatasetName)
-        ContractsInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outputPath = str(outDir) + '/' + UniqueFilename + ".csv"
+        ContractsInfo.to_csv(outputPath,index=False)
         outDir = self_main_dir.relative_to(Path.cwd().parent)
+        if session_path:
+            write_session(session_path, {"ContractsInfo": outputPath})
         print('Done! Contracts Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
         return ContractsInfo
 
 #Fetched SCs Opcodes from Etherscan.io
 #------------------------------------------
-def get_Opcodes(DatasetName,api_key,addresses,outDir):
+def get_Opcodes(DatasetName,api_key,addresses,outDir,session_path):
     try:
         counter =1
         info =[]
@@ -197,7 +203,10 @@ def get_Opcodes(DatasetName,api_key,addresses,outDir):
         raise
     finally:
         Opcodes=pd.DataFrame(data=info)
-        Opcodes.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+        outputPath = str(outDir) + '/' + UniqueFilename + ".csv"
+        Opcodes.to_csv(outputPath,index=False)
+        if session_path:
+            write_session(session_path, {"Opcodes": outputPath})
         outDir = self_main_dir.relative_to(Path.cwd().parent)
         print('Done! Opcodes Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
         return Opcodes
@@ -207,3 +216,13 @@ def generate_UniqueFilename(DatasetName,datatype):
         DatasetName = datatype'''
     UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

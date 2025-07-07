@@ -17,7 +17,7 @@ configFile = open(config_file_path)
 config_File = json.load(configFile)
 configFile.close()
 #---------------------------------------
-def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, applyPreprocessing =False): #, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
+def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, applyPreprocessing =False, session_path=None): #, AccountInfo=[],ContractsInfo=[],Opcodes=[],CodeMetrics=[],Labels=[]):
     try:
         #create a new dataframe and fill index column for labled dataset.
         FinalData =pd.DataFrame()
@@ -39,7 +39,10 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, ap
             finalDataPath = str(get_Path('PreprocessedData'))
         else:
             finalDataPath = str(get_Path('FinalLabeledData'))
-        FinalData.to_csv(finalDataPath + '/' +finalDataName+'.csv',index=False)
+        outputPath = finalDataPath + '/' +finalDataName+'.csv'
+        FinalData.to_csv(outputPath,index=False)
+        if session_path:
+            write_session(session_path, {"FinalLabeledData": outputPath})
 
         print('Done! the Combined Data is available in: ' + str(os.path.relpath(str(finalDataPath) + '/' +finalDataName+'.csv', Path.cwd().parent)))
         display(FinalData)
@@ -142,3 +145,13 @@ def generate_UniqueFilename(FinalDatasetName):
     UniqueFilename = FinalDatasetName + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
 
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

@@ -3,7 +3,7 @@ from IPython.display import display
 from pathlib import Path
 import json, datetime
 
-def ABI_FeatureExtraction(DatasetName, dataset, Col='ABI'): #String: DatasetName, DataFrame: dataset
+def ABI_FeatureExtraction(DatasetName, dataset, Col='ABI',session_path=None): #String: DatasetName, DataFrame: dataset
     if Col in dataset.columns:
         #Get the correct path to the configuration file
         config_file_name = 'config.json'
@@ -24,7 +24,11 @@ def ABI_FeatureExtraction(DatasetName, dataset, Col='ABI'): #String: DatasetName
         UniqueFilename = generate_UniqueFilename(DatasetName,'ABI-based')
         self_main_dir = Path(__file__).resolve().parents[2]
         path = self_main_dir/config_File['Features']['FE-based']['ABI-based']
-        ABI_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
+        outputPath = str(path) + '/' + UniqueFilename + '.csv' 
+        ABI_basedFeatures.to_csv(outputPath,index=False)
+
+        if session_path:
+            write_session(session_path, {"ABI": outputPath})
 
         path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based']['ABI-based']
 
@@ -100,3 +104,13 @@ def get_RowIDCol(df,config_File):
 def generate_UniqueFilename(DatasetName,datatype):
     UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

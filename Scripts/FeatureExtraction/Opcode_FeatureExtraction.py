@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 TotalMethods = 2 
 #def Opcode_FeatureExtraction(DatasetName,dataset, methods, Col='Opcodes'):
-def Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes'):
+def Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes',session_path=None):
     methods = [1]
     try:
         if Col in dataset.columns:
@@ -28,7 +28,11 @@ def Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes'):
             UniqueFilename = generate_UniqueFilename(DatasetName,'Opcode-based')
             self_main_dir = Path(__file__).resolve().parents[2]
             path = self_main_dir/config_File['Features']['FE-based']['Opcode-based']
-            Opcode_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
+            outputPath = str(path) + '/' + UniqueFilename + '.csv'
+            Opcode_basedFeatures.to_csv(outputPath,index=False)
+
+            if session_path:
+                write_session(session_path, {"Opcode": outputPath})
 
             path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based']['Opcode-based']
             
@@ -145,3 +149,13 @@ def get_RowIDCol(df,config_File):
 def generate_UniqueFilename(DatasetName,datatype):
     UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

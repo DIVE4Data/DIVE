@@ -6,7 +6,7 @@ from feature_engine.creation import CyclicalFeatures
 
 import json
 
-def Timestamp_FeatureExtraction(DatasetName, dataset, Col='timeStamp'):
+def Timestamp_FeatureExtraction(DatasetName, dataset, Col='timeStamp',session_path=None):
     try:
         if Col in dataset.columns:
             #Get the correct path to the configuration file
@@ -36,7 +36,11 @@ def Timestamp_FeatureExtraction(DatasetName, dataset, Col='timeStamp'):
             UniqueFilename = generate_UniqueFilename(DatasetName,'Timestamp-based')
             self_main_dir = Path(__file__).resolve().parents[2]
             path = self_main_dir/config_File['Features']['FE-based']['Timestamp-based']
-            Timestamp_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
+            outputPath = str(path) + '/' + UniqueFilename + '.csv'
+            Timestamp_basedFeatures.to_csv(outputPath,index=False)
+
+            if session_path:
+                write_session(session_path, {"Timestamp": outputPath})
 
             path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based']['Timestamp-based']
 
@@ -59,3 +63,13 @@ def get_RowIDCol(df,config_File):
 def generate_UniqueFilename(DatasetName,datatype):
     UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

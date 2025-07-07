@@ -9,7 +9,7 @@ import sys
 #Total number of preprocessing tasks currently offered
 PreprocessingTasksNo = 11 #### All tasks will be applied except PreprocessingTask12_SetDataIndexColumn task
 
-def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['all']):
+def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['all'],session_path=None):
     try:
         config_File = get_ConfigFile()
         dataset = get_initialDataset(datasetName,dataDirPath,config_File)
@@ -23,7 +23,11 @@ def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['al
         
         finalDataName = generate_UniqueFilename(datasetName)
         finalDataPath = str(get_Path('PreprocessedData',config_File))
-        dataset.to_csv(finalDataPath + '/' + finalDataName+'.csv',index=False)
+        outputPath = finalDataPath + '/' + finalDataName+'.csv'
+        dataset.to_csv(outputPath,index=False)
+
+        if session_path:
+            write_session(session_path, {"PreprocessedData": outputPath})
 
         print('Done! the Preprocessed Data is available in:' + str(os.path.relpath(str(finalDataPath) + '/' +finalDataName+'.csv', Path.cwd().parent)))
 
@@ -243,3 +247,13 @@ def generate_UniqueFilename(FinalDatasetName):
         FinalDatasetName = 'PreprocessedData'
     UniqueFilename = FinalDatasetName + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

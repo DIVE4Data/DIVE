@@ -9,7 +9,7 @@ import os, json, datetime
 TotalMethods = 1 
 
 #def Bytecode_FeatureExtraction(DatasetName,dataset, methods, Col='input'):
-def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input'):
+def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input',session_path=None):
     methods = [1]
     try:
         if Col in dataset.columns:
@@ -32,7 +32,11 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input'):
             UniqueFilename = generate_UniqueFilename(DatasetName,'Input-based')
             self_main_dir = Path(__file__).resolve().parents[2]
             path = self_main_dir/config_File['Features']['FE-based']['Input-based']
-            Bytecode_basedFeatures.to_csv(str(path) + '/' + UniqueFilename + '.csv',index=False)
+            outputPath = str(path) + '/' + UniqueFilename + '.csv'
+            Bytecode_basedFeatures.to_csv(outputPath,index=False)
+
+            if session_path:
+                write_session(session_path, {"Input": outputPath})
 
             path = self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['FE-based']['Input-based']
 
@@ -113,3 +117,13 @@ def get_RowIDCol(df,config_File):
 def generate_UniqueFilename(DatasetName,datatype):
     UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

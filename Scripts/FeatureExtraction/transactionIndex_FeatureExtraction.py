@@ -4,7 +4,7 @@ from IPython.display import display
 import pandas as pd
 from Scripts.get_BlockFeatures import get_BlockFeatures
 
-def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='TransactionIndex'):
+def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='TransactionIndex',session_path=None):
     try:
         if Col in dataset.columns:
             self_main_dir = Path.cwd() 
@@ -33,7 +33,10 @@ def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='TransactionInde
 
             UniqueFilename = generate_UniqueFilename(DatasetName,Col)
             outDir = self_main_dir/config_File['Features']['FE-based'][Col]
-            transactionIndex_Feature.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
+            outputPath = str(outDir) + '/' + UniqueFilename + ".csv"
+            transactionIndex_Feature.to_csv(outputPath,index=False)
+            if session_path:
+                write_session(session_path, {"transactionIndex": outputPath})
             outDir = self_main_dir.relative_to(Path.cwd().parent)
             print('Done! the TransactionIndex-based Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
             display(transactionIndex_Feature)
@@ -54,3 +57,13 @@ def categorize_position(ratio):
 def generate_UniqueFilename(DatasetName,datatype):
     UniqueFilename = DatasetName + '_' + datatype + '_' + str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)
