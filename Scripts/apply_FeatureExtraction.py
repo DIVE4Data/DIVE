@@ -16,7 +16,7 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
             AccountInfoPath = str(git_dir("AccountInfo")) + '/' + session.get("AccountInfo")
             contractInfoPath = str(git_dir("ContractsInfo")) + '/' + session.get("ContractsInfo")
             OpcodesPath = str(git_dir("Opcodes")) + '/' + session.get("Opcodes")
-            SamplesFolderName = str(git_dir("Samples")) + '/' + session.get("Samples")
+            SamplesFolderName = session.get("Samples")
 
             AccountInfoDF = pd.read_csv(AccountInfoPath)
             ContractsInfoDF = pd.read_csv(contractInfoPath)
@@ -50,14 +50,13 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
                     Timestamp_FeatureExtraction(DatasetName,AccountInfoDF, Col='timeStamp', session_path=session_path)
                 case '3' | 'library':
                     library_FeatureExtraction(DatasetName, ContractsInfoDF, Col='Library', session_path=session_path)
-                case '4' | 'transactionIndex':
+                case '4' | 'transactionindex':
                     transactionIndex_FeatureExtraction(DatasetName,AccountInfoDF, Col='transactionIndex', session_path=session_path)
                 case '5' | 'code metrics':
                     call_get_CodeMetrics(DatasetName,SamplesFolderName, session_path)
                 case '6' | 'input' | 'bytecode':
                     call_Bytecode_FeatureExtraction(DatasetName,AccountInfoDF, session_path)
                 case '7' | 'opcode':
-                    dataset = dataset_or_SamplesFolderName
                     call_Opcode_FeatureExtraction(DatasetName,OpcodesDF, session_path)
                 case _:
                     print(attribute + ' is an incorrect attribute')
@@ -66,8 +65,14 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
         raise
 
 def call_get_CodeMetrics(DatasetName,SamplesFolderName,session_path):
-    SamplesDirPath = input('If the samples folder is located in ./RawData/Samples press Enter, otherwise enter the path to the samples folder.')
-    #DatasetName = input('Enter the dataset name.')
+    if session_path is not None:
+        session = read_session(session_path)
+        SamplesDirPath = session.get("SamplesDirPath")
+        if SamplesDirPath == "":
+            SamplesDirPath = str(git_dir("Samples")) 
+    else:
+        SamplesDirPath = input('If the samples folder is located in ./RawData/Samples press Enter, otherwise enter the path to the samples folder.')
+
     get_CodeMetrics(SamplesFolderName,SamplesDirPath,DatasetName, session_path)
 
 def call_Bytecode_FeatureExtraction(DatasetName,dataset, session_path):
