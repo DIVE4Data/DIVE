@@ -117,7 +117,10 @@ def write_session(path, updates):
         json.dump(session, f, indent=2)
 #------------------------------------------
 if __name__ == "__main__":
-    DIVE_FrameworkConfigFile = "DIVE_pipeline.yaml"
+    if len(sys.argv) > 1:
+        DIVE_FrameworkConfigFile = sys.argv[1]
+    else:
+        DIVE_FrameworkConfigFile = "DIVE_pipeline.yaml"  # Default fallback
 
     if not os.path.exists(DIVE_FrameworkConfigFile):
         print(f"Pipeline configuration file '{DIVE_FrameworkConfigFile}' not found.")
