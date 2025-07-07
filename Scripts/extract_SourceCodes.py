@@ -1,7 +1,7 @@
 from pathlib import Path
 import json, os, datetime
 
-def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = ''):
+def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = '', session_path=None):
     try:
         #Get the correct path to the configuration file
         #-------------------------------------------
@@ -25,6 +25,8 @@ def extract_SourceCodes(ContractsInfo, UniqueFilename,DatasetName = ''):
         if not os.path.exists(path):
             os.mkdir(path)
         outDir = str(outDir) + '/' + DatasetName
+        if session_path:
+            write_session(session_path, {"SourceCodes": outDir})
         print('Source codes are now being extracted to Solidity files; please wait...')
         write_SourceCodesToSolfiles(ContractsInfo,str(outDir))
         outDir = self_main_dir/config_File['RawData']['SamplesSummary']
@@ -63,3 +65,13 @@ def generate_UniqueFilename():
     UniqueFilename = str(datetime.datetime.now().date()).replace('-', '') + '_' + str(datetime.datetime.now().time()).replace(':', '').split('.')[0]
 
     return UniqueFilename
+#------------------------------------------
+def read_session(path):
+    with open(path, "r") as f:
+        return json.load(f)
+#------------------------------------------
+def write_session(path, updates):
+    session = read_session(path)
+    session.update(updates)
+    with open(path, "w") as f:
+        json.dump(session, f, indent=2)

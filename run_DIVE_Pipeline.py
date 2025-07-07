@@ -1,5 +1,6 @@
 import yaml, sys, os, subprocess
 import tempfile, json
+from pathlib import Path
 from Scripts.get_Addresses import get_Addresses
 from Scripts.get_ContractFeatures import get_ContractFeatures
 from Scripts.apply_FeatureExtraction import apply_FeatureExtraction
@@ -35,6 +36,7 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
 
             case "apply_FeatureExtraction":
                 attributes = {k: v for k, v in step_cfg["attributes"].items() if v}
+                dataset_or_SamplesFolderName = ""
                 apply_FeatureExtraction(datasetName,dataset_or_SamplesFolderName,attributes,session_path)
 
             case "constructFinalData":
@@ -44,20 +46,30 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                                     session_path=session_path)
     
             case "apply_DataPreprocessing":
-                if step_cfg["datasetName"] == "":
-                    DatasetName = datasetName
+                datasetNameFrom_cfg = step_cfg.get("datasetName", "").strip()
+                if datasetNameFrom_cfg == "":
+                    session = read_session(session_path)
+                    finalLabeled_path = session.get("FinalLabeledData")
+                    if finalLabeled_path is None:
+                        raise ValueError("Missing 'FinalLabeledData' path in session.")
+                    DatasetName = Path(finalLabeled_path).name
                 else:
-                    DatasetName = step_cfg["datasetName"]
+                    DatasetName = datasetNameFrom_cfg
 
                 preprocessingTasks = {k: v for k, v in step_cfg["PreprocessingTasks"].items() if v}
                 apply_DataPreprocessing(datasetName=DatasetName,dataDirPath=step_cfg["dataDirPath"],
                                         PreprocessingTasks=preprocessingTasks, session_path=session_path)
 
             case "get_DataStatistics":
-                if step_cfg["datasetName"] == "":
-                    DatasetName = datasetName
+                datasetNameFrom_cfg = step_cfg.get("datasetName", "").strip()
+                if datasetNameFrom_cfg == "":
+                    session = read_session(session_path)
+                    PreprocessedData_path = session.get("PreprocessedData")
+                    if PreprocessedData_path is None:
+                        raise ValueError("Missing 'PreprocessedData' path in session.")
+                    DatasetName = Path(PreprocessedData_path).name
                 else:
-                    DatasetName = step_cfg["datasetName"]
+                    DatasetName = datasetNameFrom_cfg
 
                 get_DataStatistics(DatasetName, voteDataName = step_cfg["voteDataName"], dataset_defaultDir = step_cfg["dataset_defaultDir"], 
                                    voteData_defaultDir = step_cfg["voteData_defaultDir"], QuickReport = step_cfg["QuickReport"])

@@ -10,40 +10,54 @@ from Scripts.FeatureExtraction.Library_FeatureExtraction import library_FeatureE
 
 def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,session_path=None):
     try:
-        #read data
-        #specify code folder
+        if session_path is not None:
+            session = read_session(session_path)
+            AccountInfoPath = session.get("AccountInfo")
+            contractInfoPath = session.get("ContractsInfo")
+            OpcodesPath = session.get("Opcodes")
+            SamplesFolderName = session.get("SourceCodes")
+
+            AccountInfoDF = pd.read_csv(AccountInfoPath)
+            ContractsInfoDF = pd.read_csv(contractInfoPath)
+            OpcodesDF = pd.read_csv(OpcodesPath)
+        elif session_path is None and len(attributes)>1:
+
+            AccountInfoPath = input("To extract features from timeStamp, transactionIndex, or Input, provide the complete path to the AccountInfo data file, or press Enter to skip:")
+            contractInfoPath = input("To extract features from ABI or Library, provide the complete path to the ContractsInfo data file, or press Enter to skip: ")
+            OpcodesPath = input("To extract features from Opcodes, provide the complete path to the Opcodes data file, or press Enter to skip:")
+            SamplesFolderName = input("To extract features from code metrics, provide the name of the samples folder: ")
+
+            AccountInfoDF = pd.read_csv(AccountInfoPath)
+            ContractsInfoDF = pd.read_csv(contractInfoPath)
+            OpcodesDF = pd.read_csv(OpcodesPath)
+        else:
+            AccountInfoDF = ContractsInfoDF = OpcodesDF = SamplesFolderName = dataset_or_SamplesFolderName
+
         for attribute in attributes:
             match attribute.lower():
                 case 'all':
-                    dataset = dataset_or_SamplesFolderName
-                    ABI_FeatureExtraction(DatasetName,dataset, Col='ABI', session_path=session_path)
-                    Timestamp_FeatureExtraction(DatasetName,dataset, Col='timeStamp', session_path=session_path)
-                    library_FeatureExtraction(DatasetName, dataset, Col='Library', session_path=session_path)
-                    transactionIndex_FeatureExtraction(DatasetName,dataset, Col='transactionIndex', session_path=session_path)
-                    call_Bytecode_FeatureExtraction(DatasetName,dataset, session_path=session_path)
-                    call_Opcode_FeatureExtraction(DatasetName,dataset, session_path=session_path)
+                    ABI_FeatureExtraction(DatasetName,ContractsInfoDF, Col='ABI', session_path=session_path)
+                    Timestamp_FeatureExtraction(DatasetName,AccountInfoDF, Col='timeStamp', session_path=session_path)
+                    library_FeatureExtraction(DatasetName, ContractsInfoDF, Col='Library', session_path=session_path)
+                    transactionIndex_FeatureExtraction(DatasetName,AccountInfoDF, Col='transactionIndex', session_path=session_path)
+                    call_Bytecode_FeatureExtraction(DatasetName,AccountInfoDF, session_path=session_path)
+                    call_Opcode_FeatureExtraction(DatasetName,OpcodesDF, session_path=session_path)
                     call_get_CodeMetrics(DatasetName,SamplesFolderName,session_path)
                 case '1' | 'abi':
-                    dataset = dataset_or_SamplesFolderName
-                    ABI_FeatureExtraction(DatasetName,dataset, Col='ABI', session_path=session_path)
+                    ABI_FeatureExtraction(DatasetName,ContractsInfoDF, Col='ABI', session_path=session_path)
                 case '2' | 'timestamp':
-                    dataset = dataset_or_SamplesFolderName
-                    Timestamp_FeatureExtraction(DatasetName,dataset, Col='timeStamp', session_path=session_path)
+                    Timestamp_FeatureExtraction(DatasetName,AccountInfoDF, Col='timeStamp', session_path=session_path)
                 case '3' | 'library':
-                    dataset = dataset_or_SamplesFolderName
-                    library_FeatureExtraction(DatasetName, dataset, Col='Library', session_path=session_path)
+                    library_FeatureExtraction(DatasetName, ContractsInfoDF, Col='Library', session_path=session_path)
                 case '4' | 'transactionIndex':
-                    dataset = dataset_or_SamplesFolderName
-                    transactionIndex_FeatureExtraction(DatasetName,dataset, Col='transactionIndex', session_path=session_path)
+                    transactionIndex_FeatureExtraction(DatasetName,AccountInfoDF, Col='transactionIndex', session_path=session_path)
                 case '5' | 'code metrics':
-                    SamplesFolderName = dataset_or_SamplesFolderName
                     call_get_CodeMetrics(DatasetName,SamplesFolderName, session_path)
                 case '6' | 'input' | 'bytecode':
-                    dataset = dataset_or_SamplesFolderName
-                    call_Bytecode_FeatureExtraction(DatasetName,dataset, session_path)
+                    call_Bytecode_FeatureExtraction(DatasetName,AccountInfoDF, session_path)
                 case '7' | 'opcode':
                     dataset = dataset_or_SamplesFolderName
-                    call_Opcode_FeatureExtraction(DatasetName,dataset, session_path)
+                    call_Opcode_FeatureExtraction(DatasetName,OpcodesDF, session_path)
                 case _:
                     print(attribute + ' is an incorrect attribute')
     except Exception as err:
