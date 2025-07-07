@@ -19,14 +19,11 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
     datasetName = input_cfg["datasetName"]
     if input_cfg.get("installRequirements", False):
         install_requirements()
-
+    Flag = False
     for step_name, step_cfg in pipeline_cfg.items():
         if str(step_cfg.get("enable", False)).lower() != "true":
             if step_name == "get_ContractFeatures":
-                write_session(session_path, {"AccountInfo": step_cfg["sources"]["AccountInfo"]})
-                write_session(session_path, {"ContractsInfo": step_cfg["sources"]["ContractsInfo"]})
-                write_session(session_path, {"Opcodes": step_cfg["sources"]["Opcodes"]})
-                write_session(session_path, {"Samples": step_cfg["sources"]["Samples"]})
+                Flag= True
             continue
 
         print(f"- Running step: {step_name}")
@@ -36,6 +33,12 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                 addresses = get_Addresses(step_cfg["addressesFile"])
 
             case "get_ContractFeatures":
+                if Flag:
+                    write_session(session_path, {"AccountInfo": step_cfg["sources"]["AccountInfo"]})
+                    write_session(session_path, {"ContractsInfo": step_cfg["sources"]["ContractsInfo"]})
+                    write_session(session_path, {"Opcodes": step_cfg["sources"]["Opcodes"]})
+                    write_session(session_path, {"Samples": step_cfg["sources"]["Samples"]})
+                    
                 featureTypes = {k: v for k, v in step_cfg["featureTypes"].items() if v}
                 get_ContractFeatures(featureTypes, addresses=addresses, DatasetName = datasetName, session_path=session_path)
 
