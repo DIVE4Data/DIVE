@@ -2,7 +2,7 @@ import requests, json, datetime
 from pathlib import Path
 from IPython.display import display
 
-def get_ContractFeatures(dataset, DatasetName='', Col='blocknumber'):
+def get_BlockFeatures(dataset, DatasetName='', Col='blocknumber'):
     try:
         if Col in dataset.columns:
             self_main_dir = Path.cwd() 
