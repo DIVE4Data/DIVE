@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+from pathlib import Path
 from Scripts.FeatureExtraction.ABI_FeatureExtraction import ABI_FeatureExtraction
 from Scripts.FeatureExtraction.Bytecode_FeatureExtraction import Bytecode_FeatureExtraction
 from Scripts.FeatureExtraction.Opcode_FeatureExtraction import Opcode_FeatureExtraction
@@ -12,10 +13,10 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
     try:
         if session_path is not None:
             session = read_session(session_path)
-            AccountInfoPath = session.get("AccountInfo")
-            contractInfoPath = session.get("ContractsInfo")
-            OpcodesPath = session.get("Opcodes")
-            SamplesFolderName = session.get("SourceCodes")
+            AccountInfoPath = git_dir("AccountInfo") + '/' + session.get("AccountInfo")
+            contractInfoPath = git_dir("ContractsInfo") + '/' + session.get("ContractsInfo")
+            OpcodesPath = git_dir("Opcodes") + '/' + session.get("Opcodes")
+            SamplesFolderName = git_dir("Samples") + '/' + session.get("Samples")
 
             AccountInfoDF = pd.read_csv(AccountInfoPath)
             ContractsInfoDF = pd.read_csv(contractInfoPath)
@@ -94,3 +95,15 @@ def get_FeatureExtractionMethods(FeatureType):
 def read_session(path):
     with open(path, "r") as f:
         return json.load(f)
+
+def git_dir(data):
+    self_main_dir = Path(__file__).resolve().parents[1]
+    config_file_name = 'config.json'
+    config_file_path = self_main_dir / config_file_name
+    configFile = open(config_file_path)
+    config_File = json.load(configFile)
+    configFile.close()
+    if data == "SourceCodes":
+        return self_main_dir/config_File['RawData'][data]
+    else:
+        return self_main_dir/config_File['Features']['API-based'][data]
