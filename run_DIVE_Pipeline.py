@@ -21,7 +21,7 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
         install_requirements()
 
     for step_name, step_cfg in pipeline_cfg.items():
-        if not step_cfg.get("enable", False):
+        if str(step_cfg.get("enable", False)).lower() != "true":
             continue
 
         print(f"- Running step: {step_name}")
