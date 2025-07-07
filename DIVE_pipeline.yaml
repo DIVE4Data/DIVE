@@ -34,7 +34,7 @@ pipeline:
       AccountInfo: ""                        # File containing account info 
       ContractsInfo: ""                      # File containing contract info 
       Opcodes: ""                            # File containing opcode data 
-      SourceCodeFolder: ""                   # Folder path for raw or flattened source code (optional if already processed)
+      Samples: ""                            # Folder path for raw or flattened source code (optional if already processed)
 
     attributes:                            # List of attributes to include in the feature extraction process
       ABI: true                           

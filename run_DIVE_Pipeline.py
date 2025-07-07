@@ -22,6 +22,11 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
 
     for step_name, step_cfg in pipeline_cfg.items():
         if str(step_cfg.get("enable", False)).lower() != "true":
+            if step_name == "get_ContractFeatures":
+                write_session(session_path, {"AccountInfo": step_cfg["AccountInfo"]})
+                write_session(session_path, {"ContractsInfo": step_cfg["ContractsInfo"]})
+                write_session(session_path, {"Opcodes": step_cfg["Opcodes"]})
+                write_session(session_path, {"Samples": step_cfg["Samples"]})
             continue
 
         print(f"- Running step: {step_name}")
