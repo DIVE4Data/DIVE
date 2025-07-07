@@ -33,16 +33,16 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                 addresses = get_Addresses(step_cfg["addressesFile"])
 
             case "get_ContractFeatures":
+                featureTypes = {k: v for k, v in step_cfg["featureTypes"].items() if v}
+                get_ContractFeatures(featureTypes, addresses=addresses, DatasetName = datasetName, session_path=session_path)
+
+            case "apply_FeatureExtraction":
                 if Flag:
                     write_session(session_path, {"AccountInfo": step_cfg["sources"]["AccountInfo"]})
                     write_session(session_path, {"ContractsInfo": step_cfg["sources"]["ContractsInfo"]})
                     write_session(session_path, {"Opcodes": step_cfg["sources"]["Opcodes"]})
                     write_session(session_path, {"Samples": step_cfg["sources"]["Samples"]})
                     
-                featureTypes = {k: v for k, v in step_cfg["featureTypes"].items() if v}
-                get_ContractFeatures(featureTypes, addresses=addresses, DatasetName = datasetName, session_path=session_path)
-
-            case "apply_FeatureExtraction":
                 attributes = {k: v for k, v in step_cfg["attributes"].items() if v}
                 dataset_or_SamplesFolderName = ""
                 apply_FeatureExtraction(datasetName,dataset_or_SamplesFolderName,attributes,session_path)
