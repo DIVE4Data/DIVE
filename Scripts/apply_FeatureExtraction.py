@@ -16,7 +16,7 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
             AccountInfoPath = str(git_dir("AccountInfo")) + '/' + session.get("AccountInfo")
             contractInfoPath = str(git_dir("ContractsInfo")) + '/' + session.get("ContractsInfo")
             OpcodesPath = str(git_dir("Opcodes")) + '/' + session.get("Opcodes")
-            SamplesFolderName = str( git_dir("Samples")) + '/' + session.get("Samples")
+            SamplesFolderName = str(git_dir("Samples")) + '/' + session.get("Samples")
 
             AccountInfoDF = pd.read_csv(AccountInfoPath)
             ContractsInfoDF = pd.read_csv(contractInfoPath)
@@ -103,7 +103,7 @@ def git_dir(data):
     configFile = open(config_file_path)
     config_File = json.load(configFile)
     configFile.close()
-    if data == "SourceCodes":
+    if data == "Samples":
         return self_main_dir/config_File['RawData'][data]
     else:
         return self_main_dir/config_File['Features']['API-based'][data]
