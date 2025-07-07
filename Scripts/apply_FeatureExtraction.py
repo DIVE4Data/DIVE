@@ -13,10 +13,10 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
     try:
         if session_path is not None:
             session = read_session(session_path)
-            AccountInfoPath = git_dir("AccountInfo") + '/' + session.get("AccountInfo")
-            contractInfoPath = git_dir("ContractsInfo") + '/' + session.get("ContractsInfo")
-            OpcodesPath = git_dir("Opcodes") + '/' + session.get("Opcodes")
-            SamplesFolderName = git_dir("Samples") + '/' + session.get("Samples")
+            AccountInfoPath = str(git_dir("AccountInfo")) + '/' + session.get("AccountInfo")
+            contractInfoPath = str(git_dir("ContractsInfo")) + '/' + session.get("ContractsInfo")
+            OpcodesPath = str(git_dir("Opcodes")) + '/' + session.get("Opcodes")
+            SamplesFolderName = str( git_dir("Samples")) + '/' + session.get("Samples")
 
             AccountInfoDF = pd.read_csv(AccountInfoPath)
             ContractsInfoDF = pd.read_csv(contractInfoPath)
