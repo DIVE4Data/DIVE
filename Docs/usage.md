@@ -94,7 +94,7 @@ Opcode_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute
 ```
 ---
 
-## 4️⃣ Construction Final Data
+## 4️⃣ Construct Final Data
 ```python
 construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dataset2Name',...], FeatureTypes = {'Type1':['All' 'or list files'], 'Type2':['All' 'or list files'] , ... }, applyPreprocessing = False)
 ```
