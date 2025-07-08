@@ -43,6 +43,8 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                     write_session(session_path, {"Opcodes": step_cfg["sources"]["Opcodes"]})
                     write_session(session_path, {"Samples": step_cfg["sources"]["Samples"]})
                     write_session(session_path, {"SamplesDirPath": step_cfg["sources"]["SamplesDirPath"]})
+                    write_session(session_path, {"BlockInfo": step_cfg["sources"]["BlockInfo"]})
+                    
                     
                 attributes = {k: v for k, v in step_cfg["attributes"].items() if v}
                 dataset_or_SamplesFolderName = ""

@@ -36,7 +36,8 @@ pipeline:
       Opcodes: ""                            # File containing opcode data 
       Samples: ""                            # Folder name for raw or flattened source code 
       SamplesDirPath: ""                     # Folder path for samples, if empty, the default dir (./RawData/Samples ) will be used
-
+      BlockInfo: ""                          # File containing block info. If empty, it will be retrieved during pipeline execution.
+    
     attributes:                            # List of attributes to include in the feature extraction process
       ABI: true                           
       timestamp: true                      
