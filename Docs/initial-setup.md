@@ -46,4 +46,5 @@ from Scripts.construct_FinalData import construct_FinalData
 from Scripts.get_DataStatistics import get_DataStatistics
 from Scripts.extract_SourceCodes import extract_SourceCodes
 ```
-> For usage details, refer to [`Docs/usage.md`](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/usage.md).
+> 🔍 **For detailed usage instructions**, refer to the [usage guide](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/usage.md).  
+> 📓 **For an interactive walkthrough**, see the [DIVE Template Notebook](https://github.com/SMART-DIVE/DIVE/blob/main/DIVE.ipynb).
