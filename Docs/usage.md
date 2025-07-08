@@ -37,12 +37,12 @@ extract_SourceCodes(ContractsInfo as a dataframe, UniqueFilename as a string, Da
 ---
 ## 3️⃣ Feature Extraction
 ```python
-apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,session_path=None)
+apply_FeatureExtraction(DatasetName as string,dataset_or_SamplesFolderName as DataFrame or path,attributes as list,session_path=None)
 ```
 **Parameters:**
-- **`datasetName`** → Name of the dataset.
-- **`dataset_or_SamplesFolderName`** → A dataframe to extract features from or the name of the source code samples folder to extract code metrics from.
-- **`attributes`** →  Use `['all']` to include all attributes, or specify a list of attributes to consider. Supported attributes include:
+- **`datasetName`** → Name of the dataset from which features will be extracted.
+- **`dataset_or_SamplesFolderName`** → Either a DataFrame containing attribute-level data or the name of a folder containing source code samples from which code metrics will be extracted.
+- **`attributes`** →  Use `['all']` to extract features from all available attributes, or provide a list of specific attributes to extract features from. Supported values include:
 
    - `1` or  `'ABI'`
    - `2` or  `'Timestamp'`
@@ -51,22 +51,22 @@ apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,sess
    - `5` or  `'Code Metrics'`
    - `6` or  `'Input'` or `'Bytecode'`
    - `7` or  `'Opcode'`
-                  
+  - **`session_path`** → Optional, it is created by the framework runner and used to track paths of files requested by methods.       
 ### 1. ABI Feature Extraction
 ```python
-ABI_FeatureExtraction(DatasetName,ContractsInfoDF, Col='ABI', session_path=session_path)
+ABI_FeatureExtraction(DatasetName, dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
 ```
 ### 2. Timestamp Feature Extraction
 ```python
-Timestamp_FeatureExtraction(DatasetName,AccountInfoDF, Col='timeStamp', session_path=session_path)
+Timestamp_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute,session_path=session_path)
 ```
 ### 3. Library Feature Extraction
 ```python
-library_FeatureExtraction(DatasetName, ContractsInfoDF, Col='Library', session_path=session_path)
+library_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
 ```
 ### 4. TransactionIndex Feature Extraction
 ```python
- transactionIndex_FeatureExtraction(DatasetName,AccountInfoDF, Col='transactionIndex', session_path=session_path)
+ transactionIndex_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
 ```
 ### 5. Code Metrics Generation
 ```python
@@ -86,11 +86,11 @@ get_CodeMetrics(SamplesFolderName as a string, SamplesDirPath as a path, Dataset
 
 ### 6. Bytecode/Input Feature Extraction
 ```python
-Bytecode_FeatureExtraction(DatasetName,dataset, session_path)
+Bytecode_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute,session_path=None)
 ```
 ### 7. Opcode Feature Extraction
 ```python
-Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes', session_path=session_path)
+Opcode_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
 ```
 ---
 
