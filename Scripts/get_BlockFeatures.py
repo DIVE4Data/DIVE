@@ -44,7 +44,7 @@ def get_BlockFeatures(dataset, DatasetName='', Col='blockNumber'):
 def get_transaction_count(blockNo, api_key):
     try:
         request_string = f'https://api.etherscan.io/api?module=proxy&action=eth_getBlockTransactionCountByNumber&tag={hex(blockNo)}&apikey={api_key}'
-        response = requests.get(request_string, verify=False)
+        response = requests.get(request_string)
         if response.ok:
             data = response.json()
             if 'result' in data and data['result']:
