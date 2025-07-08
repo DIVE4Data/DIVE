@@ -4,7 +4,7 @@ from IPython.display import display
 import pandas as pd
 from Scripts.get_BlockFeatures import get_BlockFeatures
 
-def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='TransactionIndex',session_path=None):
+def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='transactionIndex',session_path=None):
     try:
         if Col in dataset.columns:
             self_main_dir = Path.cwd() 
