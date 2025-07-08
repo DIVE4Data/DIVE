@@ -5,32 +5,36 @@
 
 ## 🔍 Key Features
 
-The DIVE framework offers powerful tools through five main components:
+The DIVE framework provides a powerful pipeline for blockchain dataset creation through six core components:
 
-### 1. 🧾 Feature Collecting  
+---
+
+### 1. 🧾 Feature Collection  
 Fetch smart contract and account data from public blockchains.  
 - ✅ Currently supports [`Ethereum`](https://ethereum.org/en/).  
 - 🔗 Uses [`Etherscan.io`](https://etherscan.io/) as a data source.  
 - 📊 Collects:
-  - Contract information  
-  - Account information  
+  - Contract metadata  
+  - Account-level information  
   - Opcodes  
 
 ### 2. 🧠 Solidity Code Extraction  
-Extract and save contract source code as `.sol` files using [`Solidity`](https://soliditylang.org/).
+Retrieve and store verified contract source code as `.sol` files using [`Solidity`](https://soliditylang.org/).
 
-### 3. 📈 Code Metrics Generation  
-Analyze source code using:
-- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics)  
-- [`mrkdwn_analysis`](https://pypi.org/project/markdown-analysis/) to parse markdown and extract features.
+### 3. 🧪 Feature Extraction  
+Extract structured features from various smart contract attributes, including: `ABI`, `Timestamp`, `Library`, `TransactionIndex`, `Code Metrics`, `Input` / `Bytecode`, and `Opcode`
 
 ### 4. 🏷️ Labeled Data Construction  
-Combines extracted features and ground-truth labels into a structured dataset
+Merge extracted features with ground-truth vulnerability labels to build a structured dataset.
 
-### 5. 📊 Statistical Data Generation  
-Generate statistics and visualizations that provide insights into the dataset.
+### 5. 🧹 Data Preprocessing  
+Clean, normalize, and transform the data to prepare it for downstream analysis or machine learning tasks.
+
+### 6. 📊 Statistical Analysis & Visualization  
+Generate statistical summaries and visualizations to better understand the dataset's structure and characteristics.
 
 ---
+
 
 ## 📦 Requirements
 
