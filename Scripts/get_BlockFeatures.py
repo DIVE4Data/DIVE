@@ -1,4 +1,4 @@
-import requests, json, datetime
+import requests, json, datetime, time
 from pathlib import Path
 from IPython.display import display
 
@@ -18,7 +18,15 @@ def get_BlockFeatures(dataset, DatasetName='', Col='blockNumber'):
 
             api_key = config_File['Etherscan_Account']['API_Key']
 
-            blockInfo['transactionCount'] = blockInfo[Col].apply(lambda blk: get_transaction_count(blk, api_key))
+            transaction_counts = []
+            for i, blk in enumerate(blockInfo[Col]):
+                tx_count = get_transaction_count(int(blk), api_key)
+                transaction_counts.append(tx_count)
+
+                if (i + 1) % 5 == 0:
+                    time.sleep(1)
+
+            blockInfo['transactionCount'] = transaction_counts
 
             UniqueFilename = generate_UniqueFilename(DatasetName,'blockInfo')
             outDir = self_main_dir/config_File['Features']['API-based']['BlockInfo']
