@@ -70,6 +70,7 @@ DIVE/
 ├── Features/                    # Extracted features
 │   ├── API-based/               # Features collected from Etherscan APIs
 │   │   ├── AccountInfo/         # Account-level features
+│   │   ├── BlockInfo/           # Block transaction counts
 │   │   ├── ContractsInfo/       # Contract metadata from Etherscan
 │   │   └── Opcodes/             # Opcode data from Etherscan
 │   ├── FE-based/                # Feature engineering outputs
@@ -81,7 +82,10 @@ DIVE/
 │   │   │       ├── OriginalReports/
 │   │   │       └── Raw_CodeMetrics/
 │   │   ├── Input-based/         # Features derived from the Input attribute
-│   │   └── Opcode-based/        # Features derived from opcode-level analysis
+│   │   ├── Library-based/       # Features derived from the Library attribute
+│   │   ├── Opcode-based/        # Features derived from opcode-level analysis
+│   │   ├── Timestamp-based/     # Features derived from the Timestamp attribute
+│   │   └── TransactionIndex/    # Features derived from the TransactionIndex attribute
 │
 ├── Labels/                      # Ground-truth labels for contracts
 │
@@ -97,10 +101,12 @@ DIVE/
 │   │   │   ├── EVM_Opcodes_*.xlsx       # Excel file(s) listing EVM opcodes and metadata
 │   │   ├── ABI_FeatureExtraction.py     # Extracts features from ABI (Application Binary Interface)
 │   │   ├── Bytecode_FeatureExtraction.py# Extracts bytecode-level features
-│   │   ├── get_Bytecode.py              # Retrieves bytecode for contracts
 │   │   ├── get_CodeMetrics.py           # Calls external tools (i.e., solidity-code-metrics) to compute code metrics
 │   │   ├── get_OpcodesList.py           # Generates the EVM opcode reference list (EVM_Opcodes_*.xlsx)
-│   │   └── Opcode_FeatureExtraction.py  # Extracts features from opcodes (e.g., opcode metrics) 
+│   │   ├── Library_FeatureExtraction.py # Extracts library-based features
+│   │   ├── Opcode_FeatureExtraction.py  # Extracts features from opcodes (e.g., opcode metrics)
+│   │   ├── Timestamp_FeatureExtraction.py # Extracts timestamp-based features
+│   │   └── transactionIndex_FeatureExtraction.py # Extracts transactionIndex-based features
 │
 │   ├── FeatureSelection/                # Script for selecting relevant features for analysis/modeling
 │   │   └── get_FilteredFeatures.py      # Applies feature selection (uses classification defined in Feature list.xlsx)
@@ -110,17 +116,20 @@ DIVE/
 │   ├── construct_FinalData.py           # Merges feature sets and labels to construct the final dataset
 │   ├── extract_SourceCodes.py           # Extracts Solidity source code (included in Etherscan API responses) 
 │   ├── get_Addresses.py                 # Loads and filters smart contract addresses from input CSV files
+│   ├── get_BlockFeatures.py             # Retrieves transaction counts for each block
 │   ├── get_ContractFeatures.py          # Orchestrates retrieval of contract info from Etherscan
 │   └── get_DataStatistics.py            # Generates summary statistics and visualizations for the dataset
 │
 ├── Statistics/                  # Analysis outputs and statistical summaries
 │
 ├── config.json                  # Configuration file for paths and API key
+├── DIVE_pipeline.yaml           # YAML config defining the full data creation pipeline execution
 ├── DIVE.ipynb                   # Interactive notebook for demonstrating the framework
 ├── Feature list.xlsx            # Documentation of features and their descriptions
 ├── LICENSE.md                   # License: CC BY-NC 4.0
 ├── README.md                    # Project overview and usage instructions
-└── requirements.txt             # Python package dependencies
+├── requirements.txt             # Python package dependencies
+└── run_DIVE_Pipeline.py         # Entrypoint to run the entire pipeline as a script
 ```
 
 ---
