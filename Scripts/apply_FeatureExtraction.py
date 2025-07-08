@@ -78,7 +78,7 @@ def call_get_CodeMetrics(DatasetName,SamplesFolderName,session_path):
 def call_Bytecode_FeatureExtraction(DatasetName,dataset, session_path):
     #methods = get_FeatureExtractionMethods('Bytecodes')
     #Bytecode_FeatureExtraction(DatasetName,dataset, methods)
-    Bytecode_FeatureExtraction(DatasetName,dataset, session_path)
+    Bytecode_FeatureExtraction(DatasetName,dataset, Col="input", session_path=session_path)
 
 def call_Opcode_FeatureExtraction(DatasetName,dataset, session_path):
     #methods = get_FeatureExtractionMethods('Opcodes')

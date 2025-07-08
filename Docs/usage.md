@@ -35,7 +35,40 @@ extract_SourceCodes(ContractsInfo as a dataframe, UniqueFilename as a string, Da
 > 📁 Results are saved in: [`RawData/Samples/`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples) and [`RawData/SamplesSummary/`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/SamplesSummary) (To save in different directories, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
 
 ---
-## 3️⃣ Code Metrics Generation
+## 3️⃣ Feature Extraction
+```python
+apply_FeatureExtraction(DatasetName as string,dataset_or_SamplesFolderName as DataFrame or path,attributes as list,session_path=None)
+```
+**Parameters:**
+- **`datasetName`** → Name of the dataset from which features will be extracted.
+- **`dataset_or_SamplesFolderName`** → Either a DataFrame containing attribute-level data or the name of a folder containing source code samples from which code metrics will be extracted.
+- **`attributes`** →  Use `['all']` to extract features from all available attributes, or provide a list of specific attributes to extract features from. Supported values include:
+
+   - `1` or  `'ABI'`
+   - `2` or  `'Timestamp'`
+   - `3` or  `'Library'`
+   - `4` or  `'Transactionindex'`
+   - `5` or  `'Code Metrics'`
+   - `6` or  `'Input'` or `'Bytecode'`
+   - `7` or  `'Opcode'`
+  - **`session_path`** → Optional, it is created by the framework runner and used to track paths of files requested by methods.       
+### 1. ABI Feature Extraction
+```python
+ABI_FeatureExtraction(DatasetName, dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
+```
+### 2. Timestamp Feature Extraction
+```python
+Timestamp_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute,session_path=session_path)
+```
+### 3. Library Feature Extraction
+```python
+library_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
+```
+### 4. TransactionIndex Feature Extraction
+```python
+ transactionIndex_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
+```
+### 5. Code Metrics Generation
 ```python
 get_CodeMetrics(SamplesFolderName as a string, SamplesDirPath as a path, DatasetName as a string)
 ```
@@ -50,9 +83,18 @@ get_CodeMetrics(SamplesFolderName as a string, SamplesDirPath as a path, Dataset
   > Default samples path: [`RawData/Samples`](https://github.com/SMART-DIVE/DIVE/tree/main/RawData/Samples)
   > 📁 Results are saved in: [`Features/FE-based/CodeMetrics/CodeMetrics/`](https://github.com/SMART-DIVE/DIVE/tree/main/Features/FE-based/CodeMetrics/CodeMetrics)
   > (To read or save in a different directory, edit [`config.json`](https://github.com/SMART-DIVE/DIVE/blob/main/config.json))
+
+### 6. Bytecode/Input Feature Extraction
+```python
+Bytecode_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute,session_path=None)
+```
+### 7. Opcode Feature Extraction
+```python
+Opcode_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName, Col=attribute, session_path=session_path)
+```
 ---
 
-## 4️⃣ Construction Final Data
+## 4️⃣ Construct Final Data
 ```python
 construct_FinalData(FinalDatasetName as a string, Dataset = ['Dataset1Name','Dataset2Name',...], FeatureTypes = {'Type1':['All' 'or list files'], 'Type2':['All' 'or list files'] , ... }, applyPreprocessing = False)
 ```
