@@ -19,27 +19,47 @@ def get_BlockFeatures(dataset, DatasetName='', Col='blockNumber'):
             api_key = config_File['Etherscan_Account']['API_Key']
 
             transaction_counts = []
-            for i, blk in enumerate(blockInfo[Col]):
-                tx_count = get_transaction_count(int(blk), api_key)
-                transaction_counts.append(tx_count)
-
-                if (i + 1) % 5 == 0:
-                    time.sleep(1)
-
-            blockInfo['transactionCount'] = transaction_counts
 
             UniqueFilename = generate_UniqueFilename(DatasetName,'blockInfo')
             outDir = self_main_dir/config_File['Features']['API-based']['BlockInfo']
-            blockInfo.to_csv(str(outDir) + '/' + UniqueFilename + ".csv",index=False)
-            outDir = self_main_dir.relative_to(Path.cwd().parent)
-            print('Done! Block Info Data is available in: ' + str(outDir) + '/' + UniqueFilename + ".csv")
-            display(blockInfo)
-            return blockInfo
+            outDir.mkdir(parents=True, exist_ok=True)
+            output_path = str(outDir) + '/' + UniqueFilename + ".csv"
+
+
+            for i, blk in enumerate(blockInfo[Col]):
+                try:
+                    tx_count = get_transaction_count(int(blk), api_key)
+                    transaction_counts.append(tx_count)
+                    print(f"({i}) Block #{blk} contains {tx_count} transaction(s).")
+                except Exception as e:
+                    print(f"Failed to retrieve tx count for block {blk} (index {i}): {e}")
+                    transaction_counts.append(None)
+
+                if (i + 1) % 5 == 0:
+                    time.sleep(1)
         else:
             print(f'The {Col} attribute is not present in the given dataset')
+    
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise
+    
+    finally:
+        relative_path = output_path.relative_to(Path.cwd())
+        
+        if transaction_counts:
+            partial_df = blockInfo.iloc[:len(transaction_counts)].copy()
+            partial_df['transactionCount'] = transaction_counts
+            partial_df.to_csv(output_path, index=False)
+            print(f"Data saved to: {relative_path}")
+
+        if len(transaction_counts) == len(blockInfo):        
+            print(f"Done! Full Block Info Data is available at: {relative_path}")
+            display(partial_df)
+            return partial_df
+        else:
+            print(f"Partial data saved after interruption or error.")
+            return None
 
 def get_transaction_count(blockNo, api_key):
     try:

@@ -14,8 +14,9 @@ def transactionIndex_FeatureExtraction(DatasetName,dataset, Col='transactionInde
             with open(config_file_path) as configFile:
                 config_File = json.load(configFile)
             
-            blockInfo = get_BlockFeatures(dataset, DatasetName)
-
+            session = read_session(session_path)
+            blockInfo = retrive_BlockInfo(dataset, DatasetName,session, config_File, self_main_dir)
+            
             dataset = pd.merge(dataset, blockInfo[['blockNumber', 'transactionCount']], on='blockNumber', how='left')
             dataset['relative_tx_position'] = dataset['transactionIndex'] / dataset['transactionCount']
             dataset['block_position'] = dataset['relative_tx_position'].apply(categorize_position)
@@ -67,3 +68,12 @@ def write_session(path, updates):
     session.update(updates)
     with open(path, "w") as f:
         json.dump(session, f, indent=2)
+#------------------------------------------
+def retrive_BlockInfo(dataset, DatasetName, session, config_File, self_main_dir):
+    blockInfoFilename = session.get("BlockInfo")
+    if blockInfoFilename :
+        BlockInfo = pd.read_csv(Path(self_main_dir) / config_File['Features']['API-based']['BlockInfo'] / blockInfoFilename)
+    else:    
+        BlockInfo = get_BlockFeatures(dataset, DatasetName)
+
+    return BlockInfo
