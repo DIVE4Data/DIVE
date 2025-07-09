@@ -18,7 +18,7 @@ def Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes',session_path=Non
             dataset = get_RowIDCol(dataset,config_File)
             Opcode_basedFeatures = dataset[['contractAddress', Col]]
 
-            if len(methods)== 1 and methods[0].lower()== 'all':
+            if len(methods)== 1 and str(methods[0]).lower()== 'all':
                 for methodID in range(1,TotalMethods +1):
                     Opcode_basedFeatures = call_FeatureExtractionMethod(config_File,Opcode_basedFeatures,str(methodID))
             else:
