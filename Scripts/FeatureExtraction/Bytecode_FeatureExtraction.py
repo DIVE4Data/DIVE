@@ -22,7 +22,7 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input',session_path=Non
             
             EVM_Opcodes = get_EVM_OPCODES(config_File)
 
-            if len(methods)== 1 and methods[0].lower()== 'all':
+            if len(methods)== 1 and str(methods[0]).lower()== 'all':
                 for methodID in range(1,TotalMethods +1):
                     Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID),EVM_Opcodes)
             else:
