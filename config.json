@@ -19,7 +19,7 @@
             "Input-based": "Features/FE-based/Input-based/",
             "Opcode-based": "Features/FE-based/Opcode-based/",
             "Timestamp-based": "Features/FE-based/Timestamp-based/",
-            "TransactionIndex": "Features/FE-based/TransactionIndex/",
+            "transactionIndex": "Features/FE-based/TransactionIndex/",
             "Library-based": "Features/FE-based/Library-based/"
         },
         "EVM_OpcodesDir": "Scripts/FeatureExtraction/EVM_Opcodes",

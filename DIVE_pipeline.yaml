@@ -69,7 +69,7 @@ pipeline:
       ABI-based:          ["All or list of files"]       # Features from ABI
       Library-based:      ["All or list of files"]       # Library-based features
       Timestamp-based:    ["All or list of files"]       # Timestamp-derived features
-      TransactionIndex:   ["All or list of files"]       # TransactionIndex features
+      transactionIndex:   ["All or list of files"]       # TransactionIndex features
       Labels:             ["list of files"]              # Ground truth or classification labels
     apply_DataPreprocessing: false          # Set to true to apply preprocessing after merging; if enabled, you should disable the 'apply_DataPreprocessing' step manually
 
