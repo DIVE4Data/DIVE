@@ -84,6 +84,7 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                 else:
                     DatasetName = datasetNameFrom_cfg
 
+                session = read_session(session_path)
                 get_DataStatistics(DatasetName, rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"],
                                    dataset_defaultDir = step_cfg["dataset_defaultDir"], rawData_defaultDir = step_cfg["FinalLabeledData_defaultDir"], 
                                    voteData_defaultDir = step_cfg["voteData_defaultDir"], QuickReport = step_cfg["QuickReport"])
