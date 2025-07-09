@@ -47,7 +47,7 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input',session_path=Non
     
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
-    raise
+        raise
 #=============================================================================================================    
 def call_FeatureExtractionMethod(dataset,methodID,EVM_Opcodes):
     match methodID:

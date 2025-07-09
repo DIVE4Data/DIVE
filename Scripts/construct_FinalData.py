@@ -28,11 +28,14 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, ap
 
         for key in FeatureTypes:
             part = pd.DataFrame(ReadFeaturesData(Dataset,FeatureTypes[key],dataType = key,applyPreprocessing = applyPreprocessing))
-
-            if len(FinalData) == 0:
-                FinalData = part
+            
+            if len(part) >0 and 'contractAddress' in part.columns:
+                if len(FinalData) == 0:
+                    FinalData = part
+                else:
+                    FinalData = FinalData.merge(part, on='contractAddress', how='left')
             else:
-                FinalData = FinalData.merge(part, on='contractAddress', how='left')
+                print(f"Merge failed: '{key}' data length is {len(part)}, and 'contractAddress' in columns: {'contractAddress' in part.columns}")
 
         finalDataName = generate_UniqueFilename(FinalDatasetName)
         if applyPreprocessing == True:
@@ -124,7 +127,7 @@ def get_Path(dataType):
     else:
         if dataType in ['AccountInfo','ContractsInfo','Opcodes']:
             path = self_main_dir/config_File['Features']['API-based'][dataType]
-        elif dataType in ['ABI-based','CodeMetrics','Input-based','Opcode-based']:
+        elif dataType in ['ABI-based','CodeMetrics','Input-based','Opcode-based', 'Timestamp-based', 'TransactionIndex', 'Library-based']:
             path = self_main_dir/config_File['Features']['FE-based'][dataType]
         else:
             path = Path(__file__).resolve().parent/config_File['Features'][dataType]
