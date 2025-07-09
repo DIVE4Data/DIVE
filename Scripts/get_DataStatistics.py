@@ -10,19 +10,28 @@ from ydata_profiling import ProfileReport
 
 # If the final preprocessed data is stored in the default directory, pass only the file name and set defaultDir=True.
 # Otherwise, pass the full path to the file and set defaultDir=False.
-def get_DataStatistics(datasetName, voteDataName, dataset_defaultDir = True, voteData_defaultDir = True, QuickReport = True):
+def get_DataStatistics(datasetName, rawDataName, voteDataName, dataset_defaultDir = True, 
+                       rawData_defaultDir = True, voteData_defaultDir = True, QuickReport = True):
     try:
         outDir = git_Dir(dataType ='Statistics')
         outDir = create_outDir(outDir,(datasetName.split('_')[-1].split('.')[0])) 
 
         #Read dataset
         if dataset_defaultDir:
-            datasetPath = git_Dir(dataType = 'Dataset')
+            datasetPath = git_Dir(dataType = 'PreprocessedData')
             dataset = pd.read_csv(str(datasetPath) + '/' + datasetName)    
         else:
             datasetPath = os.path.dirname(datasetName)
             datasetName = os.path.basename(datasetName)
             dataset = pd.read_csv(os.path.join(datasetPath, datasetName))
+        
+        if rawData_defaultDir:
+            datasetPath = git_Dir(dataType = 'InitialCombinedData')
+            rawData = pd.read_csv(str(datasetPath) + '/' + rawDataName)    
+        else:
+            datasetPath = os.path.dirname(rawDataName)
+            datasetName = os.path.basename(rawDataName)
+            rawData = pd.read_csv(os.path.join(datasetPath, datasetName))
         
         if voteDataName !="":
             if voteData_defaultDir:
@@ -44,8 +53,12 @@ def get_DataStatistics(datasetName, voteDataName, dataset_defaultDir = True, vot
 
         if len(voteData) > 0 and 'Tools' in voteData.columns:
             get_ToolsFrequency(voteData,outDir)
-            
-        get_TimestampFrequency(dataset,outDir)
+        
+        if 'timeStamp' in dataset.columns:
+            get_TimestampFrequency(dataset,outDir)
+        elif len(rawData) > 0 and 'timeStamp' in rawData.columns:
+            get_TimestampFrequency(rawData,outDir)
+
         get_CompilerVersionsFrequency(dataset,outDir,categories_path)
         get_LabelsFrequency(dataset,outDir)
         get_ProfileReport(dataset,outDir,datasetName.split('_')[-1].split('.')[0],QuickReport)
@@ -68,8 +81,8 @@ def git_Dir(dataType):
 
         if dataType == 'Statistics':
             Dir = self_main_dir/config_File['outDir']['Statistics']
-        elif dataType == 'Dataset' :
-            Dir = self_main_dir/config_File['FinalDS']['PreprocessedData']
+        elif dataType == 'PreprocessedData' or dataType == 'InitialCombinedData':
+            Dir = self_main_dir/config_File['FinalDS'][dataType]
         elif dataType == 'Labels':
             Dir = self_main_dir/config_File['DataLabels']['Labels']
         else:

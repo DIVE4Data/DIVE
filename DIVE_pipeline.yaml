@@ -1,9 +1,10 @@
 # Top-level input configuration
 input:
   datasetName: "datasetname"              # Unique name for the dataset used throughout the pipeline
+  FinalLabeledData: ""                    # Name of the constructed dataset before preprocessing
+                                          # This is required if Step 3 (constructFinalData) is disabled
   configurationFile: "config.json"        # Name of the global configuration file
   installRequirements: true               # Set to true to install all required Python packages before running the pipeline
-
 
 # Main pipeline execution steps
 pipeline:
@@ -68,7 +69,7 @@ pipeline:
       ABI-based:          ["All or list of files"]       # Features from ABI
       Library-based:      ["All or list of files"]       # Library-based features
       Timestamp-based:    ["All or list of files"]       # Timestamp-derived features
-      Transactionindex:   ["All or list of files"]       # TransactionIndex features
+      TransactionIndex:   ["All or list of files"]       # TransactionIndex features
       Labels:             ["list of files"]              # Ground truth or classification labels
     apply_DataPreprocessing: false          # Set to true to apply preprocessing after merging; if enabled, you should disable the 'apply_DataPreprocessing' step manually
 
@@ -95,9 +96,10 @@ pipeline:
 # Step 5: Generate dataset statistics and summaries
   get_DataStatistics:
     enable: true                           # Enable or disable this step
-    datasetName: ""                        # # Leave empty to use dataset name from the previous step (Step 4)
+    datasetName: ""                        # Leave empty to use dataset name from the previous step (Step 4)
     voteDataName: "voteDataName"           # Name for voting dataset
-    dataset_defaultDir: true               # Use default directory for main dataset
+    dataset_defaultDir: true               # Use default directory for main preprocessed dataset
+    FinalLabeledData_defaultDir: true      # Use default directory for main dataset
     voteData_defaultDir: true              # Use custom directory for vote data 
     QuickReport: false                     # Set to true to generate a brief summary instead of a full report
 
