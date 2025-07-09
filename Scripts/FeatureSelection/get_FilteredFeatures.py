@@ -7,7 +7,7 @@ def get_FilteredFeatures(filters):
         #get feature list file path
         configFile = readConfigFile()
         main_dir = Path(__file__).resolve().parents[2]
-        featureList = str(main_dir) + configFile['Features']['Feature List File']
+        featureList = str(main_dir) + '/' + configFile['Features']['Feature List File']
         # Read the CSV file
         featureListDF = pd.read_excel(featureList,sheet_name = configFile['Features']['Feature List Sheet'])
 
