@@ -24,6 +24,8 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
         if str(step_cfg.get("enable", False)).lower() != "true":
             if step_name == "get_ContractFeatures":
                 Flag= True
+            if step_name == "constructFinalData":
+                write_session(session_path, {"FinalLabeledData": input_cfg["FinalLabeledData"]})
             continue
 
         print(f"- Running step: {step_name}")
@@ -82,9 +84,9 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                 else:
                     DatasetName = datasetNameFrom_cfg
 
-                get_DataStatistics(DatasetName, voteDataName = step_cfg["voteDataName"], dataset_defaultDir = step_cfg["dataset_defaultDir"], 
+                get_DataStatistics(DatasetName, rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"],
+                                   dataset_defaultDir = step_cfg["dataset_defaultDir"], rawData_defaultDir = step_cfg["FinalLabeledData_defaultDir"], 
                                    voteData_defaultDir = step_cfg["voteData_defaultDir"], QuickReport = step_cfg["QuickReport"])
-
             case "get_FilteredFeatures":
                 get_FilteredFeatures(step_cfg["filters"])
 
