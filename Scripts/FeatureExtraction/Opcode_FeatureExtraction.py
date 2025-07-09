@@ -42,7 +42,7 @@ def Opcode_FeatureExtraction(DatasetName,dataset, Col='Opcodes',session_path=Non
             print(f'The {Col} attribute is not present in the given dataset')
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
-    raise
+        raise
 #=============================================================================================================    
 def call_FeatureExtractionMethod(config_File,dataset,methodID):
     match methodID:

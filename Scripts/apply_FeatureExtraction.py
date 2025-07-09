@@ -68,8 +68,8 @@ def call_get_CodeMetrics(DatasetName,SamplesFolderName,session_path):
     if session_path is not None:
         session = read_session(session_path)
         SamplesDirPath = session.get("SamplesDirPath")
-        if SamplesDirPath == "":
-            SamplesDirPath = str(git_dir("Samples")) 
+        if SamplesDirPath != "":
+            SamplesDirPath = SamplesDirPath + '/' + DatasetName
     else:
         SamplesDirPath = input('If the samples folder is located in ./RawData/Samples press Enter, otherwise enter the path to the samples folder.')
 
@@ -108,7 +108,4 @@ def git_dir(data):
     configFile = open(config_file_path)
     config_File = json.load(configFile)
     configFile.close()
-    if data == "Samples":
-        return self_main_dir/config_File['RawData'][data]
-    else:
-        return self_main_dir/config_File['Features']['API-based'][data]
+    return self_main_dir/config_File['Features']['API-based'][data]

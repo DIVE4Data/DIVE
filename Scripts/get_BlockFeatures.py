@@ -45,8 +45,10 @@ def get_BlockFeatures(dataset, DatasetName='', Col='blockNumber'):
         raise
     
     finally:
-        relative_path = output_path.relative_to(Path.cwd())
-        
+
+        relative_outDir =  self_main_dir.relative_to(Path.cwd().parent)/config_File['Features']['API-based']['BlockInfo']
+        relative_path = str(relative_outDir) + '/' + UniqueFilename + '.csv'
+    
         if transaction_counts:
             partial_df = blockInfo.iloc[:len(transaction_counts)].copy()
             partial_df['transactionCount'] = transaction_counts
