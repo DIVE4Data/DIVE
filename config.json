@@ -22,7 +22,7 @@
             "TransactionIndex": "Features/FE-based/TransactionIndex/",
             "Library-based": "Features/FE-based/Library-based/"
         },
-        "EVM_OpcodesDir": "FeatureExtraction/EVM_Opcodes",
+        "EVM_OpcodesDir": "Scripts/FeatureExtraction/EVM_Opcodes",
         "Feature List File": "Feature list.xlsx",
         "Feature List Sheet": "Features"
         },

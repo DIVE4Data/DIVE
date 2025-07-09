@@ -35,6 +35,7 @@ def apply_FeatureExtraction(DatasetName,dataset_or_SamplesFolderName,attributes,
             AccountInfoDF = ContractsInfoDF = OpcodesDF = SamplesFolderName = dataset_or_SamplesFolderName
 
         for attribute in attributes:
+            print(f"Running feature extraction process on '{attribute}' attribute ...")
             match attribute.lower():
                 case 'all':
                     ABI_FeatureExtraction(DatasetName,ContractsInfoDF, Col='ABI', session_path=session_path)
