@@ -7,7 +7,7 @@ from Scripts.apply_FeatureExtraction import apply_FeatureExtraction
 from Scripts.construct_FinalData import construct_FinalData
 from Scripts.apply_DataPreprocessing import apply_DataPreprocessing
 from Scripts.get_DataStatistics import get_DataStatistics
-from Scripts.FeatureSelection import get_FilteredFeatures
+from Scripts.FeatureSelection.get_FilteredFeatures import get_FilteredFeatures
 
 #------------------------------------------
 # Run Pipeline
