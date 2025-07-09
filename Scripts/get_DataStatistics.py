@@ -26,12 +26,12 @@ def get_DataStatistics(datasetName, rawDataName, voteDataName, dataset_defaultDi
             dataset = pd.read_csv(os.path.join(datasetPath, datasetName))
         
         if rawData_defaultDir:
-            datasetPath = git_Dir(dataType = 'InitialCombinedData')
-            rawData = pd.read_csv(str(datasetPath) + '/' + rawDataName)    
+            rawDataDatasetPath = git_Dir(dataType = 'InitialCombinedData')
+            rawData = pd.read_csv(str(rawDataDatasetPath) + '/' + rawDataName)    
         else:
-            datasetPath = os.path.dirname(rawDataName)
+            rawDataDatasetPath = os.path.dirname(rawDataName)
             datasetName = os.path.basename(rawDataName)
-            rawData = pd.read_csv(os.path.join(datasetPath, datasetName))
+            rawData = pd.read_csv(os.path.join(rawDataDatasetPath, datasetName))
         
         if voteDataName !="":
             if voteData_defaultDir:
