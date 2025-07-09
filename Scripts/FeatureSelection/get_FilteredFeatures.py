@@ -30,7 +30,7 @@ def get_FilteredFeatures(filters):
             else:
                 print(f"Warning: Filter '{filter}' not found in Feature CSV List File. Skipping...")
 
-        return featureListDF['Feature'].tolist()
+        print(f"Features that belong to the accepted filters are: {featureListDF['Feature'].tolist()}")
 
     except FileNotFoundError:
         print(f"Error: The file '{featureList}' was not found.")
