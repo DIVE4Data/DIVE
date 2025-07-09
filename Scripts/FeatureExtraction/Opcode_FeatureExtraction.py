@@ -131,7 +131,7 @@ def get_ConfigFile(config_file_name = 'config.json'):
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType,config_File):
-    self_main_dir = Path(__file__).resolve().parents[1] #main Dir
+    self_main_dir = Path(__file__).resolve().parents[2] #DIVE Dir
     if dataType == 'self_main_dir':
         path = self_main_dir
     elif dataType == 'EVM_OpcodesDir':
