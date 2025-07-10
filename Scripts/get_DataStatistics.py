@@ -30,8 +30,8 @@ def get_DataStatistics(datasetName, rawDataName, voteDataName, dataset_defaultDi
             rawData = pd.read_csv(str(rawDataDatasetPath) + '/' + rawDataName)    
         else:
             rawDataDatasetPath = os.path.dirname(rawDataName)
-            datasetName = os.path.basename(rawDataName)
-            rawData = pd.read_csv(os.path.join(rawDataDatasetPath, datasetName))
+            rawdatasetName = os.path.basename(rawDataName)
+            rawData = pd.read_csv(os.path.join(rawDataDatasetPath, rawdatasetName))
         
         if voteDataName !="":
             if voteData_defaultDir:
