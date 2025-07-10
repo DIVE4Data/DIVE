@@ -1,7 +1,7 @@
 import datetime, os, json
 import pandas as pd
 import numpy as np
-from mrkdwn_analysis import MarkdownAnalyzer
+from markdown_analysis import MarkdownAnalyzer
 from pathlib import Path
 from IPython.display import display
 
