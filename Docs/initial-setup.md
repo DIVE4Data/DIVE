@@ -34,7 +34,7 @@ You can run the full pipeline ([`run_DIVE_Pipeline.py`](https://github.com/SMART
   ```
 - From the command line (CLI):
   ```bash
-        python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
+      python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
   ```
 ### ⚙️ **Optional: Use individual scripts**
 > To use any script independently, import it into your Python code.
