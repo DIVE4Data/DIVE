@@ -51,7 +51,8 @@
     "FinalDS":
     {
         "InitialCombinedData": "Datasets/InitialCombinedData/",
-        "PreprocessedData": "Datasets/PreprocessedData/"
+        "PreprocessedData": "Datasets/PreprocessedData/",
+        "CategoricalColsMappings" : "Datasets/PreprocessedData/"
     },
     "outDir":
     {

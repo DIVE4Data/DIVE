@@ -16,10 +16,10 @@ def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['al
         
         if len(PreprocessingTasks)== 1 and PreprocessingTasks[0].lower()== 'all':
             for taskID in range(1,PreprocessingTasksNo +1):
-                dataset = call_PreprocessingTask(dataset,str(taskID),config_File)
+                dataset = call_PreprocessingTask(dataset,str(taskID),config_File, session_path,datasetName)
         else:
             for taskID in PreprocessingTasks:
-                dataset = call_PreprocessingTask(dataset,str(taskID),config_File)
+                dataset = call_PreprocessingTask(dataset,str(taskID),config_File, session_path,datasetName)
         
         finalDataName = generate_UniqueFilename(datasetName)
         finalDataPath = str(get_Path('PreprocessedData',config_File))
@@ -40,7 +40,7 @@ def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['al
 
 #Identify the preprocessing task to be performed
 #-----------------------------------------------
-def call_PreprocessingTask(dataset,taskID,config_File):
+def call_PreprocessingTask(dataset,taskID,config_File, session_path,datasetName):
     savePath = str(get_Path('PreprocessedData',config_File))
     match taskID:
         case '1' | 'DropDuplicates':
@@ -67,7 +67,7 @@ def call_PreprocessingTask(dataset,taskID,config_File):
             return PreprocessingTask9_HandlingStringBoolColsToInt(dataset)
         case '10' | 'HandlingCategoricalData':
             dataToBeProcessed = get_Path('CategoricalCols',config_File)
-            return PreprocessingTask10_HandlingCategoricalData(dataset,dataToBeProcessed,savePath)
+            return PreprocessingTask10_HandlingCategoricalData(dataset,dataToBeProcessed,savePath,session_path,datasetName)
         case '11' | 'ConvertFloatColumns_to_Int':
             return PreprocessingTask11_ConvertFloatColumns_to_Int(dataset)
         case '12' | 'SetDataIndexColumn':
@@ -176,7 +176,7 @@ def PreprocessingTask9_HandlingStringBoolColsToInt(dataset):
     dataset = dataset.replace({'Yes':1,'No':0})
     return dataset
 #------------------------------------
-def PreprocessingTask10_HandlingCategoricalData(dataset,CategoricalCols,savePath):
+def PreprocessingTask10_HandlingCategoricalData(dataset,CategoricalCols,savePath,session_path,datasetName):
     cols = list(set(dataset.columns) & set(CategoricalCols))
     mappings = {}  # Dictionary to store mappings for all columns
 
@@ -192,7 +192,10 @@ def PreprocessingTask10_HandlingCategoricalData(dataset,CategoricalCols,savePath
         mappings[col] = {str(k): int(v) for k, v in zip(classes, labels)}
 
     # Write all mappings to a single JSON file
-    filename =  generate_UniqueFilename('DIVE_CategoricalColsMappings')
+    filename =  generate_UniqueFilename(datasetName + '_CategoricalColsMappings')
+    if session_path:
+            write_session(session_path, {"CategoricalColsMappings": filename + '.json'})
+
     filepath = os.path.join(savePath, filename + '.json')
     with open(filepath, 'w') as file:
         json.dump(mappings, file, indent=4)

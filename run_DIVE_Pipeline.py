@@ -87,7 +87,7 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                     DatasetName = datasetNameFrom_cfg
 
                 session = read_session(session_path)
-                get_DataStatistics(DatasetName, rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"], QuickReport = step_cfg["QuickReport"])
+                get_DataStatistics(DatasetName,CategoricalColsMappings=session.get("CategoricalColsMappings"), rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"], QuickReport = step_cfg["QuickReport"])
             case "get_FilteredFeatures":
                 get_FilteredFeatures(step_cfg["filters"])
 
