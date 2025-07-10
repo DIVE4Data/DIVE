@@ -6,7 +6,7 @@ Follow these steps to set up and run the **DIVE framework**:
 
 ### 1. **Clone the repository:**
 ```bash
-      git clone https://github.com/SMART-DIVE/DIVE.git
+git clone https://github.com/SMART-DIVE/DIVE.git
 ```
 
 ### 2. **Add your API key**
@@ -30,11 +30,11 @@ Open and edit [`DIVE_pipeline.yaml`](https://github.com/SMART-DIVE/DIVE/blob/mai
 You can run the full pipeline ([`run_DIVE_Pipeline.py`](https://github.com/SMART-DIVE/DIVE/blob/main/run_DIVE_Pipeline.py)) in two ways:
 - From a Python environment:
   ```Python
-        !python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
+  !python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
   ```
 - From the command line (CLI):
   ```bash
-      python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
+  python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
   ```
 ### ⚙️ **Optional: Use individual scripts**
 > To use any script independently, import it into your Python code.
