@@ -107,7 +107,7 @@ def PreprocessingTask2_HideProtectedAttributes(dataset,ProtectedAttributes,saveP
         protectedDatasetName = generate_UniqueFilename('ProtectedAttributes')
         protectedDataset.to_csv(savePath + '/' + protectedDatasetName+'.csv',index=False)
         print('Done! the protected attirbutes data is available in:' + str(os.path.relpath(str(savePath) + '/' + protectedDatasetName+'.csv', Path.cwd().parent)))
-        dataset = dataset.drop(columns=ProtectedAttributes)
+        dataset = dataset.drop(columns=existing_cols)
     else:
         print("No valid protected columns found in dataset. Returning dataset unchanged.")
     return dataset
