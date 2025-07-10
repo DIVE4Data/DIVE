@@ -30,7 +30,7 @@ Open and edit [`DIVE_pipeline.yaml`](https://github.com/SMART-DIVE/DIVE/blob/mai
 You can run the full pipeline ([`run_DIVE_Pipeline.py`](https://github.com/SMART-DIVE/DIVE/blob/main/run_DIVE_Pipeline.py)) in two ways:
 - From a Python environment:
   ```Python
-        !python3 run_DIVE_Pipeline.py DIVE_pipeline_Dataset.yaml
+        !python3 run_DIVE_Pipeline.py DIVE_pipeline.yaml
   ```
 - From the command line (CLI):
   ```bash
