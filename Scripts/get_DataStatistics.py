@@ -53,13 +53,24 @@ def get_DataStatistics(datasetName, rawDataName, voteDataName, dataset_defaultDi
 
         if len(voteData) > 0 and 'Tools' in voteData.columns:
             get_ToolsFrequency(voteData,outDir)
+        else:
+            print("Cannot provide analysis tools frequency due to missing of vote data")
         
         if 'timeStamp' in dataset.columns:
             get_TimestampFrequency(dataset,outDir)
         elif len(rawData) > 0 and 'timeStamp' in rawData.columns:
             get_TimestampFrequency(rawData,outDir)
+        else:
+            print("Cannot compute sample frequency by year: 'timeStamp' column missing in both preprocessedData and rawData.")
 
-        get_CompilerVersionsFrequency(dataset,outDir,categories_path)
+        if 'CompilerVersion' in dataset.columns:
+            if not os.path.exists(categories_path):
+                print("Cannot compute compiler version frequency: 'categories_path' not found.")
+            else:
+                get_CompilerVersionsFrequency(dataset,outDir,categories_path)
+        else:
+            print("Cannot compute compiler version frequency: 'CompilerVersion' column missing in dataset.")
+
         get_LabelsFrequency(dataset,outDir)
         get_ProfileReport(dataset,outDir,datasetName.split('_')[-1].split('.')[0],QuickReport)
 
