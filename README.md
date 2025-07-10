@@ -38,15 +38,15 @@ Generate statistical summaries and visualizations to better understand the datas
 
 ## 📦 Requirements
 
-- [`Python`](https://www.python.org/) >= **3.12.2**  
-- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics) >= **0.0.26**
+- [`Python`](https://www.python.org/) = **3.12.2**  
+- [`solidity-code-metrics`](https://classic.yarnpkg.com/en/package/solidity-code-metrics) = **0.0.26**
   > Install using one of the following:
   ```bash
   # Using Yarn
-  yarn global add solidity-code-metrics@^0.0.26
+  yarn global add solidity-code-metrics@0.0.26
   
   # Or using npm
-  npm install -g solidity-code-metrics@^0.0.26
+  npm install -g solidity-code-metrics@0.0.26
   ```
  
 - 🔑 Etherscan API Key  
@@ -147,10 +147,6 @@ DIVE/
 
 - Each function is explained in detail in [`Docs/usage.md`](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/usage.md)
 
----
-
-## 🎥 Demo
-*  
 ---
 
 ## 📦 License
