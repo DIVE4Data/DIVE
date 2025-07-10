@@ -27,7 +27,7 @@ def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['al
         dataset.to_csv(outputPath,index=False)
 
         if session_path:
-            write_session(session_path, {"PreprocessedData": outputPath})
+            write_session(session_path, {"PreprocessedData": finalDataName+'.csv'})
 
         print('Done! the Preprocessed Data is available in:' + str(os.path.relpath(str(finalDataPath) + '/' +finalDataName+'.csv', Path.cwd().parent)))
 
