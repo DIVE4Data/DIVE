@@ -45,7 +45,7 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, ap
         outputPath = finalDataPath + '/' +finalDataName+'.csv'
         FinalData.to_csv(outputPath,index=False)
         if session_path:
-            write_session(session_path, {"FinalLabeledData": outputPath})
+            write_session(session_path, {"FinalLabeledData": finalDataName+'.csv'})
 
         print('Done! the Combined Data is available in: ' + str(os.path.relpath(str(finalDataPath) + '/' +finalDataName+'.csv', Path.cwd().parent)))
         display(FinalData)

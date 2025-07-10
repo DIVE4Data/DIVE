@@ -10,37 +10,21 @@ from ydata_profiling import ProfileReport
 
 # If the final preprocessed data is stored in the default directory, pass only the file name and set defaultDir=True.
 # Otherwise, pass the full path to the file and set defaultDir=False.
-def get_DataStatistics(datasetName, rawDataName, voteDataName, dataset_defaultDir = True, 
-                       rawData_defaultDir = True, voteData_defaultDir = True, QuickReport = True):
+def get_DataStatistics(datasetName, rawDataName, voteDataName, QuickReport = True):
     try:
         outDir = git_Dir(dataType ='Statistics')
         outDir = create_outDir(outDir,(datasetName.split('_')[-1].split('.')[0])) 
 
         #Read dataset
-        if dataset_defaultDir:
-            datasetPath = git_Dir(dataType = 'PreprocessedData')
-            dataset = pd.read_csv(str(datasetPath) + '/' + datasetName)    
-        else:
-            datasetPath = os.path.dirname(datasetName)
-            datasetName = os.path.basename(datasetName)
-            dataset = pd.read_csv(os.path.join(datasetPath, datasetName))
+        datasetPath = git_Dir(dataType = 'PreprocessedData')
+        dataset = pd.read_csv(str(datasetPath) + '/' + datasetName)    
         
-        if rawData_defaultDir:
-            rawDataDatasetPath = git_Dir(dataType = 'InitialCombinedData')
-            rawData = pd.read_csv(str(rawDataDatasetPath) + '/' + rawDataName)    
-        else:
-            rawDataDatasetPath = os.path.dirname(rawDataName)
-            rawdatasetName = os.path.basename(rawDataName)
-            rawData = pd.read_csv(os.path.join(rawDataDatasetPath, rawdatasetName))
-        
+        rawDataDatasetPath = git_Dir(dataType = 'InitialCombinedData')
+        rawData = pd.read_csv(str(rawDataDatasetPath) + '/' + rawDataName)    
+       
         if voteDataName !="":
-            if voteData_defaultDir:
-                voteData_Path = git_Dir(dataType = 'Labels')
-                voteData = pd.read_csv(str(voteData_Path) + '/' + voteDataName) 
-            else:
-                voteDataPath = os.path.dirname(voteDataName)
-                voteDataName = os.path.basename(voteDataName)
-                voteData = pd.read_csv(os.path.join(voteDataPath, voteDataName))
+            voteData_Path = git_Dir(dataType = 'Labels')
+            voteData = pd.read_csv(str(voteData_Path) + '/' + voteDataName) 
         else:
             voteData = ""
     
