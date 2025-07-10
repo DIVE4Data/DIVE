@@ -10,7 +10,7 @@ from ydata_profiling import ProfileReport
 
 # If the final preprocessed data is stored in the default directory, pass only the file name and set defaultDir=True.
 # Otherwise, pass the full path to the file and set defaultDir=False.
-def get_DataStatistics(datasetName, rawDataName, voteDataName, QuickReport = True):
+def get_DataStatistics(datasetName, CategoricalColsMappings, rawDataName, voteDataName, QuickReport = True):
     try:
         outDir = git_Dir(dataType ='Statistics')
         outDir = create_outDir(outDir,(datasetName.split('_')[-1].split('.')[0])) 
@@ -27,10 +27,6 @@ def get_DataStatistics(datasetName, rawDataName, voteDataName, QuickReport = Tru
             voteData = pd.read_csv(str(voteData_Path) + '/' + voteDataName) 
         else:
             voteData = ""
-    
-        # Derive CategoricalColsMappings.json file path from dataset name
-        parts = datasetName.replace('.csv', '').split('_')
-        categories_path = os.path.join(datasetPath, f'{parts[0]}_CategoricalColsMappings_{"_".join(parts[-2:])}.json')
 
         get_datasetInfo(dataset,outDir)
         get_datasetSummary(dataset,outDir)   
@@ -48,6 +44,7 @@ def get_DataStatistics(datasetName, rawDataName, voteDataName, QuickReport = Tru
             print("Cannot compute sample frequency by year: 'timeStamp' column missing in both preprocessedData and rawData.")
 
         if 'CompilerVersion' in dataset.columns:
+            categories_path = str(git_Dir(dataType ='CategoricalColsMappings')) + '/' + CategoricalColsMappings
             if not os.path.exists(categories_path):
                 print("Cannot compute compiler version frequency: 'categories_path' not found.")
             else:
@@ -76,7 +73,7 @@ def git_Dir(dataType):
 
         if dataType == 'Statistics':
             Dir = self_main_dir/config_File['outDir']['Statistics']
-        elif dataType == 'PreprocessedData' or dataType == 'InitialCombinedData':
+        elif dataType == 'PreprocessedData' or dataType == 'InitialCombinedData' or dataType == 'CategoricalColsMappings':
             Dir = self_main_dir/config_File['FinalDS'][dataType]
         elif dataType == 'Labels':
             Dir = self_main_dir/config_File['DataLabels']['Labels']
