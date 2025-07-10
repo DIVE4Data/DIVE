@@ -7,7 +7,7 @@ matplotlib
 seaborn
 hexbytes
 py-solc-x
-markdown-analysis
+markdown-analysis==0.0.5
 beautifulsoup4
 ydata-profiling
 feature-engine

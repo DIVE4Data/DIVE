@@ -101,11 +101,15 @@ def PreprocessingTask1_DropDuplicate(dataset):
 def PreprocessingTask2_HideProtectedAttributes(dataset,ProtectedAttributes,savePath):
     dataset.insert(0, 'contractID', range(1, len(dataset) + 1))
     protectedDatasetCols = ['contractID'] + ProtectedAttributes
-    protectedDataset = dataset[protectedDatasetCols]
-    protectedDatasetName = generate_UniqueFilename('ProtectedAttributes')
-    protectedDataset.to_csv(savePath + '/' + protectedDatasetName+'.csv',index=False)
-    print('Done! the protected attirbutes data is available in:' + str(os.path.relpath(str(savePath) + '/' + protectedDatasetName+'.csv', Path.cwd().parent)))
-    dataset = dataset.drop(columns=ProtectedAttributes)
+    existing_cols = [col for col in protectedDatasetCols if col in dataset.columns]
+    if existing_cols:
+        protectedDataset = dataset[existing_cols]
+        protectedDatasetName = generate_UniqueFilename('ProtectedAttributes')
+        protectedDataset.to_csv(savePath + '/' + protectedDatasetName+'.csv',index=False)
+        print('Done! the protected attirbutes data is available in:' + str(os.path.relpath(str(savePath) + '/' + protectedDatasetName+'.csv', Path.cwd().parent)))
+        dataset = dataset.drop(columns=ProtectedAttributes)
+    else:
+        print("No valid protected columns found in dataset. Returning dataset unchanged.")
     return dataset
 #------------------------------------
 def PreprocessingTask3_FillMissingData(dataset,NullColsToNegativeOne):

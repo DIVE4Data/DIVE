@@ -1,24 +1,26 @@
 import yaml, sys, os, subprocess
 import tempfile, json
 from pathlib import Path
-from Scripts.get_Addresses import get_Addresses
-from Scripts.get_ContractFeatures import get_ContractFeatures
-from Scripts.apply_FeatureExtraction import apply_FeatureExtraction
-from Scripts.construct_FinalData import construct_FinalData
-from Scripts.apply_DataPreprocessing import apply_DataPreprocessing
-from Scripts.get_DataStatistics import get_DataStatistics
-from Scripts.FeatureSelection.get_FilteredFeatures import get_FilteredFeatures
-
 #------------------------------------------
 # Run Pipeline
 #------------------------------------------
 def run_pipeline(DIVE_FrameworkConfig,session_path):
+
     input_cfg = DIVE_FrameworkConfig.get("input", {})
     pipeline_cfg = DIVE_FrameworkConfig.get("pipeline", {})
 
     datasetName = input_cfg["datasetName"]
     if input_cfg.get("installRequirements", False):
         install_requirements()
+
+    from Scripts.get_Addresses import get_Addresses
+    from Scripts.get_ContractFeatures import get_ContractFeatures
+    from Scripts.apply_FeatureExtraction import apply_FeatureExtraction
+    from Scripts.construct_FinalData import construct_FinalData
+    from Scripts.apply_DataPreprocessing import apply_DataPreprocessing
+    from Scripts.get_DataStatistics import get_DataStatistics
+    from Scripts.FeatureSelection.get_FilteredFeatures import get_FilteredFeatures
+
     Flag = False
     for step_name, step_cfg in pipeline_cfg.items():
         if str(step_cfg.get("enable", False)).lower() != "true":
@@ -96,7 +98,7 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
 #------------------------------------------
 #Install Requirements
 #------------------------------------------
-def install_requirements():
+'''def install_requirements():
     requirements_file = "requirements.txt"
     if not os.path.exists(requirements_file):
         print("requirements.txt not found. Skipping installation.")
@@ -105,6 +107,26 @@ def install_requirements():
     print("Installing required packages from requirements.txt...")
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_file])
+        print("Requirements installed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to install packages: {e}")
+        sys.exit(1)'''
+
+def install_requirements():
+    requirements_file = "requirements.txt"
+    if not os.path.exists(requirements_file):
+        print("requirements.txt not found. Skipping installation.")
+        return
+
+    print("Installing required packages from requirements.txt...")
+    try:
+        # Use --no-cache-dir to avoid caching issues and enforce clean install
+        # Use --upgrade-strategy only-if-needed to respect version pins
+        subprocess.check_call([
+            sys.executable, "-m", "pip", "install",
+            "--no-cache-dir", "--upgrade-strategy", "only-if-needed",
+            "-r", requirements_file
+        ])
         print("Requirements installed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to install packages: {e}")
