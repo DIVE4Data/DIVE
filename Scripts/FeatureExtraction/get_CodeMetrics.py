@@ -141,7 +141,7 @@ def parse_MetricsReports(ReportsFolder):
         StateVariables = []
         Capabilities = []
         
-        if file.is_file() and '.md' in file.name:
+        if file.is_file() and file.name.endswith('.md') and file.stat().st_size > 0:
             contractAddress = file.name.split('.')[0]
             codeMetrics.append(contractAddress)
             try:
