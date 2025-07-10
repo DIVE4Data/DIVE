@@ -127,7 +127,7 @@ def get_Path(dataType):
     else:
         if dataType in ['AccountInfo','ContractsInfo','Opcodes']:
             path = self_main_dir/config_File['Features']['API-based'][dataType]
-        elif dataType in ['ABI-based','CodeMetrics','Input-based','Opcode-based', 'Timestamp-based', 'TransactionIndex', 'Library-based']:
+        elif dataType in ['ABI-based','CodeMetrics','Input-based','Opcode-based', 'Timestamp-based', 'transactionIndex', 'Library-based']:
             path = self_main_dir/config_File['Features']['FE-based'][dataType]
         else:
             path = Path(__file__).resolve().parent/config_File['Features'][dataType]
