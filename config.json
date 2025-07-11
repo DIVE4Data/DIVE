@@ -64,13 +64,13 @@
         "NullColsToNegativeOne": ["txreceipt_status"],
         "HexaColsToInt": ["from","hash","blockHash","ConstructorArguments","Implementation"],
         "StringNumColsToInt": ["Lines","nLines","nSLOC","Comment Lines","Complex. Score"],
-        "CategoricalCols": ["methodId", "LicenseType","CompilerVersion","EVMVersion","Library","mostFrequentOpcode","Experimental Features", "part_of_day"],
+        "CategoricalCols": ["methodId", "LicenseType","CompilerVersion","EVMVersion","Library","mostFrequentOpcode","Experimental Features", "part_of_day", "quarter", "block_position"],
         "UselesCols":["functionName","functions","UniqueInputTypes","UniqueOutputTypes","events"],
         "ConstructorArgs": ["ConstructorArguments"],
         "IndexCol": ["contractAddress"],
         "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes",
                                 "ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber", "transactionIndex", "Library",
-                                "timeStamp", "part_of_day", "quarter",
+                                "timeStamp", "hour_sin", "hour_cos", "dayofweek_sin", "dayofweek_cos", "relative_tx_position",
                                 "ExternalLibNames"]
     }
 }
