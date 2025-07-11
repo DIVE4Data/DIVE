@@ -28,11 +28,14 @@ def construct_FinalData(FinalDatasetName = '', Dataset =[],FeatureTypes = {}, ap
 
         for key in FeatureTypes:
             part = pd.DataFrame(ReadFeaturesData(Dataset,FeatureTypes[key],dataType = key,applyPreprocessing = applyPreprocessing))
-            
-            if len(part) >0 and 'contractAddress' in part.columns:
-                if len(FinalData) == 0:
+
+            if len(part) > 0 and 'contractAddress' in part.columns:
+                if FinalData.empty:
                     FinalData = part
                 else:
+                    # Drop overlapping columns except 'contractAddress'
+                    overlapping_cols = set(FinalData.columns).intersection(part.columns) - {'contractAddress'}
+                    part = part.drop(columns=overlapping_cols)
                     FinalData = FinalData.merge(part, on='contractAddress', how='left')
             else:
                 print(f"Merge failed: '{key}' data length is {len(part)}, and 'contractAddress' in columns: {'contractAddress' in part.columns}")

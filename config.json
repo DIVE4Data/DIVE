@@ -69,7 +69,7 @@
         "ConstructorArgs": ["ConstructorArguments"],
         "IndexCol": ["contractAddress"],
         "ProtectedAttributes":["contractAddress","ContractName","SwarmSource","Implementation","hash","blockHash","from","to","input","Opcodes",
-                                "ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber", "transactionIndex",
+                                "ExtractedOpcodes","ConstructorArguments","ABI", "blockNumber", "transactionIndex", "Library",
                                 "timeStamp", "part_of_day", "quarter",
                                 "ExternalLibNames"]
     }

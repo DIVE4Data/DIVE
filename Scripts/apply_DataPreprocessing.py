@@ -82,22 +82,22 @@ def call_PreprocessingTask(dataset,taskID,config_File, session_path,datasetName)
 #Perform the chosen preprocessed task
 #------------------------------------
 def PreprocessingTask1_DropDuplicate(dataset):
-    #DuplicateRows
-    dataset.drop_duplicates(keep='first',inplace=True)
-    dataset.reset_index(drop=True,inplace=True)
-    
-    #DuplicateCols
-    # Check and drop each 'y' column individually if it exists
-    if 'Opcodes_y' in dataset.columns:
-        dataset.drop(columns=['Opcodes_y'], inplace=True)
-    if 'input_y' in dataset.columns:
-        dataset.drop(columns=['input_y'], inplace=True)
+    # Remove duplicate rows
+    dataset.drop_duplicates(keep='first', inplace=True)
+    dataset.reset_index(drop=True, inplace=True)
 
-    # Check and rename each 'x' column individually if it exists
-    if 'Opcodes_x' in dataset.columns:
-        dataset.rename(columns={'Opcodes_x': 'Opcodes'}, inplace=True)
-    if 'input_x' in dataset.columns:
-        dataset.rename(columns={'input_x': 'input'}, inplace=True)
+    # Remove any *_y columns (from earlier merges)
+    y_cols = [col for col in dataset.columns if col.endswith('_y')]
+    dataset.drop(columns=y_cols, inplace=True, errors='ignore')
+
+    # Rename *_x columns by stripping the '_x' suffix (if no conflict)
+    x_cols = [col for col in dataset.columns if col.endswith('_x')]
+    for col in x_cols:
+        base_col = col[:-2]
+        if base_col not in dataset.columns:
+            dataset.rename(columns={col: base_col}, inplace=True)
+        else:
+            dataset.drop(columns=[col], inplace=True)
     return dataset
 #------------------------------------
 def PreprocessingTask2_HideProtectedAttributes(dataset,ProtectedAttributes,savePath):
