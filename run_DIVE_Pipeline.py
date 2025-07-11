@@ -77,8 +77,8 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
 
             case "get_DataStatistics":
                 datasetNameFrom_cfg = step_cfg.get("datasetName", "").strip()
+                session = read_session(session_path)
                 if datasetNameFrom_cfg == "":
-                    session = read_session(session_path)
                     PreprocessedData_path = session.get("PreprocessedData")
                     if PreprocessedData_path is None:
                         raise ValueError("Missing 'PreprocessedData' path in session.")
@@ -92,7 +92,6 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                 else:
                     CategoricalColsMappingsFileName = step_cfg.get("CategoricalColsMappingsData", "").strip()
 
-                session = read_session(session_path)
                 get_DataStatistics(DatasetName,CategoricalColsMappings=CategoricalColsMappingsFileName, rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"], QuickReport = step_cfg["QuickReport"])
             case "get_FilteredFeatures":
                 get_FilteredFeatures(step_cfg["filters"])
