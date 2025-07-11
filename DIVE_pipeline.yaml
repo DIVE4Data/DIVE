@@ -91,14 +91,15 @@ pipeline:
       HandlingStringBoolColsToInt: true    # Convert boolean-like strings ("true"/"false") to 1/0
       HandlingCategoricalData: true        # Encode categorical variables
       ConvertFloatColumns_to_Int: true     # Convert float columns to integers where appropriate
+      SetDataIndexColumn: false            # Set a specific column as the DataFrame index (specified as 'IndexCol' in config.json)
 
 
 # Step 5: Generate dataset statistics and summaries
   get_DataStatistics:
     enable: true                           # Enable or disable this step
     datasetName: ""                        # Leave empty to use dataset name from the previous step (Step 4)
-    rawDataName: ""                        # Leave empty to use dataset name from the previous step (Step 3)
     voteDataName: "voteDataName"           # Name for voting dataset
+    CategoricalColsMappingsData: ""        # Leave empty to automatically use the file name generated in Step 4
     QuickReport: false                     # Set to true to generate a brief summary instead of a full report
 
 
