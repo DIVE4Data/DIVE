@@ -86,8 +86,14 @@ def run_pipeline(DIVE_FrameworkConfig,session_path):
                 else:
                     DatasetName = datasetNameFrom_cfg
 
+                categorical_mapping = session.get("CategoricalColsMappings", "").strip()
+                if categorical_mapping:
+                    CategoricalColsMappingsFileName = categorical_mapping
+                else:
+                    CategoricalColsMappingsFileName = step_cfg.get("CategoricalColsMappingsData", "").strip()
+
                 session = read_session(session_path)
-                get_DataStatistics(DatasetName,CategoricalColsMappings=session.get("CategoricalColsMappings"), rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"], QuickReport = step_cfg["QuickReport"])
+                get_DataStatistics(DatasetName,CategoricalColsMappings=CategoricalColsMappingsFileName, rawDataName=session.get("FinalLabeledData"), voteDataName = step_cfg["voteDataName"], QuickReport = step_cfg["QuickReport"])
             case "get_FilteredFeatures":
                 get_FilteredFeatures(step_cfg["filters"])
 

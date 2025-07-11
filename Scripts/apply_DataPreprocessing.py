@@ -7,12 +7,14 @@ from sklearn.preprocessing import LabelEncoder
 import sys
 
 #Total number of preprocessing tasks currently offered
-PreprocessingTasksNo = 11 #### All tasks will be applied except PreprocessingTask12_SetDataIndexColumn task
+PreprocessingTasksNo = 12
 
 def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['all'],session_path=None):
     try:
         config_File = get_ConfigFile()
         dataset = get_initialDataset(datasetName,dataDirPath,config_File)
+
+        datasetName = datasetName.strip().removesuffix(".csv")
         
         if len(PreprocessingTasks)== 1 and PreprocessingTasks[0].lower()== 'all':
             for taskID in range(1,PreprocessingTasksNo +1):
@@ -20,7 +22,7 @@ def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['al
         else:
             for taskID in PreprocessingTasks:
                 dataset = call_PreprocessingTask(dataset,str(taskID),config_File, session_path,datasetName)
-        
+       
         finalDataName = generate_UniqueFilename(datasetName)
         finalDataPath = str(get_Path('PreprocessedData',config_File))
         outputPath = finalDataPath + '/' + finalDataName+'.csv'
