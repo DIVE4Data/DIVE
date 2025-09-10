@@ -1,16 +1,9 @@
-#pip install hexbytes
-from hexbytes import HexBytes
 import pandas as pd
-from collections import Counter
 from IPython.display import display
 from pathlib import Path
 import os, json, datetime
 
-TotalMethods = 1 
-
-#def Bytecode_FeatureExtraction(DatasetName,dataset, methods, Col='input'):
-def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input',session_path=None):
-    methods = [1]
+def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input', ConstructorArgumentsCol=None, session_path=None):
     try:
         if Col in dataset.columns:
             #Get configurations data
@@ -18,17 +11,21 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input',session_path=Non
             #---------------------------------------
             #Ensure the rowID column is named 'contractAddress'
             dataset = get_RowIDCol(dataset,config_File)
-            Bytecode_basedFeatures = dataset[['contractAddress', Col]]
-            
+            Bytecode_basedFeatures = dataset[['contractAddress', Col]]            
+
+            if ConstructorArgumentsCol and ConstructorArgumentsCol in dataset.columns:
+                Bytecode_basedFeatures['ConstructorArguments'] = dataset[ConstructorArgumentsCol]
+            else:
+                Bytecode_basedFeatures['ConstructorArguments'] = None
+
+            # 1) Extract pure creation bytecode from input (strip constructor args if present)
+            Bytecode_basedFeatures['creationBytecode'] = Bytecode_basedFeatures.apply(lambda r: extract_creation_bytecode(str(r[Col]), r['ConstructorArguments']),axis=1)
+
+            # 2) Disassemble creation bytecode → opcodes
             EVM_Opcodes = get_EVM_OPCODES(config_File)
 
-            if len(methods)== 1 and str(methods[0]).lower()== 'all':
-                for methodID in range(1,TotalMethods +1):
-                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID),EVM_Opcodes)
-            else:
-                for methodID in methods:
-                    Bytecode_basedFeatures = call_FeatureExtractionMethod(Bytecode_basedFeatures,str(methodID),EVM_Opcodes)
-            
+            Bytecode_basedFeatures['ExtractedOpcodes'] = Bytecode_basedFeatures['creationBytecode'].apply(lambda x: disassemble_hex(x, EVM_Opcodes))
+
             UniqueFilename = generate_UniqueFilename(DatasetName,'Input-based')
             self_main_dir = Path(__file__).resolve().parents[2]
             path = self_main_dir/config_File['Features']['FE-based']['Input-based']
@@ -48,28 +45,41 @@ def Bytecode_FeatureExtraction(DatasetName,dataset, Col='input',session_path=Non
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         raise
-#=============================================================================================================    
-def call_FeatureExtractionMethod(dataset,methodID,EVM_Opcodes):
-    match methodID:
-        case '1' | 'get_Opcodes':
-            dataset['ExtractedOpcodes'] = dataset['input'].apply(FE_Method_1_get_Opcodes,args=(EVM_Opcodes,))
-            return dataset
-       # case '2' | '':  # Advanced FE methods will be added in the coming releases.
-        # default pattern
-        case _:
-            print(methodID + ' is an incorrect Method ID')
 #=============================================================================================================
-def FE_Method_1_get_Opcodes(bytecode,EVM_Opcodes):
-    # Convert hex bytecode to bytes
-    bytecode_bytes = bytes.fromhex(bytecode[2:])  # Skip the '0x' prefix
+#--------------------------
+# Extract bytecode from input
+#--------------------------
+def extract_creation_bytecode(tx_input_hex, constructor_args_hex=None):
+
+    if not isinstance(tx_input_hex, str) or not tx_input_hex.startswith('0x'):
+        return '0x'
+    s = tx_input_hex.lower()
+    if constructor_args_hex and isinstance(constructor_args_hex, str) and constructor_args_hex.startswith('0x'):
+        ca = constructor_args_hex.lower()
+        if s.endswith(ca):
+            return '0x' + s[2:-len(ca)]
+    return s  
+#--------------------------
+def disassemble_hex(hexdata, opcode_map):
+    if not isinstance(hexdata, str) or not hexdata.startswith('0x'):
+        return []
+    
+    data = bytes.fromhex(hexdata[2:])
+    i, n = 0, len(data)
     opcodes = []
-    # Loop through bytecode bytes to extract opcodes
-    for byte in bytecode_bytes:
-        hexOpcode = f'0x{byte:02x}'
-        opcodeName = EVM_Opcodes.get(hexOpcode, 'Unknown')
-        opcodes.append(f'{opcodeName} {hexOpcode}')
+
+    while i < n:
+        op = data[i]
+        name = opcode_map.get(op, 'UNKNOWN')
+        opcodes.append(f'{name} 0x{op:02x}')
+        i += 1
+
+        # Handle PUSH1..PUSH32 (0x60..0x7f): skip immediate data bytes
+        if 0x60 <= op <= 0x7f:
+            push_len = op - 0x5f
+            i += min(push_len, max(0, n - i))  # skip data safely
     return opcodes
-#=============================================================================================================
+#--------------------------
 #Read EVM Opcodes csv file
 #--------------------------
 def get_EVM_OPCODES(config_File):
@@ -87,6 +97,7 @@ def get_EVM_OPCODES(config_File):
     # Convert back to dictionary
     EVM_Opcodes = dict(zip(EVM_OpcodesDF['Stack'], EVM_OpcodesDF['Name']))
     return EVM_Opcodes
+#--------------------------
 #Read Configuration file
 #-----------------------
 def get_ConfigFile(config_file_name = 'config.json'):
@@ -96,6 +107,7 @@ def get_ConfigFile(config_file_name = 'config.json'):
     config_File = json.load(configFile)
     configFile.close()
     return config_File
+#--------------------------
 #Get dataComponent dir path
 #--------------------------
 def get_Path(dataType,config_File):
