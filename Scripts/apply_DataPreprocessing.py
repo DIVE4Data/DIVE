@@ -9,7 +9,7 @@ import sys
 #Total number of preprocessing tasks currently offered
 PreprocessingTasksNo = 12
 
-def apply_DataPreprocessing(datasetName,dataDirPath=True,PreprocessingTasks=['all'],session_path=None):
+def apply_DataPreprocessing(datasetName,dataDirPath=False,PreprocessingTasks=['all'],session_path=None):
     try:
         config_File = get_ConfigFile()
         dataset = get_initialDataset(datasetName,dataDirPath,config_File)
