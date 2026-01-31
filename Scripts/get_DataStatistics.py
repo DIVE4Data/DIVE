@@ -155,12 +155,8 @@ def get_ToolsFrequency(voteData,outDir):
         group_positions = []
         for num_tools, group in grouped_data:
             for _, row in group.iterrows():
-                ax1.bar(
-                    current_position,
-                    row['Count'],
-                    width=0.8,
-                    color=sns.color_palette('Blues', len(grouped_data))[num_tools - 2],
-                    edgecolor='black',)
+                ax1.bar(current_position, row['Count'], width=0.8, color=sns.color_palette('Blues', len(grouped_data))[num_tools - 2],
+                        edgecolor='black',)
                 x_positions.append(current_position)
                 x_labels.append(row['Tool Set'])
                 current_position += 1
@@ -170,10 +166,7 @@ def get_ToolsFrequency(voteData,outDir):
         #Add number for each bar
         for p in ax1.patches:
                     if p.get_height() > 0:
-                        ax1.text(p.get_x()-0.1,
-                        p.get_height()* 1 ,
-                        '{0:.0f}'.format(p.get_height()),
-                        color='black', size='small')
+                        ax1.text(p.get_x()-0.1, p.get_height()* 1 , '{0:.0f}'.format(p.get_height()), color='black', size='small')
 
         #Set bar chart properties
         ax1.set_xticks(x_positions)
@@ -224,14 +217,30 @@ def get_TimestampFrequency(dataset,outDir):
 
         # Create the bar chart
         fig = plt.figure(figsize=(8, 4))
-        plt.bar(year_counts.index, year_counts.values, color='skyblue', edgecolor='black', width=0.6, label="Counts")
+        bars = plt.bar(year_counts.index, year_counts.values, color='skyblue', edgecolor='black', width=0.6, label="Counts")
+
         # Add the line plot for the total count (cumulative sum)
         cumulative_sum = np.cumsum(year_counts.values)
+        total_samples = year_counts.values.sum()
+
         plt.plot(year_counts.index, cumulative_sum, color='blue', marker='o', label="Cumulative Total",linewidth=1,linestyle='-')
 
-        # Add labels for the cumulative total above the line
-        for i, total in enumerate(cumulative_sum):
-            plt.text(year_counts.index[i], total + 190, str(total), ha='center', fontsize=8, color='maroon')
+        ymax = cumulative_sum.max()
+        plt.ylim(0, ymax * 1.08) 
+
+        for rect, c in zip(bars, year_counts.values):
+            pct = 100 * c / total_samples
+            plt.annotate(f"{pct:.2f}%", xy=(rect.get_x() + rect.get_width() / 2, rect.get_height()), xytext=(0, 1),
+                         textcoords="offset points",  ha="center", va="bottom", fontsize=6, color="black", 
+                         bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.9))
+
+        bar_heights = dict(zip(year_counts.index, year_counts.values))
+        for x, y in zip(year_counts.index, cumulative_sum):
+            bar_h = bar_heights.get(x, 0)
+
+            dy = 10 if y - bar_h < 600 else 8
+
+            plt.annotate(f"{int(y)}", xy=(x, y), xytext=(0, dy), textcoords="offset points", ha="center", va="bottom", fontsize=6, color="maroon")
 
         plt.xlabel('Year',fontsize=10)
         plt.ylabel('No of Samples',fontsize=10)
@@ -288,6 +297,7 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
         #Recalculate base totals
         base_totals = version_summary.groupby('Base Version')['Count'].sum().reset_index()
         base_totals.columns = ['Base Version', 'Total Count']
+        overall_total = base_totals["Total Count"].sum()
 
         #Create the chart
         fig, ax1 = plt.subplots(figsize=(16, 8))
@@ -299,13 +309,7 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
         group_positions = []
         for base, group in version_summary.groupby('Base Version'):
             for _, row in group.iterrows():
-                ax1.bar(
-                    current_position,
-                    row['Count'],
-                    width=0.8,
-                    color='skyblue',
-                    edgecolor='black'
-                )
+                ax1.bar(current_position, row['Count'], width=0.8, color='skyblue', edgecolor='black')
                 x_positions.append(current_position)
                 x_labels.append(row['Simplified Version'])
                 current_position += 1
@@ -315,10 +319,7 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
         #Add number for each bar
         for p in ax1.patches:
                     if p.get_height() > 0:
-                        ax1.text(p.get_x(),
-                        p.get_height()+ 20 ,
-                        '{0:.0f}'.format(p.get_height()),
-                        color='black', size='small',rotation=90)
+                        ax1.text(p.get_x(), p.get_height()+ 20 , '{0:.0f}'.format(p.get_height()), color='black', size='small',rotation=90)
 
         #Set bar chart properties
         ax1.set_xticks(x_positions)
@@ -331,8 +332,20 @@ def get_CompilerVersionsFrequency(dataset,outDir,categories_path):
         #Line plot for base totals
         ax2 = ax1.twinx()
         ax2.plot(group_positions, base_totals["Total Count"], color="blue", marker="o", linestyle="-", linewidth=1, label='Base Version Totals')
-        for pos, total in zip(group_positions, base_totals["Total Count"]):
-            ax2.text(pos, total + 180, f"{int(total)}", ha="center", fontsize=10, color="maroon")
+        ymax = base_totals["Total Count"].max()
+        ax2.set_ylim(0, ymax * 1.12)
+
+        ymax = base_totals["Total Count"].max()
+        for i, (pos, total) in enumerate(zip(group_positions, base_totals["Total Count"])):
+            pct = 100 * total / base_totals["Total Count"].sum()
+
+            #dy = -16 if total > 0.92 * ymax else 14
+            dy = 14
+
+            ax2.annotate(f"{int(total)}\n({pct:.1f}%)", xy=(pos, total), xytext=(0, dy), textcoords="offset points", ha="center",
+                         va="bottom" if dy > 0 else "top", fontsize=10, color="maroon", 
+                         bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.9), clip_on=True)
+
         ax2.set_ylabel("Total Samples by Base Version", fontsize=12, color="gray")
         ax2.tick_params(axis="y", labelcolor="gray", labelsize=10)
         ax2.legend(loc="best")
@@ -370,11 +383,7 @@ def get_LabelsFrequency(dataset,outDir):
         #Add number for each bar
         for p in ax1.patches:
                     if p.get_height() > 0:
-                        ax1.text(p.get_x()+0.1,
-                        p.get_height()+ 20 ,
-                        '{0:.0f}'.format(p.get_height()),
-                        color='black', size='small')
-
+                        ax1.text(p.get_x()+0.1, p.get_height()+ 20 , '{0:.0f}'.format(p.get_height()), color='black', size='small')
         plt.grid(axis='y', color = "grey", which='major', linewidth = "0.3", linestyle = "-.")
         plt.grid(axis='y', color="grey", which='minor', linestyle=':', linewidth="0.5");
         plt.show()  
@@ -389,12 +398,9 @@ def get_ProfileReport(dataset,outDir, datasetName,QuickReport):
 
     try:
         os.makedirs(outDir, exist_ok=True)
-
         profile = ProfileReport(dataset, title = datasetName + " Profiling Report", minimal=QuickReport)
-
         report_path = os.path.join(outDir, 'Profiling_DetailedReport.html')
         profile.to_file(output_file=report_path)
-
         relative_path = os.path.relpath(report_path, start=Path.cwd().parent)
         print(f'Done! The Data Profiling Report is available at: {relative_path}')
 
