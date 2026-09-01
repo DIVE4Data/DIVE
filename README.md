@@ -53,7 +53,7 @@ Generate statistical summaries and visualizations to better understand the datas
   > Create an account at [`Etherscan.io`](https://etherscan.io/) and follow their [`API key guide`](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).  
   > ⚠️ **Do not share your API key publicly.**
 
-- **Python dependencies** are listed in [`requirements.txt`](https://github.com/SMART-DIVE/DIVE/blob/main/requirements.txt).  
+- **Python dependencies** are listed in [`requirements.txt`](https://github.com/DIVE4Data/DIVE/blob/main/requirements.txt).  
 You can install them using:
 
   ```bash
@@ -67,7 +67,7 @@ DIVE/
 │   ├── InitialCombinedData/     # Merged raw features before preprocessing
 │   └── PreprocessedData/        # Cleaned, transformed datasets for ML
 │
-├──Docs/
+├── Docs/
 │   ├── initial-setup.md        # Step-by-step guide for project installation and configuration
 │   └── usage.md                # Detailed documentation for using framework functions and scripts
 │
@@ -126,6 +126,7 @@ DIVE/
 │
 ├── Statistics/                  # Analysis outputs and statistical summaries
 │
+├── CITATION.cff                 # Citation metadata for the DIVE publication
 ├── config.json                  # Configuration file for paths and API key
 ├── DIVE_pipeline.yaml           # YAML config defining the full data creation pipeline execution
 ├── DIVE.ipynb                   # Interactive notebook for demonstrating the framework
@@ -141,12 +142,36 @@ DIVE/
 
 ### 🔧 Initial Setup
 
-- See full instructions in [`Docs/initial-setup.md`](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/initial-setup.md)
+- See full instructions in [`Docs/initial-setup.md`](https://github.com/DIVE4Data/DIVE/blob/main/Docs/initial-setup.md)
 
 ### 🛠️ Using Framework Functions
 
-- Each function is explained in detail in [`Docs/usage.md`](https://github.com/SMART-DIVE/DIVE/blob/main/Docs/usage.md)
+- Each function is explained in detail in [`Docs/usage.md`](https://github.com/DIVE4Data/DIVE/blob/main/Docs/usage.md)
 
+---
+## 📚 Publication
+
+The DIVE dataset and its framework are described in the following publication:
+
+**Alsunaidi, S. J., Aljamaan, H., & Hammoudeh, M. (2026).**  
+*DIVE: A Multi-Label Smart Contract Vulnerability Dataset.*  
+**Scientific Data, 13**, 664.  
+https://doi.org/10.1038/s41597-026-07025-5
+
+If you use the DIVE dataset or framework in your research, please cite:
+
+```bibtex
+@article{alsunaidi2026dive,
+  title   = {DIVE: A Multi-Label Smart Contract Vulnerability Dataset},
+  author  = {Alsunaidi, Shikah J. and Aljamaan, Hamoud and Hammoudeh, Mohammad},
+  journal = {Scientific Data},
+  volume  = {13},
+  pages   = {664},
+  year    = {2026},
+  doi     = {10.1038/s41597-026-07025-5},
+  url     = {https://doi.org/10.1038/s41597-026-07025-5}
+}
+```
 ---
 
 ## 📦 License
