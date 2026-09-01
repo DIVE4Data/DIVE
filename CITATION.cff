@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use the DIVE framework or dataset in your research, please cite the associated publication."
+
+title: "DIVE Framework"
+type: software
+
+authors:
+  - family-names: "Alsunaidi"
+    given-names: "Shikah J."
+    orcid: "https://orcid.org/0000-0002-8262-5025"
+
+  - family-names: "Aljamaan"
+    given-names: "Hamoud"
+    orcid: "https://orcid.org/0000-0002-2146-9348"
+
+  - family-names: "Hammoudeh"
+    given-names: "Mohammad"
+    orcid: "https://orcid.org/0000-0003-1058-0996"
+
+repository-code: "https://github.com/DIVE4Data/DIVE"
+doi: "10.5281/zenodo.18779606"
+
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Alsunaidi"
+      given-names: "Shikah J."
+      orcid: "https://orcid.org/0000-0002-8262-5025"
+
+    - family-names: "Aljamaan"
+      given-names: "Hamoud"
+      orcid: "https://orcid.org/0000-0002-2146-9348"
+
+    - family-names: "Hammoudeh"
+      given-names: "Mohammad"
+      orcid: "https://orcid.org/0000-0003-1058-0996"
+
+  title: "DIVE: A Multi-Label Smart Contract Vulnerability Dataset"
+  journal: "Scientific Data"
+  volume: 13
+  year: 2026
+  doi: "10.1038/s41597-026-07025-5"
+  url: "https://doi.org/10.1038/s41597-026-07025-5"
