@@ -126,7 +126,7 @@ DIVE/
 │
 ├── Statistics/                  # Analysis outputs and statistical summaries
 │
-├── CITATION.cff                 # Citation metadata for the DIVE publication
+├── CITATION.cff                 # Citation metadata for the DIVE framework and publication
 ├── config.json                  # Configuration file for paths and API key
 ├── DIVE_pipeline.yaml           # YAML config defining the full data creation pipeline execution
 ├── DIVE.ipynb                   # Interactive notebook for demonstrating the framework
@@ -158,7 +158,7 @@ The DIVE dataset and its framework are described in the following publication:
 **Scientific Data, 13**, 664.  
 https://doi.org/10.1038/s41597-026-07025-5
 
-If you use the DIVE dataset or framework in your research, please cite:
+If you use the DIVE dataset or its framework in your research, please cite:
 
 ```bibtex
 @article{alsunaidi2026dive,
@@ -172,6 +172,12 @@ If you use the DIVE dataset or framework in your research, please cite:
   url     = {https://doi.org/10.1038/s41597-026-07025-5}
 }
 ```
+### 📦 Archived Resources
+
+The DIVE framework and dataset are archived on Zenodo:
+
+- **DIVE Framework:** [https://doi.org/10.5281/zenodo.18779606](https://doi.org/10.5281/zenodo.18779606)
+- **DIVE Dataset:** [https://doi.org/10.5281/zenodo.18519253](https://doi.org/10.5281/zenodo.18519253)
 ---
 
 ## 📦 License
