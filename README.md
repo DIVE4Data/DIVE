@@ -3,6 +3,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/DIVE4Data/DIVE)](https://github.com/DIVE4Data/DIVE/releases)
 [![GitHub Downloads](https://img.shields.io/github/downloads/DIVE4Data/DIVE/total)](https://github.com/DIVE4Data/DIVE/releases)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](LICENSE.md)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=DIVE4Data.DIVE)
 [![GitHub stars](https://img.shields.io/github/stars/DIVE4Data/DIVE?style=social)](https://github.com/DIVE4Data/DIVE/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/DIVE4Data/DIVE?style=social)](https://github.com/DIVE4Data/DIVE/network/members)
 
