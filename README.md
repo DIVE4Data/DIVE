@@ -1,3 +1,11 @@
+[![Paper](https://img.shields.io/badge/Paper-Scientific%20Data-blue)](https://doi.org/10.1038/s41597-026-07025-5)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18779606.svg)](https://doi.org/10.5281/zenodo.18779606)
+[![GitHub release](https://img.shields.io/github/v/release/DIVE4Data/DIVE)](https://github.com/DIVE4Data/DIVE/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/DIVE4Data/DIVE/total)](https://github.com/DIVE4Data/DIVE/releases)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](LICENSE.md)
+[![GitHub stars](https://img.shields.io/github/stars/DIVE4Data/DIVE?style=social)](https://github.com/DIVE4Data/DIVE/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/DIVE4Data/DIVE?style=social)](https://github.com/DIVE4Data/DIVE/network/members)
+
 # DIVE Framework  
 *A blockchain digging framework for constructing vulnerability-tagged smart contract datasets.*
 
