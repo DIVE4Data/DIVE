@@ -189,7 +189,7 @@ The DIVE framework and dataset are archived on Zenodo:
 - **DIVE Dataset:** [https://doi.org/10.5281/zenodo.18519253](https://doi.org/10.5281/zenodo.18519253)
 ---
 
-## 📦 License
+## 📄 License
 
 This project is licensed under the [`Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)`](https://creativecommons.org/licenses/by-nc/4.0/).
 
